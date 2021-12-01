@@ -6,7 +6,7 @@
     
         @if ((request()->is('admin/election') ? 'active' : '') || (request()->is('admin/election/*') ? 'active' : '') || ($request->segment(3) == 'generate' ? 'active' : '') || ($request->segment(2) == 'vid' ? 'active' : '') || ($request->segment(2) == 'register' ? 'active' : '') || (request()->is('admin/user') ? 'active' : '') || (request()->is('admin/company') ? 'active' : ''))
         <p class="brand-link navbar-dark">
-            <img src="{{ url('images/election_logo.png') }}" alt="Company Logo"
+            <img src="{{ url('images/election.logo.jpg') }}" alt="Company Logo"
                 class="brand-image img-circle elevation-3" style="opacity: .8">
             <span class="brand-text font-weight-light">mmVote</span>
         </p>
@@ -19,7 +19,7 @@
         @endif
     @elseif(Auth::user()->type == 'generator')
     <p class="brand-link navbar-dark text-center">
-        <img src="{{ url('images/election_logo.png') }}" alt="Company Logo"
+        <img src="{{ url('images/election.logo.jpg') }}" alt="Company Logo"
             class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">mmVote</span>
     </p>

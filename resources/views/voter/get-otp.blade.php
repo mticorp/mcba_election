@@ -34,7 +34,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle"><img src="{{url('images/election_logo.png')}}" alt="Logo" width="10%"> mmVote</h5>            
+            <h5 class="modal-title" id="exampleModalLongTitle"><img src="{{url('images/election.logo.jpg')}}" alt="Logo" width="10%"> mmVote</h5>            
             </div>
             <div class="modal-body text-center">
                 <h5><b>mmVote</b> Application Avaliable on Google Play Store! </h5>
@@ -52,7 +52,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle"><img src="{{url('images/election_logo.png')}}" alt="Logo" width="10%"> mmVote</h5>            
+            <h5 class="modal-title" id="exampleModalLongTitle"><img src="{{url('images/election.logo.jpg')}}" alt="Logo" width="10%"> mmVote</h5>            
             </div>
             <div class="modal-body text-center">
                 <h5><b>mmVote</b> Application Avaliable on App Store! </h5>

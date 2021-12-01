@@ -186,7 +186,7 @@
                         @foreach ($ques_data as $key => $value)
                             <tr>
                                 <td style="border: 1px solid #ddd;text-align: center;">{{ $key + 1 }}</td>
-                                <td style="border: 1px solid #ddd;text-align: center;">{{ $value->question_title }}</td>
+                                <td style="border: 1px solid #ddd;text-align: center;">{!! $value->question_title !!}</td>
                                 <td style="border: 1px solid #ddd;text-align: center;">{{ $value->yes_ans }}</td>
                                 <td style="border: 1px solid #ddd;text-align: center;">{{ $value->no_ans }}</td>
                                 <td style="border: 1px solid #ddd;text-align: center;">
@@ -440,13 +440,14 @@
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',
                             orderable: false,
-                            searchable: false
+                            searchable: false,
+                            "width": "5%", 
                         },
                         {
                             data: 'image',
                             name: 'image',
                             render: function(data, type, full, meta) {
-                                if (data != null) {
+                                if (data != null && data != 'null') {
                                     return "<img src={{ URL::to('/') }}" + data +
                                         " width='70' class='img-thumbnail' />";
                                 } else {
@@ -457,7 +458,18 @@
                         },
                         {
                             data: 'question_title',
-                            name: 'question_title'
+                            name: 'question_title',
+                            render: function(data) {
+                                var body;
+                                try {
+                                    body = document.implementation.createHTMLDocument().body;
+                                } catch (e) {
+                                    body = document.createElement("body");
+                                }
+                                body.innerHTML = data;
+                                return $(body).text();
+                            },
+                            "width": "50%", 
                         },
                         {
                             data: 'question_title',
@@ -465,7 +477,8 @@
                             render: function(data, type, full, meta) {
                                 return html =
                                     `<span class="text-success">Yes - ${full.yes_ans}</span> / <span class="text-danger">No - ${full.no_ans}</span>`;
-                            }
+                            },
+                            "width": "10%",                            
                         },
                         {
                             data: 'action',
@@ -574,10 +587,18 @@
                             </tr>`);
 
                             $.each(data, function(i, v) {
+                                let body;
+                                try {
+                                    body = document.implementation.createHTMLDocument().body;
+                                } catch (e) {
+                                    body = document.createElement("body");
+                                }
+                                body.innerHTML = v.question_title;  
+                                console.log($(body).text());                              
                                 i = i + 1;
                                 $("#excel_rs").append('<tr>' +
                                     '<td>' + i + '</td>' +
-                                    '<td>' + v.question_title + '</td>' +
+                                    '<td>' + $(body).text() + '</td>' +
                                     '<td>' + 'Yes - ' + v.yes_ans + ' / No - ' + v
                                     .no_ans + '</td>' +
                                     '</tr>');

@@ -21,8 +21,8 @@
         color:#000!important;
     }
 
-    fieldset{
-        display: block;
+    .fieldset{
+        display: block; */
         margin-inline-start: 2px;
         margin-inline-end: 2px;
         padding-block-start: 0.35em;
@@ -34,6 +34,12 @@
         border-style: groove;
         border-color: white;
         border-image: initial;
+        /* display:table-cell!important; 
+        width: 100%!important; */
+    }
+
+    font{
+        word-break: break-all!important;
     }
 </style>
 @endsection
@@ -46,23 +52,21 @@
             <p> လူကြီးမင်း၏ မဲပေးမှု အစီအစဉ် ပြီးဆုံးပါပြီ။</p>
                 <p>လူကြီးမင်း၏ မဲပေးမှုအတွက် ကျေးဇူးအထူးတင်ရှိပါသည်။</p>
             
-            <fieldset class="text-left">
+            <div class="text-left fieldset">
                 <p>Transaction ID - {{$voter->VId}} ဖြင့် ရွေးချယ်ခဲ့သော </p>
                 
-                @if (count($candidates) > 0)
-                <hr style="border: 1px solid white;">
+                @if (count($candidates) > 0)                
                 <p class="pl-1">ကိုယ်စားလှယ်လောင်းများ</p>                
                     @foreach($candidates as $key => $candidate) 
                         <p><i class="fas fa-user-circle" style="font-size:20px;"></i> {{$key+1}}.  {{$candidate->mname}}</p>
                     @endforeach
                 @endif
 
-                @if (count($answers) > 0)
-                <hr style="border: 1px solid white;">
+                @if (count($answers) > 0)                
                 <p class="pl-1">မေးခွန်းများ</p>
                 @foreach ($answers as $ans)                    
-                    <fieldset class="my-2">
-                        <p class="text-white"><i class="fa fa-question-circle"></i> {!! $ans->ques !!}</p>
+                    <div class="my-2 fieldset">
+                        <p class="text-white" style="width:100%!important;"><i class="fa fa-question-circle"></i> {!! $ans->ques !!}</p>
                         <p>
                             <i class="fab fa-adn"></i>
                             @if ($ans->ans == 1)
@@ -71,7 +75,7 @@
                                 သဘောမတူပါ။
                             @endif
                         </p>
-                    </fieldset>
+                    </div>
                 @endforeach
                 @endif
                 {{-- @if(count($candidates) > 0 && count($candidates) != 1)
@@ -103,7 +107,7 @@
                     စသည်ဖြင့်ဖြေဆိုခဲ့ပါသည်။   
                 </p>          
                 @endif --}}
-            </fieldset>
+            </div>
             
             <p id="lucky_code"></p>
             @if($voter->isVerified == 1)

@@ -137,7 +137,12 @@ class QuestionController extends Controller
             $image->move($upload_path, $name);
             $new_name = '/upload/question/' . $name;
         } else {
-            $new_name = $request->hidden_image;
+            if($request->hidden_image != 'null')
+            {
+                $new_name = $request->hidden_image;
+            }else{
+                $new_name = null;
+            }
         }
 
         $form_data = array(

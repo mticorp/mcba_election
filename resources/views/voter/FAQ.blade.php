@@ -67,7 +67,7 @@
 <div class="container-fluid mb-5 pb-5" id="FAQ">
     <div class="row mt-5">
         <div class="col-md-12">
-            <h3 class="text-center">{{$election->ques_title ?? ''}}</h3>
+            <h5 class="text-center"><span style="line-height:35px; font-weight:bold;">{{$election->ques_title ?? ''}}</span></h5>
         </div>
     </div>
     <div class="row mt-3">

@@ -14,7 +14,7 @@
 @endsection
 @section('content')
 <div class="container-fluid px-lg-5 px-0 mb-5 pb-5" id="result-page">
-    <div class="row mt-4">
+    <div class="row mt-4 mx-0">
         <div class="col-sm-12 px-0">
             <div class="card card-info card-tabs">
                 <div class="card-header">

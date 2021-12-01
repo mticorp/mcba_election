@@ -28,6 +28,7 @@
                                                 <p>: {{ $election->name }}</p>
                                             </div>
                                         </div>
+                                        @if ($election->candidate_flag == 1)
                                         <div class="row">
                                             <div class="col-md-6 col-6">
                                                 <p><i class="fas fa-user-check"></i> Position</p>
@@ -36,6 +37,7 @@
                                                 <p>: {{ $election->position }}</p>
                                             </div>
                                         </div>
+                                        @endif
                                         <div class="row text-justify">
                                             <div class="col-md-6 col-6">
                                                 <p><i class="fas fa-info-circle"></i> Status</p>
@@ -86,6 +88,8 @@
                                                 <p>: {{ $election->name }}</p>
                                             </div>
                                         </div>
+
+                                        @if ($election->candidate_flag == 1)
                                         <div class="row text-justify">
                                             <div class="col-md-6 col-6">
                                                 <p><i class="fas fa-user-check"></i> Position</p>
@@ -94,6 +98,7 @@
                                                 <p>: {{ $election->position }}</p>
                                             </div>
                                         </div>
+                                        @endif
 
                                         <div class="row">
                                             <div class="col-md-6 col-6 text-justify">
@@ -139,6 +144,8 @@
                                                 <p>: {{ $election->name }}</p>
                                             </div>
                                         </div>
+
+                                        @if ($election->candidate_flag == 1)
                                         <div class="row text-justify">
                                             <div class="col-md-6 col-6">
                                                 <p><i class="fas fa-user-check"></i> Position</p>
@@ -147,6 +154,7 @@
                                                 <p>: {{ $election->position }}</p>
                                             </div>
                                         </div>
+                                        @endif
 
                                         <div class="row text-justify">
                                             <div class="col-md-6 col-6">

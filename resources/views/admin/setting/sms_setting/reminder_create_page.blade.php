@@ -10,7 +10,7 @@
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item active"><a href="{{ route('admin.election.index') }}">Home</a></li>
                     </li>
-                    <li class="breadcrumb-item active">SMS</li>
+                    <li class="breadcrumb-item active">Reminder</li>
                 </ol>
             </div>
         </div>
@@ -25,7 +25,7 @@
                 <div class="card card-red card-outline">
                     <div class="card-header">
                         <h3 class="card-title">
-                            Add SMS
+                            Add Reminder
                         </h3>
                         <div class="card-tools">
                             <a href="{{ route('admin.sms.index') }}" class="text-danger"><i
@@ -39,10 +39,10 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="description">SMS Description*</label>
-                                            <textarea class="textarea" name="sms" id="description"
+                                            <label for="description">Reminder Description*</label>
+                                            <textarea class="textarea" name="reminder" id="description"
                                                 placeholder="Place some text here"
-                                                style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('description',$election->smsdescription) }}</textarea>
+                                                style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('description',$election->reminderdescription) }}</textarea>
                                         </div>
                                     </div>
 

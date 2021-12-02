@@ -29,18 +29,19 @@ class SmsController extends Controller
      */
     public function createpage($id)
     {
-
         $election = Election::where('id', $id)->first();
         return view('admin.setting.sms_setting.create_page', compact('election'));
+    }
+
+    public function remindercreatepage($id)
+    {
+        $election = Election::where('id', $id)->first();
+        return view('admin.setting.sms_setting.reminder_create_page', compact('election'));
     }
 
 
     public function create()
     {
-
-        $elections = Election::all();
-
-        return view('admin.setting.sms_setting.', compact('elections'));
     }
 
     /**
@@ -51,24 +52,6 @@ class SmsController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = array(
-            'company_name'         =>  'required',
-        );
-
-        $error = Validator::make($request->all(), $rules);
-
-        if ($error->fails()) {
-            return response()->json(['errors' => $error->errors()->all()]);
-        }
-
-        $sms = $request->sms;
-
-        $form_data = array(
-            'smsdescription'     => $sms,
-        );
-        Election::create($form_data);
-
-        return response()->json(['success' => 'Data Added successfully.']);
     }
 
     /**
@@ -95,18 +78,18 @@ class SmsController extends Controller
 
     public function update(Request $request, $id)
     {
-        dd($id);
-        $validator = Validator::make($request->all(), [
-            'sms' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
+        DB::table('election')
+        ->where("election.id", '=',  $id)
+        ->update(['election.smsdescription'=> $request->sms]);
+        return redirect()->route('admin.sms.index');
+    }
 
 
-        $driver = Election::find($id);
-        $driver->update(['sms', $request->sms]);
+    public function reminderupdate(Request $request, $id)
+    {
+        DB::table('election')
+        ->where("election.id", '=',  $id)
+        ->update(['election.reminderdescription'=> $request->reminder]);
         return redirect()->route('admin.sms.index');
     }
 

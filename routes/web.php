@@ -4,6 +4,9 @@
 //     return response()->download("upload/apple-app-site-association");
 // });
 
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Route;
+
 Route::get('/',function(){
     return redirect('/login');
 });
@@ -104,6 +107,31 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/company/destroy/{id}', 'Admin\CompanyController@destroy')->name('admin.company.delete');
         Route::get('/company/edit/{id}', 'Admin\CompanyController@edit')->name('admin.company.edit');
         Route::post('/company/update', 'Admin\CompanyController@update')->name('admin.company.update');
+
+
+        //Logo route
+        Route::get('/logo', 'Admin\LogoController@index')->name('admin.logo.index');
+        Route::post('/logo/create', 'Admin\LogoController@store')->name('admin.logo.store');
+        Route::get('/logo/destroy/{id}', 'Admin\LogoController@destroy')->name('admin.logo.delete');
+        Route::get('/logo/edit/{id}', 'Admin\LogoController@edit')->name('admin.logo.edit');
+        Route::post('/logo/update', 'Admin\LogoController@update')->name('admin.logo.update');
+
+
+        //Favicon route
+        Route::get('/favicon', 'Admin\FaviconController@index')->name('admin.favicon.index');
+        Route::post('/favicon/create', 'Admin\FaviconController@store')->name('admin.favicon.store');
+        Route::get('/favicon/destroy/{id}', 'Admin\FaviconController@destroy')->name('admin.favicon.delete');
+        Route::get('/favicon/edit/{id}', 'Admin\FaviconController@edit')->name('admin.favicon.edit');
+        Route::post('/favicon/update', 'Admin\FaviconController@update')->name('admin.favicon.update');
+
+        //SMS route
+        Route::get('/sms', 'Admin\SmsController@index')->name('admin.sms.index');
+        Route::get('/sms/smscreatepage/{id}', 'Admin\SmsController@createpage')->name('admin.smscreatepage.index');
+        Route::post('/sms/update', 'Admin\SmsController@update')->name('admin.sms.update');
+
+        //Reminder route
+        Route::get('/reminder', 'Admin\ReminderController@index')->name('admin.reminder.index');
+
 
         //dashboard route
         Route::get('/dashboard/{election_id}','Admin\DashboardController@index')->name('admin.dashboard');

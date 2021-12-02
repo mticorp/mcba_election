@@ -11,6 +11,8 @@ class Election extends Model
     protected $fillable = [
         'name',
         'description',
+        'smsdescription',
+        'reminderdescription',
         'no_of_position_mm',
         'no_of_position_en',
         'candidate_id',

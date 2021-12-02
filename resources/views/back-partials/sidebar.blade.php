@@ -89,6 +89,56 @@
                                 </p>
                             </a>
                         </li>
+
+
+                        <li class="nav-item has-treeview {{ $request->segment(2) == 'logo' ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $request->segment(2) == 'logo' ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-cog"></i>
+                                <p>
+                                    Setting
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.logo.index') }}"
+                                        class="nav-link {{ $request->segment(2) == 'logo' ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-blog"></i>
+                                        <p>
+                                            Logo
+                                        </p>
+                                    </a>
+                                </li>                               
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.favicon.index') }}"
+                                        class="nav-link {{ $request->segment(2) == 'favicon' ? 'active' : '' }}">
+                                        <i class="nav-icon fa fa-icons"></i>
+                                        <p>
+                                            Favicon
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.sms.index') }}"
+                                        class="nav-link {{ $request->segment(2) == 'sms' ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-sms"></i>
+                                        <p>
+                                            SMS
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.reminder.index') }}"
+                                        class="nav-link {{ $request->segment(2) == 'reminder' ? 'active' : '' }}">
+                                        <i class="nav-icon far fa-clock"></i>
+                                        <p>
+                                            Reminder
+                                        </p>
+                                    </a>
+                                </li>                               
+                            </ul>
+                        </li>
+
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

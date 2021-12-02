@@ -24,14 +24,15 @@ class ElectionController extends Controller
 
     public function index()
     {
-        $elections = Election::all();        
+        $elections = Election::all();
+
         return view('admin.election.index', compact('elections'));
     }
 
     public function create()
-    {        
+    {
         $company = Company::all();
-        return view('admin.election.create',compact('company'));
+        return view('admin.election.create', compact('company'));
     }
 
     public function changeStatus(Request $request)
@@ -39,50 +40,43 @@ class ElectionController extends Controller
         $time = Carbon::now();
 
         $election = Election::find($request->election_id);
-        if ($request->status == 1) {  
-            $ques_count = Question::where('election_id',$request->election_id)->count();   
-            $candidate_count = Candidate::where('election_id',$request->election_id)->count();       
-            if($election->candidate_flag == 0 && $election->ques_flag == 1)
-            {
-                if($ques_count > 0)
-                {
+        if ($request->status == 1) {
+            $ques_count = Question::where('election_id', $request->election_id)->count();
+            $candidate_count = Candidate::where('election_id', $request->election_id)->count();
+            if ($election->candidate_flag == 0 && $election->ques_flag == 1) {
+                if ($ques_count > 0) {
                     $election->start_time = Carbon::parse($time)->format("Y-m-d H:i:s");
-                }else{
+                } else {
                     return response()->json(['ques_notFound' => true]);
                 }
-            }elseif($election->candidate_flag == 1 && $election->ques_flag == 0){                
-                if($candidate_count > 0)
-                {
+            } elseif ($election->candidate_flag == 1 && $election->ques_flag == 0) {
+                if ($candidate_count > 0) {
                     $election->start_time = Carbon::parse($time)->format("Y-m-d H:i:s");
-                }else{
+                } else {
                     return response()->json(['cadidate_notFound' => true]);
                 }
-            }elseif($election->candidate_flag == 1 && $election->ques_flag == 1){
-                if($candidate_count == 0)
-                {
-                    if($ques_count == 0)
-                    {
-                        return response()->json(['ques_notFound' => true,'cadidate_notFound' => true]);                        
-                    }else{
+            } elseif ($election->candidate_flag == 1 && $election->ques_flag == 1) {
+                if ($candidate_count == 0) {
+                    if ($ques_count == 0) {
+                        return response()->json(['ques_notFound' => true, 'cadidate_notFound' => true]);
+                    } else {
                         return response()->json(['cadidate_notFound' => true]);
                     }
-                }else{
-                    if($ques_count == 0)
-                    {
+                } else {
+                    if ($ques_count == 0) {
                         return response()->json(['ques_notFound' => true]);
-                    }else{
+                    } else {
                         $election->start_time = Carbon::parse($time)->format("Y-m-d H:i:s");
-                    }                    
+                    }
                 }
-            }   
+            }
         } else {
             $election->end_time = Carbon::parse($time)->format("Y-m-d H:i:s");
         }
-        
+
         $election->status = $request->status;
         // $election->save();
-        if($election->save())
-        {
+        if ($election->save()) {
             return response()->json(['success' => 'Status change successfully.', 'election' => $election]);
         } else {
             return response()->json(['errors' => 'Status change Failed.', 'election' => $election]);
@@ -122,7 +116,7 @@ class ElectionController extends Controller
         // $info = json_decode($response);
 
         // curl_close($curl);
-        
+
         // if ($info) {
         //     return response()->json(['success' => 'Status change successfully.', 'election' => $election]);
         // } else {
@@ -137,12 +131,11 @@ class ElectionController extends Controller
         $election = Election::find($request->election_id);
         $election->start_time = Carbon::parse($time)->format("Y-m-d H:i:s");
         $election->status = 1;
-        if($request->flag == "candidate")
-        {
+        if ($request->flag == "candidate") {
             $election->candidate_flag = 0;
-        }else{
+        } else {
             $election->ques_flag = 0;
-        }        
+        }
 
         // $election->save();
 
@@ -152,7 +145,7 @@ class ElectionController extends Controller
             return response()->json(['errors' => 'Status change Failed.', 'election' => $election]);
         }
 
-        
+
         // if($election->status == 1)
         // {
         //     $noti_text = "Starting";
@@ -209,8 +202,8 @@ class ElectionController extends Controller
 
     public function store(Request $request)
     {
-        $rules = array(            
-            'name' => 'required|string|max:255',            
+        $rules = array(
+            'name' => 'required|string|max:255',
             'durationfrom' => 'required',
             'durationto' => 'required',
             //for candidate flag
@@ -238,11 +231,11 @@ class ElectionController extends Controller
             'ques_title.required_if' => 'Question Title is required if Question flag is ON !',
         );
 
-        $error = Validator::make($request->all(), $rules,$message);
+        $error = Validator::make($request->all(), $rules, $message);
 
         if ($error->fails()) {
             return response()->json(['errors' => $error->errors()->all()]);
-        }        
+        }
 
         $form_data = array(
             'name'        => $request->name,
@@ -281,7 +274,7 @@ class ElectionController extends Controller
     {
         $election = Election::find($election_id);
         $company = Company::all();
-        return view('admin.election.edit',compact('election','company'));
+        return view('admin.election.edit', compact('election', 'company'));
     }
 
     public function update(Request $request)
@@ -346,7 +339,7 @@ class ElectionController extends Controller
     }
 
     public function destroy($election_id)
-    {        
+    {
         Election::destroy($election_id);
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
@@ -356,8 +349,8 @@ class ElectionController extends Controller
 
         $nonedata = DB::table('election')->count() == 0 ? true : false;
 
-        if ($nonedata) {            
-            DB::table('election')->truncate();            
+        if ($nonedata) {
+            DB::table('election')->truncate();
         } else {
             $last_id = Election::latest()->first()->id + 1;
             DB::statement("ALTER TABLE `election` AUTO_INCREMENT = $last_id");

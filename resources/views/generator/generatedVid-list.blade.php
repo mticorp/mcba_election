@@ -99,7 +99,8 @@
                                         <th>Vote</th>
                                         <th>Vote Count</th>                                       
                                         <th>Logs</th>      
-                                        <th>Reminder Logs</th>                                  
+                                        <th>Reminder Logs</th>         
+                                        <th>Action</th>                         
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -168,6 +169,19 @@
         </div>
         
       </div>
+    </div>
+
+    <div style="display:none;">
+        <div style="border:2px;" id="print_content">            
+            <p style="color:red; text-align:center">*Voter ID စာရွက်အား နောက် Election ကို မဲပေးရန်အတွက် သိမ်းဆည်းထားပေးပါ။</p>
+            <h4 style="text-align:center"></h4>
+            <p style="text-align:center;font-size:13px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}</p>
+            <br>
+            <p style="text-align:center;font-size:26px;">Voter ID: <span id="voter_id" style="border:2px solid red;margin-left:15px;padding-left:8px;padding-right:8px; font-family: 'Roboto Mono', monospace;"></span> </p>
+            <br>
+            <p style="text-align:center"> Thank You</p>
+            <p>.</p>
+        </div>
     </div>
 @endsection
 @section('javascript')
@@ -331,6 +345,13 @@
                                 }                              
                             }
                         }
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        render: function(data, type, full, meta) {
+                            return data;
+                        },
                     }
                 ],
                 columnDefs: [{
@@ -339,6 +360,18 @@
                 }],
                 "aaSorting": []
             });
+
+            $(document).on('click', '#btn_print', function() {
+                let id = $(this).data('id');
+                let voter_id = $(this).data('voter_id');
+
+                if (voter_id != null) {
+                    $("#print_content #voter_id").text(voter_id);
+                    $.print("#print_content");                    
+                } else {
+                    toastr.error('Voter ID Does not Exist!')
+                }
+            })
 
             var err = false;
 

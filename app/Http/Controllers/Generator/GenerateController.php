@@ -56,6 +56,12 @@ class GenerateController extends Controller
                 $array = [];
             }         
             return datatables()->of($DT_data)
+                ->addColumn('action', function ($DT_data) {
+                    $button = '<button type="button" data-id="'.$DT_data->id.'" data-voter_id="'.$DT_data->voter_id.'" class="btn" id="btn_print"><i class="fa fa-print"></i> Print</button>';                    
+                    
+                    return $button;
+                })
+                ->rawColumns(['action'])
                 ->addIndexColumn()
                 ->make(true);
         }

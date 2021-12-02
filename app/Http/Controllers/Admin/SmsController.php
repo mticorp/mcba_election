@@ -87,6 +87,7 @@ class SmsController extends Controller
 
     public function reminderupdate(Request $request, $id)
     {
+     
         DB::table('election')
         ->where("election.id", '=',  $id)
         ->update(['election.reminderdescription'=> $request->reminder]);

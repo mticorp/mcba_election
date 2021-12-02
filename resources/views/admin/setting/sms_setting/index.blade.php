@@ -16,7 +16,7 @@
                         <p class="card-text">End Date: {{ $election->end_time}}</p>
                         <p class="card-text">Decprition:<br> {{ $election->description}}</p>
                         <a href="{{route('admin.smscreatepage.index',['id' => $election->id])}}" class="card-link">Add SMS</a>
-                        <a href="#" class="card-link">Add Reminder</a>
+                        <a href="{{route('admin.remindercreatepage.index',['id' => $election->id])}}" class="card-link">Add Reminder</a>
                     </div>
                 </div>
                @endforeach 

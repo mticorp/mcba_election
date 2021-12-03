@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Election;
+use App\Favicon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Logo;
 use App\Question;
 use DB;
 use Validator;
@@ -23,6 +25,9 @@ class QuestionController extends Controller
      */
     public function index($election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
             $DT_data = Question::latest()->where('questions.election_id',$election_id)->join('election','election.id','questions.election_id')->get(['questions.*','election.status', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
@@ -50,7 +55,7 @@ class QuestionController extends Controller
             if($election->ques_flag == 1)
             {
                 $elections = $election_modal->electionWithoutCurrent($election_id);
-                return view('admin.question.index',compact('election','elections'));
+                return view('admin.question.index',compact('election','elections','logo','favicon'));
             }else{
                 abort(404);
             }

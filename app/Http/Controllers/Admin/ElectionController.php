@@ -36,7 +36,10 @@ class ElectionController extends Controller
     public function create()
     {
         $company = Company::all();
-        return view('admin.election.create', compact('company'));
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('admin.election.create', compact('company','logo','favicon'));
     }
 
     public function changeStatus(Request $request)

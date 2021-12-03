@@ -4,19 +4,29 @@
     <!-- Brand Logo -->
     @if (Auth::user()->type == 'admin')
 
-    @if ((request()->is('admin/election') ? 'active' : '') || ($request->segment(2) == 'logo' ? 'active' : '') ||
-    ($request->segment(2) == 'favicon' ? 'active' : '') || ($request->segment(2) == 'sms&reminder' ? 'active' : '') ||
-    (request()->is('admin/election/*') ? 'active' : '') || ($request->segment(3) == 'generate' ? 'active' : '') ||
-    ($request->segment(2) == 'vid' ? 'active' : '') || ($request->segment(2) == 'register' ? 'active' : '') ||
-    (request()->is('admin/user') ? 'active' : '') || (request()->is('admin/company') ? 'active' : ''))
+    @if (
+    (request()->is('admin/election') ? 'active' : '')
+    || ($request->segment(2) == 'logo' ? 'active' : '')
+    ||($request->segment(2) == 'favicon' ? 'active' : '')
+    || ($request->segment(2) == 'sms&reminder' ? 'active' : '')
+    ||(request()->is('admin/election/*') ? 'active' : '')
+    || ($request->segment(3) == 'generate' ? 'active' : '')
+    ||($request->segment(2) == 'vid' ? 'active' : '')
+    || ($request->segment(2) == 'register' ? 'active' : '')
+    ||(request()->is('admin/user') ? 'active' : '')
+    || (request()->is('admin/company') ? 'active' : '')
+    
+    )
     <p class="brand-link navbar-dark">
 
-        <img src="{{ url('images/election.logo.jpg') }}" alt="Company Logo" class="brand-image img-circle elevation-3"
+        {{-- <img src="{{ url('images/election.logo.jpg') }}" alt="Company Logo"
+            class="brand-image img-circle elevation-3" style="opacity: .8"> --}}
+
+
+        <img src="
+        {{ url($logo->logo) }}
+        " alt="Company Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
-
-
-        {{-- <img src="{{ url($logo->logo) }}" alt="Company Logo" class="brand-image img-circle elevation-3"
-            style="opacity: .8"> --}}
 
         <span class="brand-text font-weight-light">mmVote</span>
     </p>

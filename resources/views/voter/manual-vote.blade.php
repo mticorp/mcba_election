@@ -12,7 +12,10 @@
 
                 @endif
             </h2>
-                <h5 class="text-center" style="font-family: 'Times New Roman', Times, serif; line-height:40px;">သဘောထားအတည်ပြုခြင်း</h5>
+                <h5 class="text-center" style="font-family: 'Times New Roman', Times, serif; line-height:40px;"> 
+                    
+                {{ $election ? $election->election_title_description : 'သဘောထားအတည်ပြုခြင်း'}}
+                    </h5>
                 <div class="py-3 text-center" id="time"></div>
                 @if(session('status'))
                 @php

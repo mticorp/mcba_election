@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Election;
+use App\Favicon;
 use App\Imports\ImportMember;
+use App\Logo;
 use App\MRegister;
 use DB;
 use Image;
@@ -24,6 +26,9 @@ class MRegisterController extends Controller
 
     public function index()
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
             $DT_data = MRegister::latest()->get(['m_registers.*', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
@@ -39,12 +44,15 @@ class MRegisterController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('admin.mregister.index');
+        return view('admin.mregister.index',compact('logo','favicon'));
     }
 
     public function create()
     {
-        return view('admin.mregister.create');
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('admin.mregister.create',compact('logo','favicon'));
     }
 
     public function store(Request $request)
@@ -113,9 +121,12 @@ class MRegisterController extends Controller
 
     public function detail($candidate_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $member = MRegister::find($candidate_id);
         if ($member != null) {
-            return view('admin.mregister.detail', compact('member'));
+            return view('admin.mregister.detail', compact('member','logo','favicon'));
         } else {
             return abort(404);
         }
@@ -123,9 +134,12 @@ class MRegisterController extends Controller
 
     public function edit($member_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $member = MRegister::find($member_id);
         if ($member != null) {
-            return view('admin.mregister.edit', compact('member'));
+            return view('admin.mregister.edit', compact('member','logo','favicon'));
         } else {
             return abort(404);
         }
@@ -239,7 +253,10 @@ class MRegisterController extends Controller
 
     public function excelImport()
     {
-        return view('admin.mregister.import-excel');
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('admin.mregister.import-excel',compact('logo','favicon'));
     }
 
     public function Import(Request $request)

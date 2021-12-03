@@ -110,7 +110,6 @@ class LoginController extends Controller
     {
         
         $all_elections = Election::all();
-        
         $logo = Logo::first();
         $favicon = Favicon::first();
         return view('voter.index', compact('all_elections','logo','favicon'));

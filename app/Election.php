@@ -13,6 +13,7 @@ class Election extends Model
         'description',
         'smsdescription',
         'reminderdescription',
+        'election_title_description',
         'no_of_position_mm',
         'no_of_position_en',
         'candidate_id',

@@ -6,11 +6,13 @@ use App\Candidate;
 use App\Election;
 use App\ElectionVoter;
 use App\Company;
+use App\Favicon;
 use App\Voter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
+use App\Logo;
 use App\Question;
 use Carbon\Carbon;
 
@@ -26,7 +28,9 @@ class ElectionController extends Controller
     {
         $elections = Election::all();
 
-        return view('admin.election.index', compact('elections'));
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('admin.election.index', compact('elections', 'logo', 'favicon'));
     }
 
     public function create()

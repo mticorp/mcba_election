@@ -22,7 +22,7 @@ class GenerateController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth']);                
+        $this->middleware(['auth']);
     }
 
     public function index()
@@ -33,32 +33,31 @@ class GenerateController extends Controller
     }
 
     public function vidList()
-    {  
+    {
+
+        $election =Election::first();
         if (request()->ajax()) {
-            $DT_data = Voter::latest()->join('logs','logs.voter_id','voter.id')->get(['voter.*','logs.sms_flag','logs.email_flag','logs.reminder_sms_flag','logs.reminder_email_flag']);
+            $DT_data = Voter::latest()->join('logs', 'logs.voter_id', 'voter.id')->get(['voter.*', 'logs.sms_flag', 'logs.email_flag', 'logs.reminder_sms_flag', 'logs.reminder_email_flag']);
             // dd($DT_data);
-            $check = ElectionVoter::select('election_voters.done','voter.id','election.name as election_name','election.position as election_position')
-                                    ->join('voter','voter.id','=','election_voters.voter_id')
-                                    ->join('election','election_voters.election_id','=','election.id')
-                                    ->get();
+            $check = ElectionVoter::select('election_voters.done', 'voter.id', 'election.name as election_name', 'election.position as election_position')
+                ->join('voter', 'voter.id', '=', 'election_voters.voter_id')
+                ->join('election', 'election_voters.election_id', '=', 'election.id')
+                ->get();
             // dd($check);
             $array = [];
-            foreach($DT_data as $item)
-            {
-                foreach($check as $v)
-                {
-                    if($v->id == $item->id)
-                    {
-                        array_push($array,$v);
+            foreach ($DT_data as $item) {
+                foreach ($check as $v) {
+                    if ($v->id == $item->id) {
+                        array_push($array, $v);
                         $item->election_voter = $array;
                     }
                 }
                 $array = [];
-            }         
+            }
             return datatables()->of($DT_data)
                 ->addColumn('action', function ($DT_data) {
-                    $button = '<button type="button" data-id="'.$DT_data->id.'" data-voter_id="'.$DT_data->voter_id.'" class="btn" id="btn_print"><i class="fa fa-print"></i> Print</button>';                    
-                    
+                    $button = '<button type="button" data-id="' . $DT_data->id . '" data-voter_id="' . $DT_data->voter_id . '" class="btn" id="btn_print"><i class="fa fa-print"></i> Print</button>';
+
                     return $button;
                 })
                 ->rawColumns(['action'])
@@ -66,7 +65,7 @@ class GenerateController extends Controller
                 ->make(true);
         }
 
-        return view('generator.generatedVid-list');
+        return view('generator.generatedVid-list',compact('election'));
     }
 
     public function store()
@@ -103,7 +102,7 @@ class GenerateController extends Controller
                     }
 
                     DB::table('logs')->insert([
-                        'voter_id' => $voter->id,                        
+                        'voter_id' => $voter->id,
                     ]);
 
                     return response()->json(['success' => 'Voter ID Generated Successfully.', 'vid' => $vid]);
@@ -137,7 +136,7 @@ class GenerateController extends Controller
                 }
 
                 DB::table('logs')->insert([
-                    'voter_id' => $voter->id,                        
+                    'voter_id' => $voter->id,
                 ]);
 
                 return response()->json(['success' => 'Voter ID Generated Successfully.', 'vid' => $vid]);
@@ -149,7 +148,8 @@ class GenerateController extends Controller
 
     public function generateVidBlade()
     {
-        return view('generator.vidgenerate');
+        $election_smsdescription =Election::first();
+        return view('generator.vidgenerate',compact('election_smsdescription'));
     }
 
     public function excelGenerate(Request $request)
@@ -170,7 +170,7 @@ class GenerateController extends Controller
             }
 
             if ($request->hasFile('file')) {
-                $data = Excel::import(new VoterImport(), $request->file('file'));                
+                $data = Excel::import(new VoterImport(), $request->file('file'));
                 return response()->json(['success' => 'Data Added Successfully']);
             } else {
                 return response()->json(['errors' => 'Excel File is Required!']);
@@ -198,7 +198,7 @@ class GenerateController extends Controller
     }
 
     public function sendMessage(Request $request)
-    {        
+    {
         $vid = $request->vid;
         $voters = DB::table('voter')->where('voter_id', $vid)->orWhere('id', $vid)->first();
         $url = route('vote.link', ['voter_id' => $voters->voter_id]);
@@ -233,9 +233,9 @@ class GenerateController extends Controller
             $result = curl_exec($ch);
             $info = json_decode($result);
             if ($info->status == "success") {
-                DB::table('logs')->where('voter_id',$voters->id)->update(['sms_flag' => 2]);
+                DB::table('logs')->where('voter_id', $voters->id)->update(['sms_flag' => 2]);
             } else {
-                DB::table('logs')->where('voter_id',$voters->id)->update(['sms_flag' => 1]);
+                DB::table('logs')->where('voter_id', $voters->id)->update(['sms_flag' => 1]);
                 return response()->json(['errors' => 'SMS Send Failed.']);
             }
         }
@@ -263,10 +263,10 @@ class GenerateController extends Controller
             );
 
             if (Mail::failures()) {
-                DB::table('logs')->where('voter_id',$voters->id)->update(['email_flag' => 1]);
+                DB::table('logs')->where('voter_id', $voters->id)->update(['email_flag' => 1]);
                 return response()->json(['errors' => 'Email Send Failed.']);
-            }else{
-                DB::table('logs')->where('voter_id',$voters->id)->update(['email_flag' => 2]);
+            } else {
+                DB::table('logs')->where('voter_id', $voters->id)->update(['email_flag' => 2]);
             }
         }
 
@@ -307,10 +307,10 @@ class GenerateController extends Controller
             $result = curl_exec($ch);
             $info = json_decode($result);
             if ($info->status == "success") {
-                DB::table('logs')->where('voter_id',$voters->id)->update(['sms_flag' => 2]);
+                DB::table('logs')->where('voter_id', $voters->id)->update(['sms_flag' => 2]);
                 return response()->json(['success' => 'SMS Send Successfully.']);
             } else {
-                DB::table('logs')->where('voter_id',$voters->id)->update(['sms_flag' => 1]);
+                DB::table('logs')->where('voter_id', $voters->id)->update(['sms_flag' => 1]);
                 return response()->json(['errors' => 'SMS Send Failed.']);
             }
         } else {
@@ -319,7 +319,7 @@ class GenerateController extends Controller
     }
 
     public function emailMessageOnly(Request $request)
-    {        
+    {
         $vid = $request->vid;
         $voters = DB::table('voter')->where('voter_id', $vid)->orWhere('id', $vid)->first();
         // dd($voters);
@@ -352,12 +352,12 @@ class GenerateController extends Controller
             );
 
             if (Mail::failures()) {
-                DB::table('logs')->where('voter_id',$voters->id)->update(['email_flag' => 1]);
+                DB::table('logs')->where('voter_id', $voters->id)->update(['email_flag' => 1]);
                 return response()->json(['errors' => 'Email Send Failed.']);
-            }else{
-                DB::table('logs')->where('voter_id',$voters->id)->update(['email_flag' => 2]);
+            } else {
+                DB::table('logs')->where('voter_id', $voters->id)->update(['email_flag' => 2]);
                 return response()->json(['success' => 'Email Send Successfully.']);
-            }            
+            }
         } else {
             return response()->json(['errors' => 'Email Does not Exist!.']);
         }
@@ -379,9 +379,9 @@ class GenerateController extends Controller
             $data = $bulksms->sendSMS($non_vote_voter->phone_no, $phone_content);
 
             if ($data->getData()->success) {
-                DB::table('logs')->where('voter_id',$non_vote_voter->id)->update(['reminder_sms_flag' => 2]);                
-            }else{
-                DB::table('logs')->where('voter_id',$non_vote_voter->id)->update(['reminder_sms_flag' => 1]);
+                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_sms_flag' => 2]);
+            } else {
+                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_sms_flag' => 1]);
                 return response()->json(['errors' => $data->getData()->errors]);
             }
         }
@@ -409,10 +409,10 @@ class GenerateController extends Controller
             );
 
             if (Mail::failures()) {
-                DB::table('logs')->where('voter_id',$non_vote_voter->id)->update(['reminder_email_flag' => 1]);
+                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_email_flag' => 1]);
                 return response()->json(['errors' => 'Email Send Failed.']);
-            }else{
-                DB::table('logs')->where('voter_id',$non_vote_voter->id)->update(['reminder_email_flag' => 2]);
+            } else {
+                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_email_flag' => 2]);
             }
         }
 
@@ -451,10 +451,10 @@ class GenerateController extends Controller
 
             // check for failures
             if (Mail::failures()) {
-                DB::table('logs')->where('voter_id',$non_vote_voter->id)->update(['reminder_email_flag' => 1]);
+                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_email_flag' => 1]);
                 return response()->json(['errors' => 'Email Send Failed.']);
-            }else{
-                DB::table('logs')->where('voter_id',$non_vote_voter->id)->update(['reminder_email_flag' => 2]);
+            } else {
+                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_email_flag' => 2]);
             }
 
             return response()->json(['success' => 'Email Send Successfully.']);
@@ -473,13 +473,13 @@ class GenerateController extends Controller
             $bulksms = new BulkSMS();
 
             $phone_content = "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Link ကိုနှိပ်ပါ။ " . $url;
-            
-            $data = $bulksms->sendSMS($non_vote_voter->phone_no, $phone_content);            
+
+            $data = $bulksms->sendSMS($non_vote_voter->phone_no, $phone_content);
             if ($data->getData()->success) {
-                DB::table('logs')->where('voter_id',$non_vote_voter->id)->update(['reminder_sms_flag' => 2]);
+                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_sms_flag' => 2]);
                 return response()->json(['success' => 'SMS Send Successfully.']);
             } else {
-                DB::table('logs')->where('voter_id',$non_vote_voter->id)->update(['reminder_sms_flag' => 1]);
+                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_sms_flag' => 1]);
                 return response()->json(['errors' => $data['errors']]);
             }
         } else {

@@ -24,7 +24,7 @@
                     <div class="card-header">
                         <h3 class="card-title">
                             {{ ($election->smsdescription == Null ) ? " Add SMS" : "Updated
-                                                        SMS" }}
+                            SMS" }}
                         </h3>
                         <div class="card-tools">
                             <a href="{{ route('admin.sms.index') }}" class="text-danger"><i

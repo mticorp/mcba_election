@@ -13,7 +13,9 @@ use Carbon\Carbon;
 use App\Classes\BulkSMS;
 use App\ElectionVoter;
 use App\Exports\ExportVoterList;
+use App\Favicon;
 use App\Imports\VoterImport;
+use App\Logo;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -28,14 +30,20 @@ class GenerateController extends Controller
     public function index()
     {
         $elections = Election::all();
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $company = Company::all();
-        return view('generator.index', compact('elections', 'company'));
+        return view('generator.index', compact('elections', 'company','logo','favicon'));
     }
 
     public function vidList()
     {
 
         $election = Election::first();
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         if (request()->ajax()) {
             $DT_data = Voter::latest()->join('logs', 'logs.voter_id', 'voter.id')->get(['voter.*', 'logs.sms_flag', 'logs.email_flag', 'logs.reminder_sms_flag', 'logs.reminder_email_flag']);
             // dd($DT_data);
@@ -65,7 +73,7 @@ class GenerateController extends Controller
                 ->make(true);
         }
 
-        return view('generator.generatedVid-list', compact('election'));
+        return view('generator.generatedVid-list', compact('election','logo','favicon'));
     }
 
     public function store()
@@ -149,7 +157,10 @@ class GenerateController extends Controller
     public function generateVidBlade()
     {
         $election_smsdescription = Election::first();
-        return view('generator.vidgenerate', compact('election_smsdescription'));
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('generator.vidgenerate', compact('election_smsdescription','logo','favicon'));
     }
 
     public function excelGenerate(Request $request)

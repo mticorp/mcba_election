@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Candidate;
 use App\Election;
+use App\Favicon;
 use App\Result;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Image;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ImportCandidate;
+use App\Logo;
 
 class CandidateController extends Controller
 {
@@ -22,6 +24,9 @@ class CandidateController extends Controller
 
     public function index($election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
             $DT_data = Candidate::orderBy('candidate_no', 'asc')->where('candidate.election_id',$election_id)->join('election','election.id','candidate.election_id')->get(['candidate.*','election.status', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
@@ -51,7 +56,7 @@ class CandidateController extends Controller
             $elections = $election_modal->electionWithoutCurrent($election_id);
             $candidates = Candidate::where('election_id', '=', $election_id)->orderby('id', 'asc')->get();
             // dd($candidates);
-            return view('admin.candidate.index',compact('elections','election','candidates'));
+            return view('admin.candidate.index',compact('elections','election','candidates','logo','favicon'));
         }else{
             return abort(404);
         }
@@ -122,6 +127,9 @@ class CandidateController extends Controller
 
     public function create($election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
         if($election)
@@ -129,7 +137,7 @@ class CandidateController extends Controller
             if($election->status == 0)
             {
                 $elections = $election_modal->electionWithoutCurrent($election_id);
-                return view('admin.candidate.create',compact('election','elections'));
+                return view('admin.candidate.create',compact('election','elections','favicon','logo'));
             }else{
                 abort(403,'Election is already Started!');
             }
@@ -141,6 +149,9 @@ class CandidateController extends Controller
 
     public function detail($election_id,$candidate_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
         if($election)
@@ -148,7 +159,7 @@ class CandidateController extends Controller
             $candidate = Candidate::find($candidate_id);
             if ($candidate != null) {
                 $elections = $election_modal->electionWithoutCurrent($election_id);
-                return view('admin.candidate.detail', compact('candidate','election','elections'));
+                return view('admin.candidate.detail', compact('candidate','election','elections','logo','favicon'));
             } else {
                 return abort(404);
             }
@@ -159,6 +170,9 @@ class CandidateController extends Controller
 
     public function edit($election_id,$candidate_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
         if($election)
@@ -168,7 +182,7 @@ class CandidateController extends Controller
                 $candidate = Candidate::find($candidate_id);
                 if ($candidate != null) {
                     $elections = $election_modal->electionWithoutCurrent($election_id);
-                    return view('admin.candidate.edit', compact('candidate','election','elections'));
+                    return view('admin.candidate.edit', compact('candidate','election','elections','logo','favicon'));
                 } else {
                     return abort(404);
                 }

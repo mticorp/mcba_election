@@ -5,21 +5,27 @@ namespace App\Http\Controllers\Admin;
 use App\Answer;
 use App\Candidate;
 use App\Election;
+use App\Favicon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Logo;
 use App\Question;
 use App\Voting;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class VotingController extends Controller
 {
     public function __construct()
     {
+        
         $this->middleware(['auth','admin']);
     }
 
     public function votingRecord($election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
         if($election)
@@ -46,7 +52,7 @@ class VotingController extends Controller
                 
             }
 
-            return view('admin.voting.votingRecord', compact('election', 'elections', 'voting_records', 'candidates', 'vote_count', 'ques', 'ans_records', 'ans_summary'));
+            return view('admin.voting.votingRecord', compact('election', 'elections', 'voting_records', 'candidates', 'vote_count', 'ques', 'ans_records', 'ans_summary','logo','favicon'));
         }else{
             return abort(404);
         }
@@ -63,7 +69,7 @@ class VotingController extends Controller
                 // dd($ans_records);
                 $ans_summary = $ans->AnswerSummary($election_id);
                 // dd($ans_summary);
-                return view('admin.voting.answer', compact('election', 'elections', 'ques', 'ans_records', 'ans_summary'));
+                return view('admin.voting.answer', compact('election', 'elections', 'ques', 'ans_records', 'ans_summary',compact('logo','favicon')));
             } else {
                 abort(403);
             }
@@ -75,6 +81,9 @@ class VotingController extends Controller
     public function rejectVotingRecord($election_id)
     {
         $election_modal = new Election;
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election = $election_modal->electionWithId($election_id);
         if($election)
         {
@@ -86,7 +95,7 @@ class VotingController extends Controller
             // dd($voting_reject_summary);
             $elections = $election_modal->electionWithoutCurrent($election_id);
 
-            return view('admin.voting.rejectVotingRecord',compact('election','elections','reject_voting_records','voting_reject_summary','candidates'));
+            return view('admin.voting.rejectVotingRecord',compact('election','elections','reject_voting_records','voting_reject_summary','candidates','logo','favicon'));
         }else{
             return abort(404);
         }
@@ -94,6 +103,9 @@ class VotingController extends Controller
 
     public function notVotedRecord($election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
         if($election)
@@ -103,7 +115,7 @@ class VotingController extends Controller
 
             $elections = $election_modal->electionWithoutCurrent($election_id);
 
-            return view('admin.voting.notVotedRecord',compact('election','elections','no_voting_records'));
+            return view('admin.voting.notVotedRecord',compact('election','elections','no_voting_records','logo','favicon'));
         }else{
             return abort(404);
         }
@@ -111,6 +123,9 @@ class VotingController extends Controller
 
     public function votingResult($election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
         if($election)
@@ -155,7 +170,7 @@ class VotingController extends Controller
             }
             
 
-            return view('admin.voting.votingResult',compact('election','elections','voting_results','data', 'ques_data','candidates','voting_count','voting_reject_count','not_voted_count','questions'));
+            return view('admin.voting.votingResult',compact('election','elections','voting_results','data', 'ques_data','candidates','voting_count','voting_reject_count','not_voted_count','questions','logo','favicon'));
         }else{
             return abort(404);
         }
@@ -163,6 +178,7 @@ class VotingController extends Controller
 
     public function get_candidateList()
     {
+        
         $count = $_GET['count'];
         $election_id = $_GET['election_id'];
         $result = DB::table('candidate')->orderBy('vote_count','DESC')->where('election_id',$election_id)->take($count)->get();
@@ -220,6 +236,9 @@ class VotingController extends Controller
 
     public function votingresultshow($candidate_id,$election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
 
@@ -247,7 +266,7 @@ class VotingController extends Controller
             ->groupBy('voter.voter_id', 'voting.created_at','voter.vote_count')
             ->get();
 
-            return view('admin.voting.candidate-votingResult-detail',compact('voting_detail', 'voter_id','election','elections'));
+            return view('admin.voting.candidate-votingResult-detail',compact('voting_detail', 'voter_id','election','elections','logo','favicon'));
         }else{
             return abort(404);
         }
@@ -255,6 +274,9 @@ class VotingController extends Controller
 
     public function questionvotingresultshow($question_id,$election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
 
@@ -270,7 +292,7 @@ class VotingController extends Controller
             ->groupBy('voter.voter_id', 'answers.created_at','answers.ans_flag')
             ->get();            
 
-            return view('admin.voting.question-votingResult-detail', compact('voting_detail', 'voter_id', 'election', 'elections'));
+            return view('admin.voting.question-votingResult-detail', compact('voting_detail', 'voter_id', 'election', 'elections','logo','favicon'));
         } else {
             return abort(404);
         }

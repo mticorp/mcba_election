@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Favicon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Logo;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\User;
@@ -19,6 +21,9 @@ class UserController extends Controller
 
     public function index()
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
             $DT_data = User::latest()->get(['users.*', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
@@ -32,7 +37,7 @@ class UserController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('admin.user.index');
+        return view('admin.user.index',compact('logo','favicon'));
     }
     public function create()
     {

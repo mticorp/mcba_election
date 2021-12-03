@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Election;
 use App\Exports\ExportLuckyList;
+use App\Favicon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Logo;
 use App\Lucky;
 use Excel;
 use DB;
@@ -20,6 +22,9 @@ class LuckyController extends Controller
     public function index($election_id)
     {
 
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
             $DT_data = Lucky::latest()->where('election_id',$election_id)->get(['lucky.*', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
@@ -33,7 +38,7 @@ class LuckyController extends Controller
             if($election->lucky_flag == 1)
             {
                 $elections = $election_modal->electionWithoutCurrent($election_id);
-                return view('admin.lucky.index',compact('election','elections'));
+                return view('admin.lucky.index',compact('election','elections','logo','favicon'));
             }else{
                 abort(404);
             }

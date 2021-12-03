@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Favicon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Logo;
@@ -19,7 +20,8 @@ class LogoController extends Controller
     public function index()
     {        
         $logo = Logo::first();
-        return view('admin.setting.logo_setting.index',compact('logo'));
+        $favicon = Favicon::first();
+        return view('admin.setting.logo_setting.index',compact('logo','favicon'));
     }
 
     /**

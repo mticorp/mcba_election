@@ -2,9 +2,10 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>
-     {{ ($favicon->favicon_name) == Null }} ?{{  $favicon->favicon_name }} : mmVote  
+    {{ $favicon ? $favicon->favicon_name : 'mmVote'}}
+ 
 </title>
-<link rel="icon" href="{{  url($favicon->favicon) }}" type="image/x-icon">
+<link rel="icon" href={{ $favicon ? url($favicon->favicon) : asset('images/election.logo.jpg')  }} type="image/x-icon">
 
 {{-- <link rel="icon" href="{{asset('images/election.logo.jpg')}}" type="image/x-icon"> --}}
 

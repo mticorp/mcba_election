@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Election;
+use App\Favicon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Logo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,7 +21,10 @@ class SmsController extends Controller
     {
 
         $elections = Election::all();
-        return view('admin.setting.sms&reminder_setting.index', compact('elections'));
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('admin.setting.sms&reminder_setting.index', compact('elections','logo','favicon'));
     }
 
     /**
@@ -29,14 +34,20 @@ class SmsController extends Controller
      */
     public function createpage($id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election = Election::where('id', $id)->first();
-        return view('admin.setting.sms&reminder_setting.create_page', compact('election'));
+        return view('admin.setting.sms&reminder_setting.create_page', compact('election','logo','favicon'));
     }
 
     public function remindercreatepage($id)
     {
         $election = Election::where('id', $id)->first();
-        return view('admin.setting.sms&reminder_setting.reminder_create_page', compact('election'));
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('admin.setting.sms&reminder_setting.reminder_create_page', compact('election','logo','favicon'));
     }
 
 

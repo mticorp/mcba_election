@@ -9,20 +9,31 @@
             </div>
             <br>
             @foreach ($elections as $election)
-                <div class="card ml-3" style="width: 18rem;">
-                    <div class="card-body">
-                        <h6 class="card-subtitle  text-muted  font-bold text-lg text-theme-1">{{ $election->name }}</h6>
-                        <p class="card-text">Start Date: {{ $election->start_time}}</p>
-                        <p class="card-text">End Date: {{ $election->end_time}}</p>
-                        <p class="card-text">Decprition:<br> {{ $election->description}}</p>
-                        <a href="{{route('admin.smscreatepage.index',['id' => $election->id])}}" class="card-link">Add SMS</a>
-                        <a href="{{route('admin.remindercreatepage.index',['id' => $election->id])}}" class="card-link">Add Reminder</a>
+            <div class="card ml-3 shadow border border-primary" style="width: 20rem;">
+                <div class="card-body ">
+                    <h6 class="card-subtitle  text-muted  font-bold text-lg text-theme-1">{{ $election->name }}</h6>
+                    <p class="card-text">Start Date: {{ $election->start_time}}</p>
+                    <p class="card-text">End Date: {{ $election->end_time}}</p>
+                    <p class="card-text">Decprition:<br> {{ $election->description}}</p>
+                    <div class="row justify-content-around">
+                        <div class="justify-content-around">
+        
+                        <a class="btn  btn-primary " style="font-size: 1.5ex"
+                        href="{{route('admin.smscreatepage.index',['id' => $election->id])}}" class="card-link" ><i class="fas fa-sms"></i> {{
+                        ($election->smsdescription == Null) ? " Add SMS" : "Updated SMS" }}</a>
+                        </div>
+                        <div class="justify-content-around" >
+                        <a class="btn btn-secondary " href="{{route('admin.remindercreatepage.index',['id' => $election->id])}}"
+                            class="card-link" style="font-size: 1.5ex" class="mt-1"> <i class="fas fa-clock"></i>{{ ($election->reminderdescription != Null) ? " Updated Reminder" : " Add Reminder"
+                            }}</a>
+                        </div>
                     </div>
                 </div>
-               @endforeach 
-                </div>
             </div>
+            @endforeach
         </div>
+    </div>
+    </div>
     </div>
     @else
     <div class="col-sm-6">

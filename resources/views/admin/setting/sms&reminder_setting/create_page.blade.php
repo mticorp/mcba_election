@@ -52,7 +52,7 @@
                             <div class="row mt-3">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-flat btn-success"><i class="fas fa-save"></i>
-                                        Update</button>
+                                        {{ ($election->smsdescription == Null ) ? " Save SMS" : "Updated SMS" }}</button>
                                         
                                     <a href="{{ route('admin.sms.index') }}" type="button"
                                         class="btn btn-flat btn-danger"><i class="fas fa-reply-all"></i> Election

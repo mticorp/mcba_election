@@ -33,7 +33,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.sms.update', ['id'=> $election->id]) }}" method="POST">
+                        <form action="{{ route('admin.sms.reminderupdate', ['id'=> $election->id]) }}" method="POST">
                             @csrf
                             @method('POST')
                                 <div class="row">
@@ -52,7 +52,7 @@
                             <div class="row mt-3">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-flat btn-success"><i class="fas fa-save"></i>
-                                        Update</button>
+                                        {{ ($election->reminderdescription != Null) ? " Updated Reminder" : " Save Reminder" }}</button>
                                         
                                     <a href="{{ route('admin.sms.index') }}" type="button"
                                         class="btn btn-flat btn-danger"><i class="fas fa-reply-all"></i> Election

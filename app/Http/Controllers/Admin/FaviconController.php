@@ -17,20 +17,8 @@ class FaviconController extends Controller
      */
     public function index()
     {
-        if (request()->ajax()) {
-            DB::statement(DB::raw('set @rownum=0'));
-            $DT_data = Favicon::latest()->get(['favicon.*', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
-            return datatables()->of($DT_data)
-                ->addColumn('action', function ($data) {
-                    $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-info btn-xs btn-flat"><i class="fas fa-edit"></i> Edit</button>';
-                    $button .= '&nbsp;&nbsp;';
-                    $button .= '<button type="button" name="delete" id="' . $data->id . '" class="delete btn btn-danger btn-xs btn-flat"><i class="fa fa-trash"></i> Delete</button>';
-                    return $button;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
-        return view('admin.setting.favicon_setting.index');
+        $favicon = Favicon::first();
+        return view('admin.setting.favicon_setting.index',compact('favicon'));
     }
 
     /**
@@ -53,11 +41,17 @@ class FaviconController extends Controller
     public function store(Request $request)
     {
         $rules = array(
-            'company_name'    =>  'required|string|max:255',
+            'favicon_name'    =>  'required|string|max:255',
             'image'         =>  'required|mimes:png,jpg,jpeg',
         );
 
         $error = Validator::make($request->all(), $rules);
+
+        $fav = Favicon::first();
+        if($fav)
+        {
+            return response()->json(['errors' => 'Favicon Exist']);
+        }
 
         if ($error->fails()) {
             return response()->json(['errors' => $error->errors()->all()]);
@@ -72,7 +66,7 @@ class FaviconController extends Controller
         $new_name = '/upload/setting/favicon/' . $name;
 
         $form_data = array(
-            'favicon_name'        => $request->company_name,
+            'favicon_name'        => $request->favicon_name,
             'favicon'       => $new_name,
         );
 

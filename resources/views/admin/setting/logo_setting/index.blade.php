@@ -4,12 +4,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          {{-- <h1>Company List</h1> --}}
+          
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item active"><a href="{{route('admin.election.index')}}">Home</a></li>
-            <li class="breadcrumb-item active">Logo List</li>
+            <li class="breadcrumb-item active">Logo</li>
           </ol>
         </div>
       </div>
@@ -20,28 +20,30 @@
 <div class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-md-6 offset-md-3">
                 <div class="card card-red card-outline">
                     <div class="card-header">
                         <div class="card-title">Logo List</div>
                         <div class="card-tools">
+                            @if($logo)
+                            <button type="button" name="edit" id="{{$logo->id}}" class="edit btn btn-info btn-xs btn-flat"><i class="fas fa-edit"></i> Edit</button>
+                            <button type="button" name="delete" id="{{$logo->id}}" class="delete btn btn-danger btn-xs btn-flat"><i class="fa fa-trash"></i> Delete</button>
+                            @else
                             <button type="button" name="create_record" id="create_record"
-                            class="btn btn-success btn-sm btn-flat"><i class="fas fa-plus"></i> Add New Logo</button>
+                            class="btn btn-success btn-sm btn-flat"><i class="fas fa-plus"></i> Add Logo</button>
+                            @endif
                         </div>
                     </div>
-                    <div class="card-body table-responsive">
-                        <table id="companytable" class="table table-border">
-                            <thead>
-                              <tr>
-                                <th>NO</th>
-                                <th> Logo</th>
-                                <th width="15%">&nbsp; Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                          </table>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 offset-md-3 text-center">
+                                @if($logo)
+                                <img src="{{url($logo->logo)}}" alt="" width="300px">
+                                @else
+                                No Data Available
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -115,37 +117,6 @@
 @section('javascript')
 <script>
 $(document).ready(function(){
-    $('#companytable').DataTable({
-        processing: true,
-            language: {
-        processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '},
-        serverSide: true,
-        ajax: {
-            url: "{{ route('admin.logo.index') }}",
-        },
-        columns: [
-            {
-                data: 'rownum',
-                name: 'rownum' ,
-            },
-            
-            {
-                data: 'logo',
-                name: 'logo',
-                render: function(data, type, full, meta) {
-                    return "<img src={{ URL::to('/') }}" + data +
-                        " width='70' class='img-thumbnail' />";
-                },
-                orderable: false
-            },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: false
-            }
-        ],
-        });
-
         $('#create_record').click(function() {
                 $('#formModal .modal-title').text("Add New Logo");
                 $('#action_button').val("Add");
@@ -171,11 +142,8 @@ $(document).ready(function(){
                                     toastr.error('Info - ' + data.errors[count])
                                 }
                             }
-                            if (data.success) {
-                                $("#formModal").modal('hide');
-                                toastr.success('Info - '+ data.success)
-                                $('#sample_form')[0].reset();
-                                $('#companytable').DataTable().ajax.reload();
+                            if (data.success) {                                
+                                location.reload();
                             }
                         }
                     })
@@ -196,12 +164,8 @@ $(document).ready(function(){
                                     toastr.error('Info - ' + data.errors[count])
                                 }
                             }
-                            if (data.success) {
-                                $("#formModal").modal('hide');
-                                toastr.success('Info - Successfully Edited!')
-                                $('#sample_form')[0].reset();
-                                $('#store_image').html('');
-                                $('#companytable').DataTable().ajax.reload();
+                            if (data.success) {                                
+                                location.reload();
                             }
                         }
                     });
@@ -246,12 +210,7 @@ $(document).ready(function(){
                         $('#ok_button').text('Deleting...');
                     },
                     success: function(data) {
-                        setTimeout(function() {
-                            $('#confirmModal').modal('hide');
-                            $('#ok_button').text('OK');
-                            toastr.success('Info - Successfully Deleted!')
-                            $('#companytable').DataTable().ajax.reload();
-                        }, 2000);
+                        location.reload();
                     }
                 })
             });

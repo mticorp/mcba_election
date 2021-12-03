@@ -4,12 +4,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          {{-- <h1>Company List</h1> --}}
+          
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item active"><a href="{{route('admin.election.index')}}">Home</a></li>
-            <li class="breadcrumb-item active">Favicon List</li>
+            <li class="breadcrumb-item active">Favicon</li>
           </ol>
         </div>
       </div>
@@ -20,29 +20,30 @@
 <div class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-md-6 offset-md-3">
                 <div class="card card-red card-outline">
                     <div class="card-header">
-                        <div class="card-title">Favicon List</div>
+                        <div class="card-title">Favicon</div>
                         <div class="card-tools">
+                           @if($favicon)
+                            <button type="button" name="edit" id="{{$favicon->id}}" class="edit btn btn-info btn-xs btn-flat"><i class="fas fa-edit"></i> Edit</button>
+                            <button type="button" name="delete" id="{{$favicon->id}}" class="delete btn btn-danger btn-xs btn-flat"><i class="fa fa-trash"></i> Delete</button>
+                            @else
                             <button type="button" name="create_record" id="create_record"
-                            class="btn btn-success btn-sm btn-flat"><i class="fas fa-plus"></i> Add New Favicon</button>
+                            class="btn btn-success btn-sm btn-flat"><i class="fas fa-plus"></i> Add Favicon</button>
+                            @endif
                         </div>
                     </div>
-                    <div class="card-body table-responsive">
-                        <table id="companytable" class="table table-border">
-                            <thead>
-                              <tr>
-                                <th>NO</th>
-                                <th>Favicon Title</th>
-                                <th> Favicon Image</th>
-                                <th width="15%">&nbsp; Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                          </table>
+                    <div class="card-body">
+                         <div class="row">
+                            <div class="col-md-6 offset-md-3 text-center">
+                                @if($favicon)
+                                <img src="{{url($favicon->favicon)}}" alt="" width="300px">
+                                @else
+                                No Data Available
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -66,8 +67,8 @@
                       <div class="row">
                         <div class="col-md-6">
                           <div class="form-group">
-                            <label for="company_name">Favicon name</label>
-                            <input type="text" name="company_name" class="form-control" id="company_name" placeholder="Enter Company name..." value="{{ old('company_name') }}" required autofocus>
+                            <label for="favicon_name">Favicon name</label>
+                            <input type="text" name="favicon_name" class="form-control" id="favicon_name" placeholder="Enter Favicon name..." value="{{ old('favicon_name') }}" required autofocus>
                           </div>
                         </div>
                         <div class="col-md-6">
@@ -120,40 +121,7 @@
 @endsection
 @section('javascript')
 <script>
-$(document).ready(function(){
-    $('#companytable').DataTable({
-        processing: true,
-            language: {
-        processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '},
-        serverSide: true,
-        ajax: {
-            url: "{{ route('admin.favicon.index') }}",
-        },
-        columns: [
-            {
-                data: 'rownum',
-                name: 'rownum' ,
-            },
-            {
-                data: 'favicon_name',
-                name: 'favicon_name'
-            },
-            {
-                data: 'favicon',
-                name: 'favicon',
-                render: function(data, type, full, meta) {
-                    return "<img src={{ URL::to('/') }}" + data +
-                        " width='70' class='img-thumbnail' />";
-                },
-                orderable: false
-            },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: false
-            }
-        ],
-        });
+$(document).ready(function(){    
 
         $('#create_record').click(function() {
                 $('#formModal .modal-title').text("Add New Favicon");
@@ -181,10 +149,7 @@ $(document).ready(function(){
                                 }
                             }
                             if (data.success) {
-                                $("#formModal").modal('hide');
-                                toastr.success('Info - '+ data.success)
-                                $('#sample_form')[0].reset();
-                                $('#companytable').DataTable().ajax.reload();
+                                location.reload();
                             }
                         }
                     })
@@ -206,11 +171,7 @@ $(document).ready(function(){
                                 }
                             }
                             if (data.success) {
-                                $("#formModal").modal('hide');
-                                toastr.success('Info - Successfully Edited!')
-                                $('#sample_form')[0].reset();
-                                $('#store_image').html('');
-                                $('#companytable').DataTable().ajax.reload();
+                                location.reload();
                             }
                         }
                     });
@@ -226,7 +187,7 @@ $(document).ready(function(){
                     url: "{{ url('/admin/favicon/edit/') }}/" + id,
                     dataType: "json",
                     success: function(html) {
-                        $('#company_name').val(html.data.favicon_name);
+                        $('#favicon_name').val(html.data.favicon_name);
                         $('#store_image').html("<img src={{ URL::to('/') }}" + html.data
                             .favicon + " width='70' class='img-thumbnail' />");
                         $('#store_image').append(
@@ -255,12 +216,7 @@ $(document).ready(function(){
                         $('#ok_button').text('Deleting...');
                     },
                     success: function(data) {
-                        setTimeout(function() {
-                            $('#confirmModal').modal('hide');
-                            $('#ok_button').text('OK');
-                            toastr.success('Info - Successfully Deleted!')
-                            $('#companytable').DataTable().ajax.reload();
-                        }, 2000);
+                        location.reload();            
                     }
                 })
             });

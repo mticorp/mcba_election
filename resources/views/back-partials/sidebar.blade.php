@@ -4,7 +4,7 @@
     <!-- Brand Logo -->
     @if (Auth::user()->type == 'admin')
     
-        @if ((request()->is('admin/election') ? 'active' : '') || (request()->is('admin/election/*') ? 'active' : '') || ($request->segment(3) == 'generate' ? 'active' : '') || ($request->segment(2) == 'vid' ? 'active' : '') || ($request->segment(2) == 'register' ? 'active' : '') || (request()->is('admin/user') ? 'active' : '') || (request()->is('admin/company') ? 'active' : ''))
+        @if ((request()->is('admin/election') ? 'active' : '') || ($request->segment(2) == 'logo' ? 'active' : '') || ($request->segment(2) == 'favicon' ? 'active' : '') || ($request->segment(2) == 'sms&reminder' ? 'active' : '')  || (request()->is('admin/election/*') ? 'active' : '') || ($request->segment(3) == 'generate' ? 'active' : '') || ($request->segment(2) == 'vid' ? 'active' : '') || ($request->segment(2) == 'register' ? 'active' : '') || (request()->is('admin/user') ? 'active' : '') || (request()->is('admin/company') ? 'active' : ''))
         <p class="brand-link navbar-dark">
             <img src="{{ url('images/election.logo.jpg') }}" alt="Company Logo"
                 class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -28,7 +28,7 @@
     <!-- Sidebar -->
     <div class="sidebar mt-0">
         @if (Auth::user()->type == 'admin')
-            @if ((request()->is('admin/election') ? 'active' : '') || (request()->is('admin/election/*') ? 'active' : '') || ($request->segment(2) == 'vid' ? 'active' : '') || ($request->segment(3) == 'generate' ? 'active' : '') || ($request->segment(2) == 'register' ? 'active' : '') || (request()->is('admin/user') ? 'active' : '') || (request()->is('admin/company') ? 'active' : ''))
+            @if ((request()->is('admin/election') ? 'active' : '') || ($request->segment(2) == 'logo' ? 'active' : '') || ($request->segment(2) == 'favicon' ? 'active' : '') || ($request->segment(2) == 'sms&reminder' ? 'active' : '')  || (request()->is('admin/election/*') ? 'active' : '') || ($request->segment(2) == 'vid' ? 'active' : '') || ($request->segment(3) == 'generate' ? 'active' : '') || ($request->segment(2) == 'register' ? 'active' : '') || (request()->is('admin/user') ? 'active' : '') || (request()->is('admin/company') ? 'active' : ''))
                 <!-- Sidebar Menu -->
                 <nav>
                     <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent nav-compact"
@@ -91,8 +91,8 @@
                         </li>
 
 
-                        <li class="nav-item has-treeview {{ $request->segment(2) == 'logo' ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ $request->segment(2) == 'logo' ? 'active' : '' }}">
+                        <li class="nav-item has-treeview {{ $request->segment(2) == 'logo' ? 'menu-open' : '' }} || {{ $request->segment(2) == 'favicon' ? 'menu-open' : '' }} || {{ $request->segment(2) == 'sms&reminder' ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $request->segment(2) == 'logo' ? 'active' : '' }} || {{ $request->segment(2) == 'favicon' ? 'active' : '' }} || {{ $request->segment(2) == 'sms&reminder' ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-cog"></i>
                                 <p>
                                     Setting
@@ -120,22 +120,13 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('admin.sms.index') }}"
-                                        class="nav-link {{ $request->segment(2) == 'sms' ? 'active' : '' }}">
+                                        class="nav-link {{ $request->segment(2) == 'sms&reminder' ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-sms"></i>
                                         <p>
-                                            SMS
+                                            SMS & Reminder
                                         </p>
                                     </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.reminder.index') }}"
-                                        class="nav-link {{ $request->segment(2) == 'reminder' ? 'active' : '' }}">
-                                        <i class="nav-icon far fa-clock"></i>
-                                        <p>
-                                            Reminder
-                                        </p>
-                                    </a>
-                                </li>                               
+                                </li>                                                           
                             </ul>
                         </li>
 

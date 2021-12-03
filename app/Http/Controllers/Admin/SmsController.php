@@ -19,7 +19,7 @@ class SmsController extends Controller
     {
 
         $elections = Election::all();
-        return view('admin.setting.sms_setting.index', compact('elections'));
+        return view('admin.setting.sms&reminder_setting.index', compact('elections'));
     }
 
     /**

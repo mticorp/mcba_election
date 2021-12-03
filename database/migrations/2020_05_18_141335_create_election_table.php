@@ -18,8 +18,8 @@ class CreateElectionTable extends Migration
             $table->string('position')->nullable();
             $table->string('name');
             $table->string('description')->nullable();
-            $table->string('smsdescription')->nullable();
-            $table->string('reminderdescription')->nullable();
+            $table->longText('smsdescription')->nullable();
+            $table->longText('reminderdescription')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->tinyInteger('lucky_flag')->default(0);
             $table->tinyInteger('ques_flag')->default(0);

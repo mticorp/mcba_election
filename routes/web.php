@@ -125,16 +125,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/favicon/update', 'Admin\FaviconController@update')->name('admin.favicon.update');
 
         //SMS route
-        Route::get('/sms', 'Admin\SmsController@index')->name('admin.sms.index');
+        Route::get('/sms&reminder', 'Admin\SmsController@index')->name('admin.sms.index');
         
-        Route::get('/sms/smscreatepage/{id}', 'Admin\SmsController@createpage')->name('admin.smscreatepage.index');
-        Route::post('/sms/update/{id}', 'Admin\SmsController@update')->name('admin.sms.update');
+        Route::get('/sms&reminder/sms-create/{id}', 'Admin\SmsController@createpage')->name('admin.smscreatepage.index');
+        Route::post('/sms&reminder/sms-update/{id}', 'Admin\SmsController@update')->name('admin.sms.update');
 
         //Reminder route
-        Route::get('/sms/remindercreatepage/{id}', 'Admin\SmsController@remindercreatepage')->name('admin.remindercreatepage.index');
-        Route::post('/sms/reminderupdate{id}', 'Admin\SmsController@reminderupdate')->name('admin.sms.update');
-
-        Route::get('/reminder', 'Admin\ReminderController@index')->name('admin.reminder.index');
+        Route::get('/sms&reminder/reminder-create/{id}', 'Admin\SmsController@remindercreatepage')->name('admin.remindercreatepage.index');
+        Route::post('/sms&reminder/reminder-update{id}', 'Admin\SmsController@reminderupdate')->name('admin.sms.update');        
 
 
         //dashboard route

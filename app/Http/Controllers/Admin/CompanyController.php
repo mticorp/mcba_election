@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Company;
+use App\Favicon;
+use App\Logo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -22,6 +24,9 @@ class CompanyController extends Controller
      */
     public function index()
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
             $DT_data = Company::latest()->get(['company.*', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
@@ -35,7 +40,7 @@ class CompanyController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('admin.company.index');
+        return view('admin.company.index',compact('logo','favicon'));
     }
 
     public function store(Request $request)

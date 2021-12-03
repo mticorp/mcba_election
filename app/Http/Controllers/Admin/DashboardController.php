@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Election;
 use App\Candidate;
+use App\Favicon;
+use App\Logo;
 use DB;
 
 class DashboardController extends Controller
@@ -17,6 +19,9 @@ class DashboardController extends Controller
 
     public function index($election_id)
     {        
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
         // dd($election);
@@ -80,7 +85,7 @@ class DashboardController extends Controller
             $ques_count = DB::table('questions')->where('election_id',$election_id)->count();
 
             $ques = DB::table('questions')->where('election_id',$election_id)->take(2)->get();
-            return view('admin.dashboard',compact('election','elections','percent_voting_count','pecrent_voting_reject_count','percent_not_voted_count','candidates','ques','ques_count','percent_answer_count'));
+            return view('admin.dashboard',compact('election','elections','percent_voting_count','pecrent_voting_reject_count','percent_not_voted_count','candidates','ques','ques_count','percent_answer_count','logo','favicon'));
         }
         else{
             return abort(404);
@@ -89,6 +94,9 @@ class DashboardController extends Controller
 
     public function election()
     {
-        return view('admin.election.index');
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('admin.election.index',compact('logo','favicon'));
     }
 }

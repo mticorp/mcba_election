@@ -15,18 +15,15 @@
     || ($request->segment(2) == 'register' ? 'active' : '')
     ||(request()->is('admin/user') ? 'active' : '')
     || (request()->is('admin/company') ? 'active' : '')
-    
+
     )
     <p class="brand-link navbar-dark">
 
         {{-- <img src="{{ url('images/election.logo.jpg') }}" alt="Company Logo"
             class="brand-image img-circle elevation-3" style="opacity: .8"> --}}
+        <img src="{{ $logo ? url($logo->logo) : asset('images/election.logo.jpg') }}" alt="Company Logo"
+            class="brand-image img-circle elevation-3" style="opacity: .8">
 
-
-        <img src="
-        {{ url($logo->logo) }}
-        " alt="Company Logo" class="brand-image img-circle elevation-3"
-            style="opacity: .8">
 
         <span class="brand-text font-weight-light">mmVote</span>
     </p>

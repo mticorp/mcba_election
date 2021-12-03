@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Favicon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Logo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,8 +18,9 @@ class FaviconController extends Controller
      */
     public function index()
     {
+        $logo = Logo::first();
         $favicon = Favicon::first();
-        return view('admin.setting.favicon_setting.index',compact('favicon'));
+        return view('admin.setting.favicon_setting.index',compact('favicon','logo'));
     }
 
     /**

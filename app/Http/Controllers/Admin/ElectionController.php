@@ -276,9 +276,12 @@ class ElectionController extends Controller
 
     public function edit($election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election = Election::find($election_id);
         $company = Company::all();
-        return view('admin.election.edit', compact('election', 'company'));
+        return view('admin.election.edit', compact('election', 'company','logo','favicon'));
     }
 
     public function update(Request $request)

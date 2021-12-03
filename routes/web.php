@@ -132,7 +132,7 @@ Route::group(['middleware' => 'auth'], function () {
 
         //Reminder route
         Route::get('/sms&reminder/reminder-create/{id}', 'Admin\SmsController@remindercreatepage')->name('admin.remindercreatepage.index');
-        Route::post('/sms&reminder/reminder-update{id}', 'Admin\SmsController@reminderupdate')->name('admin.sms.update');        
+        Route::post('/sms&reminder/reminder-update{id}', 'Admin\SmsController@reminderupdate')->name('admin.sms.reminderupdate');        
 
 
         //dashboard route

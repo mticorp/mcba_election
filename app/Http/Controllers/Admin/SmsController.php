@@ -30,13 +30,13 @@ class SmsController extends Controller
     public function createpage($id)
     {
         $election = Election::where('id', $id)->first();
-        return view('admin.setting.sms_setting.create_page', compact('election'));
+        return view('admin.setting.sms&reminder_setting.create_page', compact('election'));
     }
 
     public function remindercreatepage($id)
     {
         $election = Election::where('id', $id)->first();
-        return view('admin.setting.sms_setting.reminder_create_page', compact('election'));
+        return view('admin.setting.sms&reminder_setting.reminder_create_page', compact('election'));
     }
 
 
@@ -87,7 +87,6 @@ class SmsController extends Controller
 
     public function reminderupdate(Request $request, $id)
     {
-     
         DB::table('election')
         ->where("election.id", '=',  $id)
         ->update(['election.reminderdescription'=> $request->reminder]);

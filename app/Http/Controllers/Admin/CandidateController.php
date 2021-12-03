@@ -8,7 +8,7 @@ use App\Result;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Image;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ImportCandidate;

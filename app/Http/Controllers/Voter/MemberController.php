@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Election;
 use App\ElectionVoter;
+use App\Favicon;
+use App\Logo;
 use App\MRegister;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Crypt;
@@ -17,7 +19,10 @@ class MemberController extends Controller
 {
     public function register()
     {
-        return view('member.register');
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('member.register','logo','favicon');
     }
 
     public function check(Request $request)
@@ -80,10 +85,13 @@ class MemberController extends Controller
 
     public function refill($member_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $decrypted_member_id = Crypt::decryptString($member_id);
         $member = MRegister::where('id', $decrypted_member_id)->first();
 
-        return view('member.refill-Form', compact('member'));
+        return view('member.refill-Form', compact('member','logo','favicon'));
     }
 
     public function confirm(Request $request)
@@ -188,6 +196,9 @@ class MemberController extends Controller
 
     public function completeMessage()
     {
-        return view('member.compelete-message');
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('member.compelete-message',compact('logo','favicon'));
     }
 }

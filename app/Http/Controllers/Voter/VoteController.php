@@ -11,14 +11,19 @@ use App\Voting;
 use App\Question;
 use App\Answer;
 use App\ElectionVoter;
+use App\Favicon;
+use App\Logo;
 use App\Voter;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class VoteController extends Controller
 {
     public function result($election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election();
         $election = $election_modal->electionWithId($election_id);
         if (request()->ajax()) {
@@ -34,7 +39,7 @@ class VoteController extends Controller
             $voter_table_id = Session::get('voter_table_id');
             $ans = new Answer();
             $ans_result = $ans->AnswerSummaryWithQuestionName($election_id);
-            return view('voter.result-page', compact('election', 'ans_result', 'voter_table_id'));
+            return view('voter.result-page', compact('election', 'ans_result', 'voter_table_id','logo','favicon'));
         } else {
             return abort(404);
         }
@@ -42,6 +47,9 @@ class VoteController extends Controller
 
     public function candidateList($election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $voter_table_id = Session::get('voter_table_id');
         // dd($voter_table_id);
         $election_modal = new Election;
@@ -54,10 +62,10 @@ class VoteController extends Controller
                 ->count() ? true : false;
             $voter = Voter::find($voter_table_id);
             if ($exist) {
-                return view('error.already-voted', compact('voter'))->with('msg', "You are already Voted!");
+                return view('error.already-voted', compact('voter','logo','favicon'))->with('msg', "You are already Voted!");
             }
             if ($election->status == 0) {
-                return view('error.election_not_start', compact('voter'))->with('msg', 'Election is not Started Yet!');
+                return view('error.election_not_start', compact('voter','logo','favicon'))->with('msg', 'Election is not Started Yet!');
             }
             if ($election->candidate_flag == 0) {
                 if ($election->ques_flag == 1) {
@@ -78,14 +86,14 @@ class VoteController extends Controller
                         $position = $election->no_of_position_en;
                         $candidates = Candidate::where('election_id', '=', $election->id)->get();
 
-                        return view('voter.candidatelist', compact('candidates', 'voter_table_id', 'position', 'voter_vote_count', 'election'));
+                        return view('voter.candidatelist', compact('candidates', 'voter_table_id', 'position', 'voter_vote_count', 'election','logo','favicon'));
                     }
                 } elseif ($election->candidate_flag == 1 && $election->ques_flag == 0) {
                     $voter_vote_count = $voter->vote_count;
                     $position = $election->no_of_position_en;
                     $candidates = Candidate::where('election_id', '=', $election->id)->get();
 
-                    return view('voter.candidatelist', compact('candidates', 'voter_table_id', 'position', 'voter_vote_count', 'election'));
+                    return view('voter.candidatelist', compact('candidates', 'voter_table_id', 'position', 'voter_vote_count', 'election','favicon','logo'));
                 }
             } else {
                 Session::forget('voter_table_id');
@@ -98,11 +106,14 @@ class VoteController extends Controller
 
     public function CandidateDetail($election_id, $id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $candidate = Candidate::where('election_id', $election_id)->where('id', $id)->first();
         $election_modal = new Election();
         $election = $election_modal->electionWithId($election_id);
         if ($election) {
-            return view('voter.candidate-detail', compact('candidate', 'election'));
+            return view('voter.candidate-detail', compact('candidate', 'election','logo','favicon'));
         } else {
             return abort(404);
         }
@@ -110,14 +121,20 @@ class VoteController extends Controller
 
     public function already()
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $voter_table_id = Session::get('voter_table_id');
         $voter = Voter::find($voter_table_id);
-        return view('error.already-voted', compact('voter'))->with('msg', "Already Voted!");
+        return view('error.already-voted', compact('voter','logo','favicon'))->with('msg', "Already Voted!");
     }
 
     public function unauthorized()
     {
-        return view('error.not-found')->with('msg', "UnAuthorized Request");
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('error.not-found','logo','favicon')->with('msg', "UnAuthorized Request");
     }
 
     public function changeStatus(Request $request)
@@ -256,6 +273,9 @@ class VoteController extends Controller
 
     public function faq($election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election();
         $election = $election_modal->electionWithId($election_id);
 
@@ -264,10 +284,10 @@ class VoteController extends Controller
             if ($election->ques_flag == 1) {
                 $already_ans = DB::table('answers')->where('voter_id', $voter_table_id)->where('election_id', $election_id)->join('questions', 'questions.id', '=', 'answers.ques_id')->count() != 0 ? true : false;
                 if ($already_ans) {
-                    return view('error.alreadyanswer', compact('election'))->with('msg', "You are Already Answered!");
+                    return view('error.alreadyanswer', compact('election','logo','favicon'))->with('msg', "You are Already Answered!");
                 } else {
                     $ques = Question::where('election_id', $election_id)->get();
-                    return view('voter.FAQ', compact('election', 'ques', 'voter_table_id'));
+                    return view('voter.FAQ', compact('election', 'ques', 'voter_table_id','favicon','logo'));
                 }
             } else {
                 return redirect()->route('vote.complete', ['election_id' => $election_id]);
@@ -301,6 +321,9 @@ class VoteController extends Controller
 
     public function complete($election_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election();
         $election = $election_modal->electionWithId($election_id);
         if ($election) {
@@ -324,7 +347,7 @@ class VoteController extends Controller
                         ->where('questions.election_id', $election_id)
                         ->get();
                    
-                    return view('voter.completed', compact('voter', 'candidates', 'election', 'answers'));
+                    return view('voter.completed', compact('voter', 'candidates', 'election', 'answers','logo','favicon'));
                 } else {
                     abort(404);
                 }

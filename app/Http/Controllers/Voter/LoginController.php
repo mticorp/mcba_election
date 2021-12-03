@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Voter;
 
 use App\Classes\BulkSMS;
 use App\Election;
+use App\Favicon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Logo;
 use App\Voter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
@@ -16,13 +18,16 @@ class LoginController extends Controller
     // Online Voter
     public function Link($voter_id)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $data = DB::table('voter')->where('voter_id', $voter_id)->first();
         if ($data == null) {
-            return view('error.invalid');
+            return view('error.invalid',compact('logo','favicon'));
         } else {
             Session::forget('voter_table_id');
             Session::put('voter_table_id', $data->id);
-            return view('voter.get-otp');
+            return view('voter.get-otp',compact('logo','favicon'));
         }
     }
 
@@ -53,7 +58,10 @@ class LoginController extends Controller
 
     public function verifyView()
     {
-        return view('voter.verifyOTP');
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('voter.verifyOTP',compact('logo','favicon'));
     }
 
     public function verifyOtp(Request $request)
@@ -82,13 +90,16 @@ class LoginController extends Controller
 
     public function selectElection()
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $voter_table_id = request()->session()->get('voter_table_id');
         $voter = Voter::find($voter_table_id);        
 
         if($voter)
         {
             $all_elections = Election::all();
-            return view('voter.select-Election', compact('all_elections'));
+            return view('voter.select-Election', compact('all_elections','logo','favicon'));
         }else{
             Session::forget('voter_table_id');
             abort(403,'Unauthorized Request!');
@@ -97,19 +108,25 @@ class LoginController extends Controller
 
     public function index()
     {
+        
         $all_elections = Election::all();
-        return view('voter.index', compact('all_elections'));
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
+        return view('voter.index', compact('all_elections','logo','favicon'));
     }
 
     public function VoteIndex($election_id)
     {
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election();
         $election = $election_modal->electionWithId($election_id);
         if ($election) {
             if ($election->status == 1) {
-                return view('voter.manual-vote', compact('election'));
+                return view('voter.manual-vote', compact('election','logo','favicon'));
             } else {
-                return view('error.election_not_start')->with('msg', 'Election is not Started Yet!');
+                return view('error.election_not_start','logo','favicon')->with('msg', 'Election is not Started Yet!');
             }
         } else {
             abort(404);
@@ -118,6 +135,9 @@ class LoginController extends Controller
 
     public function VoteLogin(Request $request)
     {
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $voter_id = $request->enter_voter_id;
         $voter = Voter::where('voter_id',$voter_id)->first();
         if($voter)
@@ -125,7 +145,8 @@ class LoginController extends Controller
             Session::put('voter_table_id',$voter->id);
             return redirect()->route('vote.candidatelist', ['election_id' => $request->election_id]);
         }else{
-            return view('error.invalid');
+            
+            return view('error.invalid',compact('logo','favicon'));
         }
     }
 }

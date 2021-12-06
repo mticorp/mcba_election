@@ -24,6 +24,8 @@ class CreateElectionTable extends Migration
             $table->tinyInteger('status')->default(0);
             $table->tinyInteger('lucky_flag')->default(0);
             $table->tinyInteger('ques_flag')->default(0);
+            $table->string('ques_title')->nullable();
+            $table->string('ques_description')->nullable();
             $table->tinyInteger('candidate_flag')->default(0);
             $table->string('start_time')->nullable();
             $table->string('end_time')->nullable();

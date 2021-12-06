@@ -176,14 +176,27 @@
                                         </div>
                                     </div>
 
-                                    <div class="row">
+
+                                     <div class="row">
                                         <div class="col-md-6">
                                             <label for="ques_title">Question Title *</label>
-                                            <input type="text" min="0" name="ques_title" class="form-control"
-                                                    id="ques_title" placeholder="Enter Question Title..."
-                                                    value="{{ old('ques_title',$election->ques_title) }}">
-                                        </div>                                        
+                                        
+                                             <textarea class="textarea" name="ques_title" id="ques_title"
+                                             placeholder="Enter Question Title..."
+                                             style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('ques_title',$election->ques_title) }}</textarea>
+                                            
+                                        </div>
+    
+                                        <div class="col-md-6">
+                                            <label for="ques_title">Question Description *</label>
+                                            <textarea class="textarea" name="ques_description" id="ques_description"
+                                            placeholder="Enter Question Description..."
+                                            style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('ques_description',$election->ques_description) }}</textarea>
+                                           
+                                            
+                                        </div>
                                     </div>
+    
                                 </div>                                                      
 
                                 <div class="row mt-3">

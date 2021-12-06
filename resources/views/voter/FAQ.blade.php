@@ -65,9 +65,14 @@
 @endsection
 @section('content')
 <div class="container-fluid mb-5 pb-5" id="FAQ">
-    <div class="row mt-5">
+    <div class="row mt-2">
         <div class="col-md-12">
             <h5 class="text-center"><span style="line-height:35px; font-weight:bold;">{{$election->ques_title ?? ''}}</span></h5>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-md-12">
+            <h5 class="text-center"><span style="line-height:15px; font-size: 16px; font-weight:bold;">{{$election->ques_description ?? ''}}</span></h5>
         </div>
     </div>
     <div class="row mt-3">
@@ -81,6 +86,7 @@
                         <div class="col-lg-8">
                             <h5>{{$que->no}} <span style="line-height:35px;">{!! $que->ques !!}</span></h5>
                         </div>
+                        
                         <div class="col-lg-2">
                             <label class="container"> သဘောတူသည်။
                                 <input type="radio" name="{{$que->id}}" value="1">

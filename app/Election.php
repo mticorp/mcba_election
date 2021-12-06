@@ -19,6 +19,7 @@ class Election extends Model
         'candidate_id',
         'candidate_title',
         'ques_title',
+        'ques_description',
         'position',
         'company_id',
         'start_time',

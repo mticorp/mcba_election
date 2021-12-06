@@ -44,7 +44,7 @@
     </div>
     @else
     <div class="col-sm-6">
-        <h1 class="text-justify">There is No Elction</h1>
+        <h1 class="text-justify">There is No Election</h1>
     </div>
     @endif
     </div>

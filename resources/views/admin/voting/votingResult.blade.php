@@ -81,7 +81,7 @@
                                                 - {{ $not_voted_count }}
                                             </p>
                                         </div>
-                                        <table id="votingResultTable" border="2px"
+                                        <table id="votingResultTable" border="2px" style="width: 100%!important;"
                                             class="table table-bordered table-striped table-hover">
                                             <thead>
                                                 <tr>
@@ -102,7 +102,7 @@
                                 @if ($election->ques_flag == 1)
                                     <div class="tab-pane fade pt-3" id="answer" role="tabpanel"
                                         aria-labelledby="answer-tab">
-                                        <table id="questionResultTable" border="2px"
+                                        <table id="questionResultTable" border="2px" style="width: 100%!important;"
                                             class="table table-bordered table-striped table-hover">
                                             <thead>
                                                 <tr>

@@ -96,8 +96,9 @@
 @section('javascript')
 <script>
     $("#addVoterName").on('click',function(e){
+        let text = $("#description").val();
+        $("#description").val(text + " [:VoterName] ");
         e.preventDefault();
-        $("#description").append("[:VoterName]");
     })
     
 </script>

@@ -163,8 +163,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/voting/result/question-download', 'Admin\VotingController@get_questionList')->name('admin.question-excel.download');
         Route::get('/voting/result/get-result', 'Admin\VotingController@get_result')->name('admin.election.get-result');
         Route::get('/voting/result/get-ques-result', 'Admin\VotingController@get_ques_result')->name('admin.election.get-ques-result');
-        Route::get('/voting/result/detail/{candidate_id}/{election_id}', 'Admin\VotingController@votingresultshow')->name('admin.election.votingresult.show');
-        Route::get('/voting/ques-result/detail/{question_id}/{election_id}', 'Admin\VotingController@questionvotingresultshow')->name('admin.election.question-votingresult.show');
+        Route::get('/voting/votingresult/candidate-result/detail/{candidate_id}/{election_id}', 'Admin\VotingController@votingresultshow')->name('admin.election.votingresult.show');
+        Route::get('/voting/votingresult/ques-result/detail/{question_id}/{election_id}', 'Admin\VotingController@questionvotingresultshow')->name('admin.election.question-votingresult.show');
         //answer route
         // Route::get('/voting/answer/{election_id}','Admin\VotingController@answer')->name('admin.answer.index');
         //register route

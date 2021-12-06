@@ -182,9 +182,7 @@
     <div style="border:2px;" id="print_content">
         <!-- <p style="text-align:center"><img src="" alt="" width="100px" height="50px"></p>  -->
         <p style="color:red; text-align:center">
-            {{ ($election_smsdescription->smsdescription == Null ) ? "
-            *Voter ID စာရွက်အား နောက် Election ကို မဲပေးရန်အတွက် သိမ်းဆည်းထားပေးပါ။ " :
-            "$election_smsdescription->smsdescription" }}</p>
+            *Voter ID စာရွက်အား နောက် Election ကို မဲပေးရန်အတွက် သိမ်းဆည်းထားပေးပါ။ </p>
         <h4 style="text-align:center"></h4>
         <p style="text-align:center;font-size:13px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}</p>
         <br>

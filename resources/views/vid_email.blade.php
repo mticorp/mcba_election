@@ -31,15 +31,7 @@ hr{
     <!--color:white!important; -->
     <!--cursor: pointer;-->
     <!--padding: 10px 10px;">Click here to Vote</a>-->
-    <table cellpadding="0" cellmargin="0" border="0" height="44" width="178" style="border-collapse: collapse; border:5px solid #c62228">
-  <tr>
-    <td bgcolor="#c62228" valign="middle" align="center" width="174">
-      <div style="font-size: 18px; color: #ffffff; line-height: 1; margin: 0; padding: 0; mso-table-lspace:0; mso-table-rspace:0;">
-        <a href="{{$link}}" style="text-decoration: none; color: #ffffff; border: 0; font-family: Arial, arial, sans-serif; mso-table-lspace:0; mso-table-rspace:0;" border="0">Click here</a>
-      </div>
-    </td>
-  </tr>
-</table>
+    {{ $link }}
     <hr>
     <p>Bld:16, Room 602, Myanmar Info Tech, Hlaing Campus, Yangon, Myanmar.</p>
     <p>Mobile: 01-230 5213</p>

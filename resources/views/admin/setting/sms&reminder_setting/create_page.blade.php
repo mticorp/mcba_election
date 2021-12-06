@@ -43,6 +43,10 @@
                                             placeholder="Place some text here"
                                             style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('description',$election->smsdescription) }}</textarea>
                                     </div>
+                                    
+                                    <a type="button" id="addVoterName" ><i
+                                        class="fas fa-plus" aria-hidden="true" ></i> Add Voter Name</a>
+
                                     <div class="col-sm-12 my-2">
                                         <div class="form-group mt-4">
                                             <div class="row mt-2">
@@ -77,4 +81,11 @@
 </div>
 @endsection
 @section('javascript')
+<script>
+$("#addVoterName").on('click',function(e){
+    e.preventDefault();
+    $("#description").append("[:VoterName]");
+})
+
+</script>
 @endsection

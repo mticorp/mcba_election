@@ -146,7 +146,7 @@
                                 class="nav-link {{ $request->segment(2) == 'sms&reminder' ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-sms"></i>
                                 <p>
-                                    SMS & Reminder & Description
+                                    SMS & Reminder 
                                 </p>
                             </a>
                         </li>

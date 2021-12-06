@@ -41,11 +41,24 @@
                                         <label for="description">SMS Description*</label>
                                         <textarea class="textarea" name="sms" id="description"
                                             placeholder="Place some text here"
-                                            style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('description',$election->smsdescription) }}</textarea>
+                                            style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('description',$election->smsdescription) }}
+                                        </textarea>
                                     </div>
-                                    
-                                    <a type="button" id="addVoterName" ><i
-                                        class="fas fa-plus" aria-hidden="true" ></i> Add Voter Name</a>
+
+
+                                    <div class="col-sm-12 my-2">
+
+                                        <div class="form-group mt-4">
+
+                                            <div class="row mt-2">
+                                                <a type="button" id="addVoterName"><i class="fas fa-plus"
+                                                        aria-hidden="true"></i> Add Voter Name</a>
+                                                <p style="color: red; font-family: arisan; font-weight: bold">
+                                                    &nbsp;&nbsp; (Note: &nbsp; "[:VoterName]" refer to specific voter's
+                                                    name!)</p>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <div class="col-sm-12 my-2">
                                         <div class="form-group mt-4">
@@ -82,7 +95,7 @@
 @endsection
 @section('javascript')
 <script>
-$("#addVoterName").on('click',function(e){
+    $("#addVoterName").on('click',function(e){
     e.preventDefault();
     $("#description").append("[:VoterName]");
 })

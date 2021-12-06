@@ -223,7 +223,7 @@ class GenerateController extends Controller
         $url = route('vote.link', ['voter_id' => $voters->voter_id]);
         $email = $voters->email;
         $phone  = $voters->phone_no;
-        //$content = "မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Button ကို နှိပ်ပါ။။";
+        //$content = "မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Button ကို နှိပ်ပါ။";
         $content = ($election->sms == Null) ?
             " မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။ " :
             "$election->sms &nbsp;";

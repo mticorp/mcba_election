@@ -41,7 +41,7 @@
                                         <label for="description">Title Description*</label>
                                         <textarea class="textarea" name="description" id="description"
                                             placeholder="Place some text here"
-                                            style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('description',$election->reminderdescription) }}</textarea>
+                                            style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('description',$election->election_title_description) }}</textarea>
                                     </div>
                                     <div class="col-sm-12 my-2">
                                         <div class="form-group mt-4">

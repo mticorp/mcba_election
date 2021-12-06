@@ -222,6 +222,7 @@ class ElectionController extends Controller
 
             // for question flag
             'ques_title' => 'required_if:ques_flag,==,1|nullable',
+            'ques_description' => 'required_if:ques_flag,==,1|nullable',
             'company' => 'required',
         );
 
@@ -236,6 +237,8 @@ class ElectionController extends Controller
             'description.required_if' => 'Description is required if Candidate flag is ON !',
             'candidate_title.required_if' => 'Candidate Title is required if Candidate flag is ON !',
             'ques_title.required_if' => 'Question Title is required if Question flag is ON !',
+            'ques_description.required_if' => 'Question Description is required if Question flag is ON !',
+
         );
 
         $error = Validator::make($request->all(), $rules, $message);
@@ -260,6 +263,7 @@ class ElectionController extends Controller
             'duration_from' => $request->durationfrom,
             'duration_to' => $request->durationto,
             'ques_title' => $request->ques_title,
+            'ques_description' => $request->ques_description,
         );
 
         $data = Election::create($form_data);
@@ -303,6 +307,7 @@ class ElectionController extends Controller
 
             // for question flag
             'ques_title' => 'required_if:ques_flag,==,1|nullable',
+            'ques_description' => 'required_if:ques_flag,==,1|nullable',
             'company' => 'required',
         );
 
@@ -317,6 +322,7 @@ class ElectionController extends Controller
             'description.required_if' => 'Description is required if Candidate flag is ON !',
             'candidate_title.required_if' => 'Candidate Title is required if Candidate flag is ON !',
             'ques_title.required_if' => 'Question Title is required if Question flag is ON !',
+            'ques_description.required_if' => 'Question Description is required if Question flag is ON !',
         );
 
         $error = Validator::make($request->all(), $rules, $message);
@@ -341,6 +347,7 @@ class ElectionController extends Controller
             'duration_from' => $request->durationfrom,
             'duration_to' => $request->durationto,
             'ques_title' => $request->ques_title,
+            'ques_description' => $request->ques_description,
         );
 
         Election::whereId($request->hidden_id)->update($form_data);

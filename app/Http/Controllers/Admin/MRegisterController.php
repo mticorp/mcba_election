@@ -375,7 +375,7 @@ class MRegisterController extends Controller
                             'time' => $DT[1],
                         ),
                         function ($message) use ($email) {
-                            $message->from('helper.mti.evoting.mm@gmail.com');
+                            $message->from('evoting.mti@gmail.com');
                             $message->subject('MTI - Election Voting System');
                             $message->to($email);
                         }

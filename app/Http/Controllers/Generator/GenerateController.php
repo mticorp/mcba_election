@@ -19,6 +19,7 @@ use App\Logo;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
+use function PHPSTORM_META\map;
 
 class GenerateController extends Controller
 {
@@ -30,18 +31,18 @@ class GenerateController extends Controller
     public function index()
     {
         $elections = Election::all();
-        
+
         $logo = Logo::first();
         $favicon = Favicon::first();
         $company = Company::all();
-        return view('generator.index', compact('elections', 'company','logo','favicon'));
+        return view('generator.index', compact('elections', 'company', 'logo', 'favicon'));
     }
 
     public function vidList()
     {
 
         $election = Election::first();
-        
+
         $logo = Logo::first();
         $favicon = Favicon::first();
         if (request()->ajax()) {
@@ -73,7 +74,7 @@ class GenerateController extends Controller
                 ->make(true);
         }
 
-        return view('generator.generatedVid-list', compact('election','logo','favicon'));
+        return view('generator.generatedVid-list', compact('election', 'logo', 'favicon'));
     }
 
     public function store()
@@ -157,10 +158,10 @@ class GenerateController extends Controller
     public function generateVidBlade()
     {
         $election_smsdescription = Election::first();
-        
+
         $logo = Logo::first();
         $favicon = Favicon::first();
-        return view('generator.vidgenerate', compact('election_smsdescription','logo','favicon'));
+        return view('generator.vidgenerate', compact('election_smsdescription', 'logo', 'favicon'));
     }
 
     public function excelGenerate(Request $request)
@@ -211,22 +212,28 @@ class GenerateController extends Controller
     public function sendMessage(Request $request)
     {
         $vid = $request->vid;
-        $election = Election::first();
-        $voters = DB::table('voter')->where('voter_id', $vid)->orWhere('id', $vid)->first();
+
+        $voters = DB::table('voter')
+            ->select('voter.*', 'election_voters.election_id as election_id')
+            ->where('voter.voter_id', $vid)
+            ->orWhere('voter.id', $vid)
+            ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+            ->first();
+        $election = Election::select('election.*', DB::raw("REPLACE(election.smsdescription,'[:VoterName]','$voters->name') as sms"))->find($voters->election_id);
         $url = route('vote.link', ['voter_id' => $voters->voter_id]);
         $email = $voters->email;
         $phone  = $voters->phone_no;
         //$content = "မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Button ကို နှိပ်ပါ။။";
-        $content = ($election->smsdescription == Null) ?
+        $content = ($election->sms == Null) ?
             " မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။ " :
-            "$election->smsdescription";
+            "$election->sms &nbsp;";
         // $content = "မင်္ဂလာပါ ".$voters->name." ! အောက်ဖော်ပြပါ Button အားနှိပ်၍ ဝင်ရောက်မဲပေးနိုင်ပါပြီ။";
 
         if ($phone) {
 
-            $phone_content = ($election->smsdescription == Null) ?
+            $phone_content = ($election->sms == Null) ?
                 " မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။ "  . $url :
-                "$election->smsdescription" . $url;
+                "$election->sms &nbsp;" . $url;
 
 
             //$phone_content = "မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။ " . $url;
@@ -279,7 +286,7 @@ class GenerateController extends Controller
                     'time' => $DT[1],
                 ),
                 function ($message) use ($email) {
-                    $message->from('helper.mti.evoting.mm@gmail.com');
+                    $message->from('evoting.mti@gmail.com');
                     $message->subject('E-Voting');
                     $message->to($email);
                 }
@@ -299,21 +306,23 @@ class GenerateController extends Controller
     public function smsMessageOnly(Request $request)
     {
         $vid = $request->vid;
-        $election = Election::first();
-        $voters = DB::table('voter')->where('voter_id', $vid)->orWhere('id', $vid)->first();
-        // dd($voters);
+        $voters = DB::table('voter')
+            ->select('voter.*', 'election_voters.election_id as election_id')
+            ->where('voter.voter_id', $vid)
+            ->orWhere('voter.id', $vid)
+            ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+            ->first();
+        $election = Election::select('election.*', DB::raw("REPLACE(election.smsdescription,'[:VoterName]','$voters->name') as sms"))->find($voters->election_id);
         $url = route('vote.link', ['voter_id' => $voters->voter_id]);
-
         $phone  = $voters->phone_no;
-
         if ($phone) {
             // $phone_content = "မင်္ဂလာပါ ".$voters->name." ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ ဝင်ရောက်မဲပေးနိုင်ပါပြီ။ " . $url;
             //$phone_content = "မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။ " . $url;
 
             $phone_content =
-                ($election->smsdescription == Null) ?
+                ($election->sms == Null) ?
                 " မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။ "  . $url :
-                "$election->smsdescription" . $url;
+                "$election->sms" . $url;
             $token = "lKwrR0do7Ncd8ebzire137tt";
 
             // Prepare data for POST request
@@ -349,18 +358,23 @@ class GenerateController extends Controller
     public function emailMessageOnly(Request $request)
     {
         $vid = $request->vid;
-        $election =Election::first();
-        $voters = DB::table('voter')->where('voter_id', $vid)->orWhere('id', $vid)->first();
-        // dd($voters);
+        $election = Election::first();
+        $voters = DB::table('voter')
+            ->select('voter.*', 'election_voters.election_id as election_id')
+            ->where('voter.voter_id', $vid)
+            ->orWhere('voter.id', $vid)
+            ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+            ->first();
+        $election = Election::select('election.*', DB::raw("REPLACE(election.smsdescription,'[:VoterName]','$voters->name') as sms"))->find($voters->election_id);
         $url = route('vote.link', ['voter_id' => $voters->voter_id]);
         $email = $voters->email;
 
         if ($email) {
             // $content = "မင်္ဂလာပါ ".$voters->name." ! အောက်ဖော်ပြပါ Button အားနှိပ်၍ ဝင်ရောက်မဲပေးနိုင်ပါပြီ။";       
-           // $content = "မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Button ကို နှိပ်ပါ။";
-            $content =  ($election->smsdescription == Null) ?
-            "မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Button ကို နှိပ်ပါ။" :
-            "$election->smsdescription";
+            // $content = "မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Button ကို နှိပ်ပါ။";
+            $content =  ($election->sms == Null) ?
+                "မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။" :
+                "$election->sms ";
 
 
             $time = Carbon::now();
@@ -378,7 +392,7 @@ class GenerateController extends Controller
                     'time' => $DT[1],
                 ),
                 function ($message) use ($email) {
-                    $message->from('helper.mti.evoting.mm@gmail.com');
+                    $message->from('evoting.mti@gmail.com');
                     $message->subject("E-Voting");
                     $message->to($email);
                 }
@@ -399,23 +413,29 @@ class GenerateController extends Controller
     public function reminder(Request $request)
     {
         $vid = $request->vid;
-        $election = Election::first();
-        $non_vote_voter = Voter::where('id', $vid)->first();
-        $url = route('vote.link', ['voter_id' => $non_vote_voter->voter_id]);
 
+
+        $non_vote_voter = DB::table('voter')
+            ->select('voter.*', 'election_voters.election_id as election_id')
+            ->where('voter.voter_id', $vid)
+            ->orWhere('voter.id', $vid)
+            ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+            ->first();
+        $election = Election::select('election.*', DB::raw("REPLACE(election.reminderdescription,'[:VoterName]','$non_vote_voter->name') as reminder"))->find($non_vote_voter->election_id);
+        $url = route('vote.link', ['voter_id' => $non_vote_voter->voter_id]);
         $bulksms = new BulkSMS();
 
         //$content = "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။";
-        $content =  ($election->reminderdescription == Null) ?
+        $content =  ($election->reminder == Null) ?
             "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။" :
-            "$election->reminderdescription";
+            "$election->reminder";
 
         if ($non_vote_voter->phone_no) {
 
             //$phone_content = "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Link ကိုနှိပ်ပါ။ " . $url;
-            $phone_content = ($election->reminderdescription == Null) ?
+            $phone_content = ($election->reminder == Null) ?
                 "*လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Link ကိုနှိပ်ပါ။ " . $url :
-                "$election->reminderdescription" . $url;
+                "$election->reminder" . $url;
 
 
             $data = $bulksms->sendSMS($non_vote_voter->phone_no, $phone_content);
@@ -444,7 +464,7 @@ class GenerateController extends Controller
                     'time' => $DT[1],
                 ),
                 function ($message) use ($non_vote_voter) {
-                    $message->from('helper.mti.evoting.mm@gmail.com');
+                    $message->from('evoting.mti@gmail.com');
                     $message->subject("E-Voting");
                     $message->to($non_vote_voter->email);
                 }
@@ -464,15 +484,21 @@ class GenerateController extends Controller
     public function emailReminderOnly(Request $request)
     {
         $vid = $request->vid;
-        $election= Election::first();
-        $non_vote_voter = Voter::where('id', $vid)->first();
-        $url = route('vote.link', ['voter_id' => $non_vote_voter->voter_id]);
 
+
+        $non_vote_voter = DB::table('voter')
+            ->select('voter.*', 'election_voters.election_id as election_id')
+            ->where('voter.voter_id', $vid)
+            ->orWhere('voter.id', $vid)
+            ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+            ->first();
+        $election = Election::select('election.*', DB::raw("REPLACE(election.reminderdescription,'[:VoterName]','$non_vote_voter->name') as reminder"))->find($non_vote_voter->election_id);
+        $url = route('vote.link', ['voter_id' => $non_vote_voter->voter_id]);
         if ($non_vote_voter->email) {
             //$content = "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။";
-            $content =  ($election->reminderdescription == Null) ?
-            "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။" :
-            "$election->reminderdescription";
+            $content =  ($election->reminder == Null) ?
+                "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။" :
+                "$election->reminder ";
 
             $time = Carbon::now();
             $datetime = $time->toDateTimeString();
@@ -489,7 +515,7 @@ class GenerateController extends Controller
                     'time' => $DT[1],
                 ),
                 function ($message) use ($non_vote_voter) {
-                    $message->from('helper.mti.evoting.mm@gmail.com');
+                    $message->from('evoting.mti@gmail.com');
                     $message->subject("E-Voting");
                     $message->to($non_vote_voter->email);
                 }
@@ -512,16 +538,26 @@ class GenerateController extends Controller
     public function smsReminderOnly(Request $request)
     {
         $vid = $request->vid;
-        $non_vote_voter = Voter::where('id', $vid)->first();
-        $election = Election::first();
+
+
+        $non_vote_voter = DB::table('voter')
+            ->select('voter.*', 'election_voters.election_id as election_id')
+            ->where('voter.voter_id', $vid)
+            ->orWhere('voter.id', $vid)
+            ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+            ->first();
+        $election = Election::select('election.*', DB::raw("REPLACE(election.reminderdescription,'[:VoterName]','$non_vote_voter->name') as reminder"))->find($non_vote_voter->election_id);
+        $url = route('vote.link', ['voter_id' => $non_vote_voter->voter_id]);
+
         if ($non_vote_voter->phone_no) {
             $url = route('vote.link', ['voter_id' => $non_vote_voter->voter_id]);
+
             $bulksms = new BulkSMS();
 
             //$phone_content = "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Link ကိုနှိပ်ပါ။ " . $url;
-            $phone_content = ($election->reminderdescription == Null) ?
+            $phone_content = ($election->reminder == Null) ?
                 "*လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Link ကိုနှိပ်ပါ။ " . $url :
-                "$election->reminderdescription" . $url;
+                "$election->reminder" . $url;
 
 
 

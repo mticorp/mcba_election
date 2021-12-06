@@ -73,10 +73,6 @@
                                                     class="fa fa-bell" aria-hidden="true"></i>
                                                 Send Reminder (All "Not
                                                 Voted")
-                                                {{-- {{ ($election->smsdescription == Null ) ? "
-                                                *Voter ID စာရွက်အား နောက် Election ကို မဲပေးရန်အတွက် သိမ်းဆည်းထားပေးပါ။
-                                                " :
-                                                "$election->smsdescription" }}</p> --}}
                                             </button>
                                             <button type="button" class="btn btn-outline-danger my-2"
                                                 id="select_reminder"><i class="fa fa-bell" aria-hidden="true"></i> Send
@@ -187,9 +183,7 @@
 <div style="display:none;">
     <div style="border:2px;" id="print_content">
         <p style="color:red; text-align:center">
-            {{ ($election->smsdescription == Null ) ? "
-            *Voter ID စာရွက်အား နောက် Election ကို မဲပေးရန်အတွက် သိမ်းဆည်းထားပေးပါ။ " :
-            "$election->smsdescription" }}</p>
+            *Voter ID စာရွက်အား နောက် Election ကို မဲပေးရန်အတွက် သိမ်းဆည်းထားပေးပါ။  
 
         <h4 style="text-align:center"></h4>
         <p style="text-align:center;font-size:13px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}</p>

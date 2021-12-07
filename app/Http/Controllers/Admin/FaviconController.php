@@ -20,7 +20,7 @@ class FaviconController extends Controller
     {
         $logo = Logo::first();
         $favicon = Favicon::first();
-        return view('admin.setting.favicon_setting.index',compact('favicon','logo'));
+        return view('admin.setting.favicon_setting.index', compact('favicon', 'logo'));
     }
 
     /**
@@ -50,8 +50,7 @@ class FaviconController extends Controller
         $error = Validator::make($request->all(), $rules);
 
         $fav = Favicon::first();
-        if($fav)
-        {
+        if ($fav) {
             return response()->json(['errors' => 'Favicon Exist']);
         }
 
@@ -62,7 +61,7 @@ class FaviconController extends Controller
         $image = $request->file('image');
         $upload_path = public_path() . '/upload/setting/favicon/';
         $file = $image->getClientOriginalExtension();
-        $name = rand().'.'. $file;
+        $name = rand() . '.' . $file;
         $image->move($upload_path, $name);
 
         $new_name = '/upload/setting/favicon/' . $name;
@@ -105,10 +104,14 @@ class FaviconController extends Controller
     public function update(Request $request)
     {
         $image_name = $request->hidden_image;
+
         $image = $request->file('image');
         if ($image != '') {
+            if ($request->hidden_image) {
+                unlink(public_path() . $request->hidden_image);
+            }
             $rules = array(
-                'company_name'    =>  'required|string|max:255',
+                'favicon_name'    =>  'required|string|max:255',
                 'image'         =>  'required|mimes:png,jpg,jpeg',
             );
             $error = Validator::make($request->all(), $rules);
@@ -123,12 +126,12 @@ class FaviconController extends Controller
             }
             $upload_path = public_path() . '/upload/setting/favicon/';
             $file = $image->getClientOriginalExtension();
-            $name = rand().'.'. $file;
+            $name = rand() . '.' . $file;
             $image->move($upload_path, $name);
             $image_name = '/upload/setting/favicon/' . $name;
         } else {
             $rules = array(
-                'company_name'    =>  'required|string|max:255',
+                'favicon_name'    =>  'required|string|max:255',
             );
 
             $error = Validator::make($request->all(), $rules);
@@ -139,7 +142,7 @@ class FaviconController extends Controller
         }
 
         $form_data = array(
-            'favicon_name'       =>   $request->company_name,
+            'favicon_name'       =>   $request->favicon_name,
             'favicon'            =>   $image_name,
         );
         Favicon::whereId($request->hidden_id)->update($form_data);
@@ -155,12 +158,12 @@ class FaviconController extends Controller
      */
     public function destroy($id)
     {
+
         $data = Favicon::findOrFail($id);
         // dd($data);
-        $path = public_path(). $data->company_logo;
+        $path = public_path() . $data->favicon;
 
-        if($data->company_logo)
-        {
+        if ($data->favicon) {
             if (file_exists($path)) {
                 unlink($path);
             }

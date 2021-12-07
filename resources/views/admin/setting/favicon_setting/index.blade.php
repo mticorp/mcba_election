@@ -194,7 +194,7 @@ $(document).ready(function(){
                             "<input type='hidden' name='hidden_image' value='" + html.data
                             .favicon + "' />");
                         $('#hidden_id').val(html.data.id);
-                        $('#formModal .modal-title').text("Edit Company");
+                        $('#formModal .modal-title').text("Edit Favicon");
                         $('#action_button').val("Edit");
                         $('#action').val("Edit");
                         $('#formModal').modal('show');

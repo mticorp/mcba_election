@@ -114,6 +114,9 @@ class LogoController extends Controller
         $image_name = $request->hidden_image;
         $image = $request->file('image');
         if ($image != '') {
+            if ($request->hidden_image) {
+                unlink(public_path() . $request->hidden_image);
+            }
             $rules = array(
                 'image'         =>  'required|mimes:png,jpg,jpeg',
             );
@@ -152,7 +155,7 @@ class LogoController extends Controller
     public function destroy($id)
     {
         $data = Logo::findOrFail($id);
-        // dd($data);
+        
         $path = public_path(). $data->logo;
 
         if($data->logo)

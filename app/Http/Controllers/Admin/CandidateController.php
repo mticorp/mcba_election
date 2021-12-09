@@ -64,12 +64,16 @@ class CandidateController extends Controller
 
     public function excelImport($election_id)
     {
+
+        
+        $logo = Logo::first();
+        $favicon = Favicon::first();
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
         if($election)
         {
             $elections = $election_modal->electionWithoutCurrent($election_id);
-            return view('admin.candidate.import-excel',compact('election','elections'));
+            return view('admin.candidate.import-excel',compact('election','elections','logo','favicon'));
         }else{
             return abort(404);
         }

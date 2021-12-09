@@ -8,13 +8,13 @@ class BulkSMS{
         //Your message to send, Adding URL encoding.
 
         //Preparing post parameters
-        $token = "lKwrR0do7Ncd8ebzire137tt";
+        $token = "KpgyfcKjibHEHccbCUX9uhrD";
 
         // Prepare data for POST request
         $data = [
             "to"        =>      $mobileNumber,
             "message"   =>      $message,
-            "sender"    =>      "LOYAR"
+            "sender"    =>      "MCBA"
         ];
 
         $ch = curl_init("http://159.138.135.30/smsserver/sendsms-token");

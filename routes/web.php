@@ -28,13 +28,13 @@ Route::get('/vote/result/{election_id}', 'Voter\VoteController@result')->name('v
 Route::get('/vote/{election_id}','Voter\LoginController@VoteIndex')->name('vote.voter.index');
 Route::post('/vote/redirect/','Voter\LoginController@VoteLogin')->name('vote.voter.login');
 
-// Route::get('/vote/register/check-Form','Voter\MemberController@register')->name('vote.member.register');
-// Route::post('/vote/check_refer_code/','Voter\MemberController@check')->name('vote.member.register.check');
-
-// Route::get('/vote/register/refill-form/{member_id}','Voter\MemberController@refill')->name('vote.member.register.form');
-
-// Route::post('/vote/register/confirm', 'Voter\MemberController@confirm')->name('vote.member.register.confirm');
-// Route::get('/vote/register/complete/','Voter\MemberController@completeMessage')->name('vote.member.register.complete');
+//For MCBA
+Route::get('/vote/register/check-Form','Voter\MemberController@register')->name('vote.member.register');
+Route::post('/vote/check_refer_code/','Voter\MemberController@check')->name('vote.member.register.check');
+Route::get('/vote/register/refill-form/{member_id}','Voter\MemberController@refill')->name('vote.member.register.form');
+Route::post('/vote/register/confirm', 'Voter\MemberController@confirm')->name('vote.member.register.confirm');
+Route::get('/vote/register/complete/','Voter\MemberController@completeMessage')->name('vote.member.register.complete');
+//For END MCBA
 
 //start login routes...
 Route::get('app/{voter_id}','Voter\LoginController@Link')->name('vote.link');

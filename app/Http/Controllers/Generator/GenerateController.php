@@ -242,13 +242,13 @@ class GenerateController extends Controller
 
 
             // // dd($message);
-            $token = "lKwrR0do7Ncd8ebzire137tt";
+            $token = "KpgyfcKjibHEHccbCUX9uhrD";
 
             // Prepare data for POST request
             $data = [
                 "to"        =>      $phone,
                 "message"   =>      $phone_content,
-                "sender"    =>      "LOYAR"
+                "sender"    =>      "MCBA"
             ];
 
             $ch = curl_init("http://159.138.135.30/smsserver/sendsms-token");
@@ -323,13 +323,13 @@ class GenerateController extends Controller
                 ($election->sms == Null) ?
                 " မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။ "  . $url :
                 "$election->sms" . $url;
-            $token = "lKwrR0do7Ncd8ebzire137tt";
+            $token = "KpgyfcKjibHEHccbCUX9uhrD";
 
             // Prepare data for POST request
             $data = [
                 "to"        =>      $phone,
                 "message"   =>      $phone_content,
-                "sender"    =>      "LOYAR"
+                "sender"    =>      "MCBA"
             ];
 
             $ch = curl_init("http://159.138.135.30/smsserver/sendsms-token");

@@ -74,13 +74,13 @@
                         </p>
                     </a>
                 </li>
-                {{-- <li class="nav-item">
+                <li class="nav-item">
                     <a href="{{ route('admin.register.index') }}"
                         class="nav-link {{ $request->segment(2) == 'register' ? 'active' : '' }}">
                         <i class="fas fa-users nav-icon"></i>
                         <p>Member Lists</p>
                     </a>
-                </li> --}}
+                </li>
 
                 <li class="nav-item">
                     <a href="{{ route('generator.vid-list') }}"

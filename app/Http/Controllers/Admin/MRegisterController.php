@@ -321,13 +321,13 @@ class MRegisterController extends Controller
                     $phone_content = "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
                     တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။";
 
-                    $token = "lKwrR0do7Ncd8ebzire137tt";
+                    $token = "KpgyfcKjibHEHccbCUX9uhrD";
 
                     // Prepare data for POST request
                     $data = [
                         "to"        =>      $phone,
                         "message"   =>      $phone_content,
-                        "sender"    =>      "LOYAR"
+                        "sender"    =>      "MCBA"
                     ];
 
                     $ch = curl_init("http://159.138.135.30/smsserver/sendsms-token");
@@ -426,13 +426,13 @@ class MRegisterController extends Controller
                     $phone_content = "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
                     တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။";
 
-                    $token = "lKwrR0do7Ncd8ebzire137tt";
+                    $token = "KpgyfcKjibHEHccbCUX9uhrD";
 
                     // Prepare data for POST request
                     $data = [
                         "to"        =>      $phone,
                         "message"   =>      $phone_content,
-                        "sender"    =>      "LOYAR"
+                        "sender"    =>      "MCBA"
                     ];
 
                     $ch = curl_init("http://159.138.135.30/smsserver/sendsms-token");

@@ -22,7 +22,7 @@ class MemberController extends Controller
         
         $logo = Logo::first();
         $favicon = Favicon::first();
-        return view('member.register','logo','favicon');
+        return view('member.register',compact('logo','favicon'));
     }
 
     public function check(Request $request)

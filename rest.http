@@ -1,0 +1,14 @@
+@url=https://rqms.loyar.biz
+
+
+POST {{url}}/api/topup
+Accept: application/json
+Content-Type: application/json
+
+{
+    "phone": "974376772",
+    "amount": 500,
+    "operator": 1,
+    "key": "loyartopupkey",
+}
+

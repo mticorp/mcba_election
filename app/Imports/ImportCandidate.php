@@ -63,7 +63,7 @@ class ImportCandidate implements ToModel,WithHeadingRow,WithValidation
         return [
             'photo_url' => 'nullable',
             'candidate_no' => 'required|string',
-            'name' => 'required|string',            
+            'name' => 'required|string',
         ];
     }
 }

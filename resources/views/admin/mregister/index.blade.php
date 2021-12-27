@@ -65,6 +65,7 @@
                                         <th>Phone Number</th>
                                         <th>Created_Date</th>
                                         <th>Modified_Date</th>
+                                        <th>Voter Generated</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -224,6 +225,18 @@
                     {
                         data: 'updated_at',
                         name: 'updated_at'
+                    },
+                    {
+                        data: 'check_flag',
+                        name: 'check_flag',
+                        render: function(data, type, full, meta) {
+                            if(data == 1)
+                            {
+                                return "<p class='text-success'>Done</p>";
+                            }else{
+                                return "<p class='text-danger'>Not Yet</p>";
+                            }
+                        }
                     },
                     {
                         data: 'action',

@@ -47,8 +47,8 @@
                                                 <a type="button" id="addVoterName"><i class="fas fa-plus"
                                                         aria-hidden="true"></i>
                                                     Add Voter Name</a>
-                                                <a type="button" id="addShareCount" style="user-select: none; margin-left:10px;"><i class="fas fa-plus"
-                                                        aria-hidden="true"></i> Add Share Count</a>              
+                                                {{-- <a type="button" id="addShareCount" style="user-select: none; margin-left:10px;"><i class="fas fa-plus"
+                                                        aria-hidden="true"></i> Add Share Count</a>               --}}
 
                                                 
                                             </div>

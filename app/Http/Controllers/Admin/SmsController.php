@@ -34,7 +34,7 @@ class SmsController extends Controller
 
     public function reminderUpdate(Request $request)
     {
-        Setting::first()->update(['reminder_text' => $request->reminder_text + " "]);
+        Setting::first()->update(['reminder_text' => $request->reminder_text . " "]);
         return redirect()->back();
     }
 

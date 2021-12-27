@@ -13,6 +13,7 @@ class Setting extends Model
         'logo_image',
         'sms_text',
         'reminder_text',
+        'member_sms_text'
     ];
 
     protected $table = 'settings';

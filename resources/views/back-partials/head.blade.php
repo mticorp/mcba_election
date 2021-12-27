@@ -5,9 +5,9 @@
     {{ $setting->fav_name ? $setting->fav_name : 'mmVote'}}
  
 </title>
-<link rel="icon" href={{ $setting->fav_icon ? url($setting->fav_icon) : asset('images/election.logo.jpg')  }} type="image/x-icon">
+<link rel="icon" href={{ $setting->fav_icon ? url($setting->fav_icon) : asset('images/election_logo.png')  }} type="image/x-icon">
 
-{{-- <link rel="icon" href="{{asset('images/election.logo.jpg')}}" type="image/x-icon"> --}}
+{{-- <link rel="icon" href="{{asset('images/election_logo.png')}}" type="image/x-icon"> --}}
 
 <!-- Tell the browser to be responsive to screen width -->
 <meta name="viewport" content="width=device-width, initial-scale=1">

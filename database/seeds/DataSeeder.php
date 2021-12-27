@@ -14,7 +14,7 @@ class DataSeeder extends Seeder
      */
     public function run()
     {
-        $company = Company::create(['company_name' => 'MCB', 'company_logo' => '/images/election.logo.jpg']);
+        $company = Company::create(['company_name' => 'MCB', 'company_logo' => '/images/election_logo.png']);
         $election = Election::create([
             'name' => 'MCB Election',
             'election_title_description' => 'သဘောထားရယူခြင်း',

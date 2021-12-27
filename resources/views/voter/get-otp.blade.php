@@ -37,7 +37,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle"><img src="{{ url('images/election.logo.jpg') }}"
+                    <h5 class="modal-title" id="exampleModalLongTitle"><img src="{{ url('images/election_logo.png') }}"
                             alt="Logo" width="10%"> mmVote</h5>
                 </div>
                 <div class="modal-body text-center">
@@ -59,7 +59,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle"><img src="{{ url('images/election.logo.jpg') }}"
+                    <h5 class="modal-title" id="exampleModalLongTitle"><img src="{{ url('images/election_logo.png') }}"
                             alt="Logo" width="10%"> mmVote</h5>
                 </div>
                 <div class="modal-body text-center">

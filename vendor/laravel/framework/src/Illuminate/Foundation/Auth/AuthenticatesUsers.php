@@ -2,8 +2,6 @@
 
 namespace Illuminate\Foundation\Auth;
 
-use App\Favicon;
-use App\Logo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -19,11 +17,7 @@ trait AuthenticatesUsers
      */
     public function showLoginForm()
     {
-
-        
-        $logo = Logo::first();
-        $favicon = Favicon::first();
-        return view('auth.login',compact('logo','favicon'));
+        return view('auth.login');
     }
 
     /**

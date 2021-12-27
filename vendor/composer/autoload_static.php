@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1
+class ComposerStaticInitd44f7c318dd572c78cc544a6892e2bb1
 {
     public static $files = array (
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
@@ -12,8 +12,8 @@ class ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
-        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
@@ -30,8 +30,8 @@ class ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1
         '0b0974a5566a1077e4f2e111341112c1' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/normalize_server.php',
         '1ca3bc274755662169f9629d5412a1da' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/normalize_uploaded_files.php',
         '40360c0b9b437e69bcbb7f1349ce029e' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/parse_cookie_header.php',
-        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         '0b47d6d4a00ca9112ba3953b49e7c9a4' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/helper.php',
+        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
         '256c1545158fc915c75e51a931bdba60' => __DIR__ . '/..' . '/lcobucci/jwt/compat/class-aliases.php',
         '0d273777b2b0d96e49fb3d800c6b0e81' => __DIR__ . '/..' . '/lcobucci/jwt/compat/json-exception-polyfill.php',
@@ -41,8 +41,8 @@ class ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1
         'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
-        'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
+        'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         '0d8253363903f0ac7b0978dcde4e28a0' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/helpers.php',
     );
 
@@ -583,13 +583,18 @@ class ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Exports\\ExportLuckyList' => __DIR__ . '/../..' . '/app/Exports/ExportLuckyList.php',
         'App\\Exports\\ExportVoterList' => __DIR__ . '/../..' . '/app/Exports/ExportVoterList.php',
+        'App\\Favicon' => __DIR__ . '/../..' . '/app/Favicon.php',
         'App\\Http\\Controllers\\Admin\\CandidateController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/CandidateController.php',
         'App\\Http\\Controllers\\Admin\\CompanyController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/CompanyController.php',
         'App\\Http\\Controllers\\Admin\\DashboardController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/DashboardController.php',
         'App\\Http\\Controllers\\Admin\\ElectionController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ElectionController.php',
+        'App\\Http\\Controllers\\Admin\\FaviconController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/FaviconController.php',
+        'App\\Http\\Controllers\\Admin\\LogoController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/LogoController.php',
         'App\\Http\\Controllers\\Admin\\LuckyController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/LuckyController.php',
         'App\\Http\\Controllers\\Admin\\MRegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/MRegisterController.php',
         'App\\Http\\Controllers\\Admin\\QuestionController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/QuestionController.php',
+        'App\\Http\\Controllers\\Admin\\ReminderController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ReminderController.php',
+        'App\\Http\\Controllers\\Admin\\SmsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/SmsController.php',
         'App\\Http\\Controllers\\Admin\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/UserController.php',
         'App\\Http\\Controllers\\Admin\\VotingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/VotingController.php',
         'App\\Http\\Controllers\\Api\\MobileApiController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/MobileApiController.php',
@@ -618,7 +623,7 @@ class ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1
         'App\\Imports\\ImportCandidate' => __DIR__ . '/../..' . '/app/Imports/ImportCandidate.php',
         'App\\Imports\\ImportMember' => __DIR__ . '/../..' . '/app/Imports/ImportMember.php',
         'App\\Imports\\VoterImport' => __DIR__ . '/../..' . '/app/Imports/VoterImport.php',
-        'App\\LogoAndFavicon' => __DIR__ . '/../..' . '/app/LogoAndFavicon.php',
+        'App\\Logo' => __DIR__ . '/../..' . '/app/Logo.php',
         'App\\Lucky' => __DIR__ . '/../..' . '/app/Lucky.php',
         'App\\MRegister' => __DIR__ . '/../..' . '/app/MRegister.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
@@ -638,6 +643,7 @@ class ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1
         'BeyondCode\\DumpServer\\DumpServerServiceProvider' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/DumpServerServiceProvider.php',
         'BeyondCode\\DumpServer\\Dumper' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/Dumper.php',
         'BeyondCode\\DumpServer\\RequestContextProvider' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/RequestContextProvider.php',
+        'Carbon\\AbstractTranslator' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/AbstractTranslator.php',
         'Carbon\\Carbon' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Carbon.php',
         'Carbon\\CarbonConverterInterface' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonConverterInterface.php',
         'Carbon\\CarbonImmutable' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonImmutable.php',
@@ -694,6 +700,7 @@ class ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1
         'Carbon\\Traits\\Converter' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Converter.php',
         'Carbon\\Traits\\Creator' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Creator.php',
         'Carbon\\Traits\\Date' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Date.php',
+        'Carbon\\Traits\\DeprecatedProperties' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/DeprecatedProperties.php',
         'Carbon\\Traits\\Difference' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Difference.php',
         'Carbon\\Traits\\IntervalRounding' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/IntervalRounding.php',
         'Carbon\\Traits\\IntervalStep' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/IntervalStep.php',
@@ -711,6 +718,7 @@ class ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1
         'Carbon\\Traits\\Units' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Units.php',
         'Carbon\\Traits\\Week' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Week.php',
         'Carbon\\Translator' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Translator.php',
+        'Carbon\\TranslatorStrongTypeInterface' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/TranslatorStrongTypeInterface.php',
         'Collective\\Html\\Componentable' => __DIR__ . '/..' . '/laravelcollective/html/src/Componentable.php',
         'Collective\\Html\\Eloquent\\FormAccessible' => __DIR__ . '/..' . '/laravelcollective/html/src/Eloquent/FormAccessible.php',
         'Collective\\Html\\FormBuilder' => __DIR__ . '/..' . '/laravelcollective/html/src/FormBuilder.php',
@@ -1242,6 +1250,7 @@ class ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1
         'Faker\\Provider\\nl_BE\\Payment' => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker/Provider/nl_BE/Payment.php',
         'Faker\\Provider\\nl_BE\\Person' => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker/Provider/nl_BE/Person.php',
         'Faker\\Provider\\nl_BE\\PhoneNumber' => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker/Provider/nl_BE/PhoneNumber.php',
+        'Faker\\Provider\\nl_BE\\Text' => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker/Provider/nl_BE/Text.php',
         'Faker\\Provider\\nl_NL\\Address' => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker/Provider/nl_NL/Address.php',
         'Faker\\Provider\\nl_NL\\Color' => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker/Provider/nl_NL/Color.php',
         'Faker\\Provider\\nl_NL\\Company' => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker/Provider/nl_NL/Company.php',
@@ -5921,10 +5930,10 @@ class ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInite2353a823afc8d8b93d402d8b69dd9e1::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitd44f7c318dd572c78cc544a6892e2bb1::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitd44f7c318dd572c78cc544a6892e2bb1::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitd44f7c318dd572c78cc544a6892e2bb1::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitd44f7c318dd572c78cc544a6892e2bb1::$classMap;
 
         }, null, ClassLoader::class);
     }

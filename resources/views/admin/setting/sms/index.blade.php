@@ -45,16 +45,15 @@
                                             <div class="row mt-2">
                                                 <a type="button" id="addVoterName" style="user-select: none;"><i class="fas fa-plus"
                                                         aria-hidden="true"></i> Add Voter Name</a>
-                                                <a type="button" id="addShareCount" style="user-select: none; margin-left:10px;"><i class="fas fa-plus"
-                                                        aria-hidden="true"></i> Add Share Count</a>                                                
+                                                {{-- <a type="button" id="addShareCount" style="user-select: none; margin-left:10px;"><i class="fas fa-plus"
+                                                        aria-hidden="true"></i> Add Share Count</a>                                                 --}}
                                             </div>                                            
                                         </div>
                                     </div>       
                                     
                                     <p style="color: red; font-family: arisan; font-weight: bold">
                                                     &nbsp;&nbsp; (Note: &nbsp; "[:VoterName]" refer to specific voter's
-                                                    name and "[:ShareCount]" refer to specific voter's
-                                                    share count)</p>
+                                                    name)</p>
 
                                     <div class="col-sm-12 my-2">
                                         <div class="form-group mt-4">

@@ -50,7 +50,7 @@
                                     </div>       
                                     
                                     <p style="color: red; font-family: arisan; font-weight: bold">
-                                                    &nbsp;&nbsp; (Note: &nbsp; "[:MemberName]" refer to specific voter's
+                                                    &nbsp;&nbsp; (Note: &nbsp; "[:MemberName]" refer to specific member's
                                                     name )</p>
 
                                     <div class="col-sm-12 my-2">

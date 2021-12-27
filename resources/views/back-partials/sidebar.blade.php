@@ -137,11 +137,20 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.sms.index') }}"
-                                class="nav-link {{ $request->segment(2) == 'sms' ? 'active' : '' }}">
+                            <a href="{{ route('admin.member.sms.index') }}"
+                                class="nav-link {{ $request->segment(2) == 'sms' && $request->segment(3) == 'member' ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-sms"></i>
                                 <p>
-                                    SMS
+                                    Member SMS
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.sms.index') }}"
+                                class="nav-link {{ $request->segment(2) == 'sms' && $request->segment(3) == 'voter' ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-sms"></i>
+                                <p>
+                                    Voter SMS
                                 </p>
                             </a>
                         </li>

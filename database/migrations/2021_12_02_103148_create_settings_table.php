@@ -21,6 +21,7 @@ class CreateSettingsTable extends Migration
             $table->string('logo_image')->nullable();
             $table->longText('sms_text')->nullable();
             $table->longText('reminder_text')->nullable();
+            $table->longText('member_sms_text')->nullable();
             $table->timestamps();
         });
     }

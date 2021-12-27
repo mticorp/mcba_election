@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Classes\BulkSMS;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Election;
-use App\Favicon;
 use App\Imports\ImportMember;
-use App\Logo;
 use App\MRegister;
-use DB;
-use Image;
+use Intervention\Image\Facades\Image;
 use Carbon\Carbon;
-use Mail;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class MRegisterController extends Controller
 {
@@ -303,37 +300,17 @@ class MRegisterController extends Controller
 
                 if($phone)
                 {
+                    $phones = explode(',', $phone);
                     $phone_content = "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
                     တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။";
 
-                    $token = "KpgyfcKjibHEHccbCUX9uhrD";
-
-                    // Prepare data for POST request
-                    $data = [
-                        "to"        =>      $phone,
-                        "message"   =>      $phone_content,
-                        "sender"    =>      "MCBA"
-                    ];
-
-                    $ch = curl_init("http://159.138.135.30/smsserver/sendsms-token");
-                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                        'Authorization: Bearer ' . $token,
-                        'Content-Type: application/json'
-                    ]);
-
-                    $result = curl_exec($ch);
-                    $info = json_decode($result);
-                    if($info->status == "success")
-                    {
-
-                    }else{
+                    $result = BulkSMS::sendSMS($phones, $phone_content);
+                    if (isset($result->getData()->success)) {                        
+                    } else {
                         array_push($errors,[
                             $member->name.' SMS Send Fail'
                         ]);
-                    }
+                    }                                        
                 }else{
                     array_push($errors,[
                         $member->name.' Phone is Empty'
@@ -407,33 +384,13 @@ class MRegisterController extends Controller
 
                 if($phone)
                 {                    
+                    $phones = explode(',', $phone);
                     $phone_content = "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
                     တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။";
 
-                    $token = "KpgyfcKjibHEHccbCUX9uhrD";
-
-                    // Prepare data for POST request
-                    $data = [
-                        "to"        =>      $phone,
-                        "message"   =>      $phone_content,
-                        "sender"    =>      "MCBA"
-                    ];
-
-                    $ch = curl_init("http://159.138.135.30/smsserver/sendsms-token");
-                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                        'Authorization: Bearer ' . $token,
-                        'Content-Type: application/json'
-                    ]);
-
-                    $result = curl_exec($ch);
-                    $info = json_decode($result);
-                    if($info->status == "success")
-                    {
-
-                    }else{
+                    $result = BulkSMS::sendSMS($phones, $phone_content);
+                    if (isset($result->getData()->success)) {                        
+                    } else {
                         array_push($errors,[
                             $member->name.' SMS Send Fail'
                         ]);

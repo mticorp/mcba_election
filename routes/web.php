@@ -133,9 +133,12 @@ Route::group(['middleware' => 'setting'], function () {
             Route::get('/favicon/edit/{id}', 'Admin\FaviconController@edit')->name('admin.favicon.edit');
             Route::post('/favicon/update', 'Admin\FaviconController@update')->name('admin.favicon.update');
 
-            //SMS route
-            Route::get('/sms', 'Admin\SmsController@index')->name('admin.sms.index');
-            Route::post('/sms/update', 'Admin\SmsController@update')->name('admin.sms.update');
+            //Member SMS route
+            Route::get('/sms/member', 'Admin\SmsController@memberIndex')->name('admin.member.sms.index');
+            Route::post('/sms/member/update', 'Admin\SmsController@memberUpdate')->name('admin.member.sms.update');
+            //Voter SMS route
+            Route::get('/sms/voter', 'Admin\SmsController@index')->name('admin.sms.index');
+            Route::post('/sms/voter/update', 'Admin\SmsController@update')->name('admin.sms.update');
              //Reminder route
             Route::get('/reminder', 'Admin\SmsController@reminderIndex')->name('admin.reminder.index');
             Route::post('/reminder/update', 'Admin\SmsController@reminderUpdate')->name('admin.reminder.update');                   

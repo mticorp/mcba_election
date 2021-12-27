@@ -37,4 +37,15 @@ class SmsController extends Controller
         Setting::first()->update(['reminder_text' => $request->reminder_text + " "]);
         return redirect()->back();
     }
+
+    public function memberIndex()
+    {
+        return view('admin.setting.member-sms.index');
+    }
+
+    public function memberUpdate(Request $request)
+    {
+        Setting::first()->update(['member_sms_text' => $request->sms_text . " "]);
+        return redirect()->back();
+    }
 }

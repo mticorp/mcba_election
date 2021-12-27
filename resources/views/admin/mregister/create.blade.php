@@ -225,6 +225,7 @@
  </section>
 @endsection
 @section('javascript')
+    <script src="{{asset('js/mm-nrc.js')}}"></script>
     <script>
         $(document).ready(function(){
 
@@ -283,6 +284,9 @@
                 }
 
                 var nrc_no = nrc_first + "/" + nrc_second + "(N)" + nrc_third;
+                console.log(nrc_no);
+                return false;
+                
                 $("input[name=nrc]").val(nrc_no);
 
                 $.ajax({

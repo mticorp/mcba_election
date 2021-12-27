@@ -17,6 +17,8 @@ use Intervention\Image\Facades\Image;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+// use Stichoza\GoogleTranslate\GoogleTranslate;
+use Illuminate\Support\Str;
 
 class MRegisterController extends Controller
 {
@@ -42,6 +44,7 @@ class MRegisterController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
+       
         return view('admin.mregister.index');
     }
 
@@ -51,7 +54,7 @@ class MRegisterController extends Controller
     }
 
     public function store(Request $request)
-    {
+    {                            
         $error =  Validator::make($request->all(), [
             'refer_code' => 'required|max:255',
             'name' => 'required|string|max:255',
@@ -86,11 +89,22 @@ class MRegisterController extends Controller
         }else{
             $new_name = '/images/user.png';
         }
+
+        // $en = new GoogleTranslate('en');
+        // $nrc_no = $en->translate($request->nrc);
+        // $nrc_no = str_replace(' ', '', $nrc_no);
+        // $state_district = explode('/',$nrc_no);
+        // $state_no = $state_district[0];
+        // $district = explode('(',$state_district[1]);        
+        // $register_no = explode(')',$nrc_no)[1];
+
+        // $myanmar_nrc = $state_no . "/" . Str::lower($district[0]) . "(N)" . $register_no;        
+        
         $form_data = array(
             "refer_code" => $request->refer_code,
             "name"     => $request->name,
             "email"     => $request->email,
-            "nrc"       => $request->nrc,
+            "nrc"       => $myanmar_nrc,
             "complete_training_no"   => $request->complete_training_no,
             "valuation_training_no"   => $request->valuation_training_no,
             "AHTN_training_no" => $request->AHTN_training_no,
@@ -183,11 +197,21 @@ class MRegisterController extends Controller
             $image_name = '/upload/member/' . $filename;
         }
 
+        // $en = new GoogleTranslate('en');
+        // $nrc_no = $en->translate($request->nrc);
+        // $nrc_no = str_replace(' ', '', $nrc_no);
+        // $state_district = explode('/',$nrc_no);
+        // $state_no = $state_district[0];
+        // $district = explode('(',$state_district[1]);        
+        // $register_no = explode(')',$nrc_no)[1];
+
+        // $myanmar_nrc = $state_no . "/" . Str::lower($district[0]) . "(N)" . $register_no;     
+
         $form_data = array(
             "refer_code" => $request->refer_code,
             "name"     => $request->name,
             "email"     => $request->email,
-            "nrc"       => $request->nrc,
+            "nrc"       => $myanmar_nrc,
             "complete_training_no"   => $request->complete_training_no,
             "valuation_training_no"   => $request->valuation_training_no,
             "AHTN_training_no" => $request->AHTN_training_no,

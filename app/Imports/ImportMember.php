@@ -7,9 +7,11 @@ use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
+// use Stichoza\GoogleTranslate\GoogleTranslate;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Illuminate\Support\Str;
 
-class ImportMember implements ToModel,WithHeadingRow,WithValidation
-{
+class ImportMember implements ToModel,WithHeadingRow,WithValidation,WithChunkReading {
     use Importable;
 
     /**
@@ -25,9 +27,20 @@ class ImportMember implements ToModel,WithHeadingRow,WithValidation
         }else{
             $profile = $row['profile'];
         }
+        
+        // $en = new GoogleTranslate('en');
+        // $nrc_no = $en->translate($row['nrc_no']);        
+        // $nrc_no = str_replace(' ', '', $nrc_no);
+        // $state_district = explode('/',$nrc_no);
+        // $state_no = $state_district[0];
+        // $district = explode('(',$state_district[1]);        
+        // $register_no = explode(')',$nrc_no)[1];
+
+        // $myanmar_nrc = $state_no . "/" . Str::lower($district[0]) . "(N)" . $register_no; 
+        
         return new MRegister([
             'profile' =>   $profile,
-            'name'     => $row['name'],
+            'name'     => $myanmar_nrc,
             'nrc'       => $row['nrc_no'],
             'refer_code' => $row['customs_reference_code'],
             'complete_training_no'   => $row['complete_training_no'],
@@ -55,5 +68,10 @@ class ImportMember implements ToModel,WithHeadingRow,WithValidation
             'name' => 'required|string',
             'nrc_no' => 'required|string',
         ];
+    }
+
+    public function chunkSize(): int
+    {
+        return 100;
     }
 }

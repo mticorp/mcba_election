@@ -1,0 +1,9 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.mti.mmvote",
+      "sha256_cert_fingerprints":
+      ["30:6E:B7:62:45:B9:96:03:A2:7D:5C:14:A4:1D:5C:B6:BC:45:07:7C:94:8A:08:73:28:35:A2:25:B7:B4:D5:C1"]
+    }
+  }]

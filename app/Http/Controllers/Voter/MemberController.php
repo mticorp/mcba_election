@@ -17,8 +17,6 @@ class MemberController extends Controller
 {
     public function register()
     {
-
-
         return view('member.register');
     }
 
@@ -42,7 +40,7 @@ class MemberController extends Controller
         $nrc_no = $request->nrc_no;
         $phone_no = $request->phone_no;
 
-        $member = MRegister::where('refer_code', $refer_code)->orWhere('yellowCard', $refer_code)->first();
+        $member = MRegister::where('refer_code', $refer_code)->first();
         $phone_number = explode(",", $member->phone_number);
         $check = [];
         if ($member) {

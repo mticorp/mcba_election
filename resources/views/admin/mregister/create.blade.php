@@ -284,8 +284,8 @@
                 }
 
                 var nrc_no = nrc_first + "/" + nrc_second + "(N)" + nrc_third;
-                console.log(nrc_no);
-                return false;
+                // console.log(nrc_no);
+                // return false;
                 
                 $("input[name=nrc]").val(nrc_no);
 

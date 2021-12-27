@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ImportMember;
 use App\MRegister;
+use App\Setting;
 use Intervention\Image\Facades\Image;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -242,8 +243,7 @@ class MRegisterController extends Controller
     }
 
     public function Import(Request $request)
-    {
-        // dd($request->all());
+    {        
         if($request->ajax())
         {
             $validator = Validator::make([
@@ -287,6 +287,7 @@ class MRegisterController extends Controller
 
     public function sendMessage(Request $request)
     {
+        $setting = Setting::first();
         $errors = [];
         if($request->check_val)
         {
@@ -301,8 +302,10 @@ class MRegisterController extends Controller
                 if($phone)
                 {
                     $phones = explode(',', $phone);
-                    $phone_content = "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
-                    တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။";
+                    $phone_content = ($setting->member_sms_text == null) ?
+                    "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
+                    တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။" :
+                    str_replace('[:MemberName]', $member->name, $setting->member_sms_text) . $url;                    
 
                     $result = BulkSMS::sendSMS($phones, $phone_content);
                     if (isset($result->getData()->success)) {                        
@@ -319,8 +322,10 @@ class MRegisterController extends Controller
 
                 if($email)
                 {
-                    $content = "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Button အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ                    
-                    တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်";
+                    $content = ($setting->member_sms_text == null) ?
+                    "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
+                    တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။" :
+                    str_replace('[:MemberName]', $member->name, $setting->member_sms_text);
 
                     $time = Carbon::now();
                     $datetime = $time->toDateTimeString();
@@ -372,6 +377,7 @@ class MRegisterController extends Controller
 
     public function smsMessageOnly(Request $request)
     {
+        $setting = Setting::first();
         $errors = [];
         if($request->check_val)
         {
@@ -385,8 +391,10 @@ class MRegisterController extends Controller
                 if($phone)
                 {                    
                     $phones = explode(',', $phone);
-                    $phone_content = "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
-                    တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။";
+                    $phone_content = ($setting->member_sms_text == null) ?
+                    "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
+                    တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။" :
+                    str_replace('[:MemberName]', $member->name, $setting->member_sms_text) . $url;    
 
                     $result = BulkSMS::sendSMS($phones, $phone_content);
                     if (isset($result->getData()->success)) {                        
@@ -419,6 +427,7 @@ class MRegisterController extends Controller
 
     public function emailMessageOnly(Request $request)
     {
+        $setting = Setting::first();
         $errors = [];
         if($request->check_val)
         {
@@ -430,9 +439,10 @@ class MRegisterController extends Controller
 
                 if($email)
                 {
-                    // $content = "မင်္ဂလာပါ! အောက်ဖော်ပြပါ Button အားနှိပ်၍ ဝင်ရောက် Register လုပ်နိုင်ပါပြီ။";
-                    $content = "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Button အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ                    
-                    တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်";
+                    $content = ($setting->member_sms_text == null) ?
+                    "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
+                    တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။" :
+                    str_replace('[:MemberName]', $member->name, $setting->member_sms_text);
 
                     $time = Carbon::now();
                     $datetime = $time->toDateTimeString();

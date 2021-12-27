@@ -43,18 +43,15 @@
                                     <div class="col-sm-12 my-2">
                                         <div class="form-group mt-4">
                                             <div class="row mt-2">
-                                                <a type="button" id="addVoterName" style="user-select: none;"><i class="fas fa-plus"
-                                                        aria-hidden="true"></i> Add Voter Name</a>
-                                                <a type="button" id="addShareCount" style="user-select: none; margin-left:10px;"><i class="fas fa-plus"
-                                                        aria-hidden="true"></i> Add Share Count</a>                                                
+                                                <a type="button" id="addMemberName" style="user-select: none;"><i class="fas fa-plus"
+                                                        aria-hidden="true"></i> Add Member Name</a>                                                                                
                                             </div>                                            
                                         </div>
                                     </div>       
                                     
                                     <p style="color: red; font-family: arisan; font-weight: bold">
-                                                    &nbsp;&nbsp; (Note: &nbsp; "[:VoterName]" refer to specific voter's
-                                                    name and "[:ShareCount]" refer to specific voter's
-                                                    share count)</p>
+                                                    &nbsp;&nbsp; (Note: &nbsp; "[:MemberName]" refer to specific voter's
+                                                    name )</p>
 
                                     <div class="col-sm-12 my-2">
                                         <div class="form-group mt-4">
@@ -62,7 +59,7 @@
                                                 <div class="col-md-12">
                                                     <button type="submit" class="btn btn-outline-primary btn-block"><i
                                                             class="fas fa-save" aria-hidden="true"></i>
-                                                        {{ ($setting->sms_text == Null ) ? " Save SMS" : "Update SMS" }}</button>
+                                                        {{ ($setting->member_sms_text == Null ) ? " Save SMS" : "Update SMS" }}</button>
 
                                                 </div>                                                
                                             </div>
@@ -81,23 +78,14 @@
 @endsection
 @section('javascript')
 <script>
-    $("#addVoterName").on('click',function(e){
+    $("#addMemberName").on('click',function(e){
         let cursorPos = $('#sms_text').prop('selectionStart');
         let text = $("#sms_text").val();
         var textBefore = text.substring(0,  cursorPos );
         var textAfter  = text.substring( cursorPos, text.length );
-        $('#sms_text').val( textBefore+ " [:VoterName] " +textAfter );        
+        $('#sms_text').val( textBefore+ " [:MemberName] " +textAfter );        
         e.preventDefault();
-    })
-
-    $("#addShareCount").on('click',function(e){
-        let cursorPos = $('#sms_text').prop('selectionStart');
-        let text = $("#sms_text").val();
-        var textBefore = text.substring(0,  cursorPos );
-        var textAfter  = text.substring( cursorPos, text.length );
-        $('#sms_text').val( textBefore+ " [:ShareCount] " +textAfter );       
-        e.preventDefault();
-    })
+    })   
 
 </script>
 @endsection

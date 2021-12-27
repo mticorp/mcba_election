@@ -211,11 +211,6 @@ class GenerateController extends Controller
         $email = $voters->email;
         $phone  = $voters->phone_no;
 
-        $content = ($setting->sms_text == null) ?
-            " မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။ " :
-            str_replace(['[:VoterName]', '[:ShareCount]'], [$voters->name, "(" . $voters->vote_count . ")"], $setting->sms_text) . $url;
-
-
         if ($phone) {
             $phones = explode(',', $phone);                   
             $phone_content = ($setting->sms_text == null) ?
@@ -231,6 +226,10 @@ class GenerateController extends Controller
         }        
 
         if ($email) {
+            $content = ($setting->sms_text == null) ?
+            " မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။ " :
+            str_replace(['[:VoterName]', '[:ShareCount]'], [$voters->name, "(" . $voters->vote_count . ")"], $setting->sms_text);
+
             $time = Carbon::now();
             $datetime = $time->toDateTimeString();
             $DT = explode(' ', $datetime);
@@ -312,7 +311,7 @@ class GenerateController extends Controller
         if ($email) {
             $content =  ($setting->sms_text == null) ?
                 "မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။" :
-                str_replace(['[:VoterName]', '[:ShareCount]'], [$voters->name, "(" . $voters->vote_count . ")"], $setting->sms_text) . $url;
+                str_replace(['[:VoterName]', '[:ShareCount]'], [$voters->name, "(" . $voters->vote_count . ")"], $setting->sms_text);
             $time = Carbon::now();
             $datetime = $time->toDateTimeString();
             $DT = explode(' ', $datetime);
@@ -358,9 +357,7 @@ class GenerateController extends Controller
         $url = route('vote.link', ['voter_id' => $non_vote_voter->voter_id]);
         $setting = Setting::first();
 
-        $content =  ($setting->reminder_text == Null) ?
-            "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။" . $url :
-            str_replace(['[:VoterName]', '[:ShareCount]'], [$non_vote_voter->name, "(" . $non_vote_voter->vote_count . ")"], $setting->reminder_text) . $url;
+        
 
         if ($non_vote_voter->phone_no) {
             $phones = explode(',', $non_vote_voter->phone_no);
@@ -379,6 +376,11 @@ class GenerateController extends Controller
         }
 
         if ($non_vote_voter->email) {
+
+            $content =  ($setting->reminder_text == Null) ?
+            "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။" :
+            str_replace(['[:VoterName]', '[:ShareCount]'], [$non_vote_voter->name, "(" . $non_vote_voter->vote_count . ")"], $setting->reminder_text);
+
             $time = Carbon::now();
             $datetime = $time->toDateTimeString();
             $DT = explode(' ', $datetime);
@@ -425,8 +427,8 @@ class GenerateController extends Controller
         if ($non_vote_voter->email) {
             //$content = "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။";
             $content =  ($setting->reminder_text == Null) ?
-                "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။" . $url :
-                str_replace(['[:VoterName]', '[:ShareCount]'], [$non_vote_voter->name, "(" . $non_vote_voter->vote_count . ")"], $setting->reminder_text) . $url;
+                "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။":
+                str_replace(['[:VoterName]', '[:ShareCount]'], [$non_vote_voter->name, "(" . $non_vote_voter->vote_count . ")"], $setting->reminder_text);
 
             $time = Carbon::now();
             $datetime = $time->toDateTimeString();

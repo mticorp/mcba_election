@@ -26,6 +26,7 @@ class MRegister extends Model
         'officeEmail',
         'yellowCard',
         'pinkCard',
+        'check_flag'
     ];
 
     protected $table = 'm_registers';

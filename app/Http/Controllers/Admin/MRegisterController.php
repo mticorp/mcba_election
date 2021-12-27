@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Classes\BulkSMS;
+use App\Election;
+use App\ElectionVoter;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -10,6 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ImportMember;
 use App\MRegister;
 use App\Setting;
+use App\Voter;
 use Intervention\Image\Facades\Image;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -490,5 +493,65 @@ class MRegisterController extends Controller
 
             return response()->json(['errors' => $errors]);
         }
+    }
+
+    public function generateVID(Request $request)
+    {
+        $request->validate([
+            'check_val' => 'required|array|min:1',            
+        ]);
+
+        $collection = collect($request->check_val);
+        $already = [];
+        foreach($collection->chunk(100) as $data)
+        {
+            foreach($data as $val)
+            {                
+                // MRegister::whereId($val)->update(['check_flag' => 1]);
+                $member = MRegister::find($val);
+                if($member && $member->check_flag == 0)
+                {
+                    $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+                    $pin = $characters[rand(0, strlen($characters) - 1)] . mt_rand(10, 99) . $characters[rand(0, strlen($characters) - 1)];
+
+                    // shuffle the result
+                    $pin_code = str_shuffle($pin);
+                    $voter = new Voter();
+                    $voter->voter_id = $pin_code;
+                    $voter->vote_count = 1;
+                    $voter->name = $member->name;
+                    $voter->email = $member->email;
+                    $voter->phone_no = $member->phone_number;
+                    $voter->save();
+
+                    $member->update(['check_flag' => 1]);
+
+                    $voter_data = Voter::where("voter_id", $pin_code)->first();
+                    DB::table('logs')->insert([
+                        'voter_id' => $voter_data->id,
+                    ]);
+
+                    $elections = Election::all();
+                    if (count($elections) > 0) {
+                        foreach ($elections as $election) {
+                            $election_voter = new ElectionVoter();
+                            $election_voter->election_id = $election->id;
+                            $election_voter->voter_id = $voter_data->id;
+                            $election_voter->save();
+                        }
+                    }
+                }else{
+                    $already['response'] = 'Already Generated Data are not going to generate again!';
+                }
+            }
+        }
+                
+        if(count($already) > 0)
+        {
+            return response()->json(['success' => 'Successfully Generated (Already Generated Data are not going to generate again!)']);
+        }else{
+            return response()->json(['success' => 'Successfully Generated']);
+        }       
     }
 }

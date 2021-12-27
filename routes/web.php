@@ -208,6 +208,8 @@ Route::group(['middleware' => 'setting'], function () {
             Route::post('/register/send-message(SMS)', 'Admin\MRegisterController@smsMessageOnly')->name('member.message.smsOnly');
             Route::post('/register/send-message(Email)', 'Admin\MRegisterController@emailMessageOnly')->name('member.message.emailOnly');
 
+            Route::post('/register/generate/voterID','Admin\MRegisterController@generateVID')->name('member.generate.vid');
+
             Route::post('/excel/generate-vid', 'Generator\GenerateController@excelGenerate')->name('vid.excel.generate-vid');
             Route::get('/excel-download', 'Generator\GenerateController@excelDownload')->name('vid.excel.template-download');
         });

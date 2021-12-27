@@ -40,21 +40,26 @@
                                 <a href="{{ route('admin.register.excel.import') }}" class="btn btn-danger btn-flat"><i
                                         class="fas fa-file-excel" aria-hidden="true"></i> Excel Import</a>
                                 <a href="{{ route('admin.register.create') }}" class="btn btn-success btn-flat"><i
-                                        class="fa fa-plus" aria-hidden="true"></i> Add Member</a>
+                                        class="fa fa-plus" aria-hidden="true"></i> Add Member</a>                                
                             </div>
                         </div>
                         <div class="card-body table-responsive">
                             <div class="row mb-4">
-                                <div class="col-md-12">
-                                    <button type="button" class="btn btn-outline-success" id="btn_sendAll"><i
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-outline-success btn-sm" id="btn_sendAll"><i
                                             class="fa fa-paper-plane" aria-hidden="true"></i> Send Message (All)
                                     </button>
-                                    <button type="button" class="btn btn-outline-success" id="btn_sendSelected"><i
+                                    <button type="button" class="btn btn-outline-success btn-sm" id="btn_sendSelected"><i
                                             class="fa fa-paper-plane" aria-hidden="true"></i> Send Message (Selected)
                                     </button>
                                 </div>
+                                <div class="col-md-6 text-center text-md-right mt-3 mt-md-0">
+                                    <button type="button" class="btn btn-info btn-sm" id="btn_GenerateVoterID"><i
+                                        class="fa fa-print" aria-hidden="true"></i> Generate VoterID (Selected)
+                                </button>
+                                </div>
                             </div>
-                            <table id="membertable" class="table table-valign-middle table-border">
+                            <table id="membertable" class="table table-valign-middle table-border" style="width:100%;">
                                 <thead>
                                     <tr>
                                         <th> &nbsp; <input type="checkbox" name="checked_all" class="checkbox"></th>
@@ -167,8 +172,7 @@
 @section('javascript')
     <script>
         $(document).ready(function() {
-
-            $('#membertable').DataTable({
+            var table = $('#membertable').DataTable({
                 "lengthMenu": [
                     [10, 25, 50, -1],
                     [10, 25, 50, "All"]
@@ -229,12 +233,13 @@
                     {
                         data: 'check_flag',
                         name: 'check_flag',
+                        className:'text-center',
                         render: function(data, type, full, meta) {
                             if(data == 1)
                             {
-                                return "<p class='text-success'>Done</p>";
+                                return "<span class='badge badge-success'>Done</span>";
                             }else{
-                                return "<p class='text-danger'>Not Yet</p>";
+                                return "<span class='badge badge-danger'>Not Yet</span>";
                             }
                         }
                     },
@@ -409,6 +414,66 @@
                     error: function(response) {
                         $.unblockUI();
                         $("#confirmModal").modal('hide');
+                        if (response['responseJSON']) {
+                            toastr.error('Info - ' + response['responseJSON'].message)
+                        } else {
+                            toastr.error('Info - Something Went Wrong!')
+                        }
+                    }
+                });
+            })
+
+            $(document).on('click','#btn_GenerateVoterID',function(){
+                var check = $('input[name=checked]:checked').length;
+                
+                if (check == 0) {
+                    toastr.error("Warning - Please Select At Least One Row to Generate!")
+                    return false;
+                }
+
+                var checkData = [];
+
+                $.blockUI({
+                    css: {
+                        backgroundColor: 'transparent',
+                        top: '0px',
+                        left: '0px',
+                        width: $(document).width(),
+                        height: $(document).height(),
+                        padding: '20%',
+                    },
+                    baseZ: 2000,
+                    message: '<img src="{{ url('images/loader.gif') }}" width="150" />',
+                });
+
+                $("tbody tr input[name=checked]:checked").each(function() {
+                    var check_val = $(this).val();
+                    checkData.push(check_val);
+                })
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{route('member.generate.vid')}}",
+                    data: {
+                        check_val: checkData,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        // console.log(data);
+                        $.unblockUI();       
+                        if (data.errors) {
+                            for (var count = 0; count < data.errors.length; count++) {
+                                toastr.error('Info - ' + data.errors[count])
+                            }
+                        } else if (data.success) {
+                            toastr.info('Info - ' + data.success)
+                            $("input[name=checked_all]").prop('checked',false);
+                            table.ajax.reload();
+                        }                 
+                    },
+                    error: function(response) {
+                        $.unblockUI();                       
                         if (response['responseJSON']) {
                             toastr.error('Info - ' + response['responseJSON'].message)
                         } else {

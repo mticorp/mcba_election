@@ -228,27 +228,27 @@
 <script>
     $(document).ready(function(){        
 
-        var nrc_no = "{{$member->nrc}}";
-        // console.log(nrc_no);
-        var nrc_no = nrc_no.split("/");
-        $("#nrc_first option[value="+nrc_no[0]+"]").attr('selected','selected');
+        // var nrc_no = "{{$member->nrc}}";
+        // // console.log(nrc_no);
+        // var nrc_no = nrc_no.split("/");
+        // $("#nrc_first option[value="+nrc_no[0]+"]").attr('selected','selected');
         
-        var value1 = nrc_no[0];
-        var data1 = nrc_data[value1];
+        // var value1 = nrc_no[0];
+        // var data1 = nrc_data[value1];
            
-        var data1 = data1.sort();
+        // var data1 = data1.sort();
         var select = `<option disabled selected value> </option>`;
 
-        $("#nrc_second").html(select);
-        $.each(data1,function(i,v){
-            var html = `<option value="${v}">${v}</option>`;
-            $("#nrc_second").append(html);
-        })
+        // $("#nrc_second").html(select);
+        // $.each(data1,function(i,v){
+        //     var html = `<option value="${v}">${v}</option>`;
+        //     $("#nrc_second").append(html);
+        // })
         
-        var nrcSecond = nrc_no[1].split("(N)");
-        $("#nrc_second option[value="+nrcSecond[0]+"]").attr('selected','selected');
+        // var nrcSecond = nrc_no[1].split("(N)");
+        // $("#nrc_second option[value="+nrcSecond[0]+"]").attr('selected','selected');
 
-        $("#nrc_third").val(nrcSecond[1]);
+        // $("#nrc_third").val(nrcSecond[1]);
 
         $("#nrc_first").on('change',function(){
             var value = $(this).val();
@@ -260,7 +260,7 @@
                 var html = `<option value="${v}">${v}</option>`;
                 $("#nrc_second").append(html);
             })
-        })  
+        })
 
         $('form#EditForm').on('submit',function(event){
             event.preventDefault();

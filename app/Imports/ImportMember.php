@@ -40,7 +40,7 @@ class ImportMember implements ToModel,WithHeadingRow,WithValidation,WithChunkRea
         
         return new MRegister([
             'profile' =>   $profile,
-            'name'     => $myanmar_nrc,
+            'name'     => $row['name'],
             'nrc'       => $row['nrc_no'],
             'refer_code' => $row['customs_reference_code'],
             'complete_training_no'   => $row['complete_training_no'],

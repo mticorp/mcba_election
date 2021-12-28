@@ -212,7 +212,7 @@
                                 </div>
                                 <div class="row my-3">
                                     <div class="col-md-12 text-center">
-                                        <button type="submit" class="btn btn-info btn-md btn-block"><i class="fas fa-save"></i> Save</button>
+                                        <button type="submit" class="btn btn-info btn-md btn-block" id="btn_save"><i class="fas fa-save"></i> Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -264,6 +264,7 @@
 
         $('form#EditForm').on('submit',function(event){
             event.preventDefault();
+            $("#btn_save").attr('disabled',true);
             $('input').blur();
             $.blockUI({
                 css: {
@@ -284,18 +285,21 @@
 
             if (nrc_first == '') {
                 $.unblockUI();
+                $("#btn_save").attr('disabled',false);
                 toastr.error('Info - NRC is Required.')
                 return false;
             }
 
             if (nrc_second == '') {
                 $.unblockUI();
+                $("#btn_save").attr('disabled',false);
                 toastr.error('Info - NRC is Required.')
                 return false;
             }
 
             if (nrc_third == '') {
                 $.unblockUI();
+                $("#btn_save").attr('disabled',false);
                 toastr.error('Info - NRC is Required.')
                 return false;
             }
@@ -315,13 +319,14 @@
                     success: function(data) {
                         if (data.errors) {
                             $.unblockUI();
+                            $("#btn_save").attr('disabled',false);
                             for (var count = 0; count < data.errors.length; count++) {
                                 toastr.error('Info - ' + data.errors[count])
                             }
                         }
                         if (data.success) {
                             var url = '{{ route("vote.member.register.complete") }}';
-
+                            
                             window.location.href = url;
                         }
                     }

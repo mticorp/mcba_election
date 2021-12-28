@@ -32,50 +32,26 @@ class LoginController extends Controller
     public function sendOtp(Request $request)
     {
         $voter_table_id = $request->session()->get('voter_table_id');
-        $phone_number = new MyanmarPhoneNumber();
         $voter = Voter::find($voter_table_id);
 
-        if($request->phones)
-        {
-            $validator = Validator::make($request->all(), [
-                'phone' => 'required|min:7',
-            ]);
-
-            if ($validator->fails()) {
-                return redirect()->back()->with('status', $validator->errors()->first());
-            }
-            
-            $generated_phone = $phone_number->add_prefix($request->phone);            
-        }else{            
-            $generated_phone = $phone_number->add_prefix($voter->phone_no);
-        }        
-
-        if (starts_with($generated_phone, '959')) {
-            $generated_phone = substr($generated_phone, 3);
-        } else if (starts_with($generated_phone, '09')) {
-            $generated_phone = substr($generated_phone, 2);
-        }
-
-        $voter = Voter::where('id', $voter_table_id)
-            ->where('phone_no', 'like', "%" . $generated_phone . "%")
-            ->first();
-        
-        if (!$voter) {
-            return redirect()->back()->with('status', 'Voter not found')->withInput();
-        }
-
-        $otp = rand(100000, 999999);
-        $message = "$otp is your OTP, Welcome to MTI's eVoting System";
-        $bulksms = new BulkSMS();            
-        $phones = ['09' . $generated_phone];        
-        $msgResponse = $bulksms->sendSMS($phones, $message);
-        if (isset($msgResponse->getData()->success)) {
-            Session::forget('OTP');
-            Session::put('OTP', $otp);
-
-            return redirect()->route('voter.verifyView');
+        if ($voter->phone_no == "") {
+            return redirect()->back()->with('status', 'Phone Number is not exist in this voter!');
         } else {
-            return redirect()->back()->with('status', 'Failed to send OTP. Please try again!')->withInput();
+            $phones = explode(',',$voter->phone_no);
+            $otp = rand(100000, 999999);
+            
+            $message = "$otp is your OTP, Welcome to MTI's eVoting System ";
+            $bulksms = new BulkSMS();
+            $msgResponse = $bulksms->sendSMS($phones, $message);
+
+            if (isset($msgResponse->getData()->success)) {
+                Session::forget('OTP');
+                Session::put('OTP', $otp);
+
+                return redirect()->route('voter.verifyView');
+            } else {
+                return redirect()->back()->with('status', 'Invalid Phone Number');
+            }
         }
     }
 

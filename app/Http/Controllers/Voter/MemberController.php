@@ -76,15 +76,13 @@ class MemberController extends Controller
         $error =  Validator::make($request->all(), [
             'refer_code' => 'required|max:255',
             'name' => 'required|string|max:255',
-            'phone_number' => 'required',
-            'nrc_no' => 'required|max:255',
-            'email' => 'email|nullable',
-            'officeEmail' => 'email|nullable',
+            'phone_number' => 'required',            
+            'email' => 'nullable',
+            'officeEmail' => 'nullable',
         ], [
             'refer_code.required' => 'Reference Code ဖြည့်စွက်ရန်.',
             'name.required' => 'အမည် ဖြည့်စွက်ရန်.',
             'phone_number.required' => 'ဖုန်းနံပါတ်၊ ဖက်စ်နံပါတ်၊ မိုလ်ဘိုင်းဖုန်း ဖြည့်စွက်ရန်.',
-            'nrc_no.required' => 'နိုင်ငံသားစီစစ်ရေး / အမျိုးသားမှတ်ပုံတင်အမှတ် ဖြည့်စွက်ရန်.',
             'email.email' => "Email is Invaild Format",
             'officeEmail.email' => "Email is Invaild Format",
         ]);

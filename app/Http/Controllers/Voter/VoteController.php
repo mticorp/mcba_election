@@ -25,10 +25,11 @@ class VoteController extends Controller
         $election = $election_modal->electionWithId($election_id);
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
-            $DT_data = Result::orderBy('result.vote_count', 'desc')
-                ->where('candidate.election_id', $election_id)
-                ->leftJoin('candidate', 'candidate.id', '=', 'result.candidate_id')
-                ->get(['candidate.*', 'result.vote_count as result_vote_count', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
+            // $DT_data = Result::orderBy('result.vote_count', 'desc')
+            //     ->where('candidate.election_id', $election_id)
+            //     ->leftJoin('candidate', 'candidate.id', '=', 'result.candidate_id')
+            //     ->get(['candidate.*', 'result.vote_count as result_vote_count', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
+            $DT_data = Candidate::orderBy('candidate.vote_count','desc')->where('candidate.election_id',$election_id)->get(['candidate.*','candidate.vote_count as result_vote_count', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
             return datatables()->of($DT_data)
                 ->make(true);
         }

@@ -13,7 +13,9 @@ class BulkSMS{
             $response = "";
             $error = "";
             foreach($mobileNumber as $phone)
-            {                                                
+            {      
+                $phone = str_replace("-", "", $phone);                                          
+                $phone = str_replace(" ", "", $phone);
                 // Prepare data for POST request
                 $data = [
                     "to"        =>      $phone,
@@ -47,10 +49,12 @@ class BulkSMS{
                                
                 return response()->json(['success' => $response. "Successfully Send!"]);
             }
-        }else{            
+        }else{
+            $phone = str_replace("-", "", $mobileNumber[0]);                                          
+            $phone = str_replace(" ", "", $phone);
             // Prepare data for POST request
             $data = [
-                "to"        =>      $mobileNumber[0],
+                "to"        =>      $phone,
                 "message"   =>      $message,
                 "sender"    =>      "MCBA"
             ];

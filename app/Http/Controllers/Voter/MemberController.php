@@ -40,37 +40,20 @@ class MemberController extends Controller
         $nrc_no = $request->nrc_no;
         $phone_no = $request->phone_no;
 
-        $member = MRegister::where('refer_code', $refer_code)->first();
-        $phone_number = explode(",", $member->phone_number);
+        $member = MRegister::where('refer_code', $refer_code)->orWhere('phone_number',$phone_no)->orWhere('nrc',$nrc_no)->first();
+        // $phone_number = explode(",", $member->phone_number);
+        
         $check = [];
         if ($member) {
-            if ($member->nrc == $nrc_no) {
-                foreach ($phone_number as $ph) {
-                    if ($ph == $phone_no) {
-                        array_push($check, true);
-                    } else {
-                        array_push($check, false);
-                    }
-                }
-
-                if (in_array(true, $check)) {
-                    if ($member->check_flag == 0) {
-                        $encrypted = Crypt::encryptString($member->id);
-                        return response()->json(['success' => 'Data Added successfully.', 'member_id' => $encrypted]);
-                    } else {
-                        $validator->errors()->add('refer_code', 'Your are already Registered.');
-                        return response()->json(['errors' => $validator->errors()->all()]);
-                    }
-                } else {
-                    $validator->errors()->add('phone_no', 'Invalid Phone Number');
-                    return response()->json(['errors' => $validator->errors()->all()]);
-                }
+            if ($member->check_flag == 0) {
+                $encrypted = Crypt::encryptString($member->id);
+                return response()->json(['success' => 'Data Added successfully.', 'member_id' => $encrypted]);
             } else {
-                $validator->errors()->add('name', 'Invalid NRC');
+                $validator->errors()->add('refer_code', 'Your are already Registered.');
                 return response()->json(['errors' => $validator->errors()->all()]);
             }
         } else {
-            $validator->errors()->add('refer_code', 'Invalid Reference Code');
+            $validator->errors()->add('refer_code', 'Invalid Information');
             return response()->json(['errors' => $validator->errors()->all()]);
         }
     }

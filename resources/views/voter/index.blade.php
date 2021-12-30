@@ -60,14 +60,14 @@
                                 </div>
                                 <div class="card-footer text-center py-0 px-0">
                                     <div class="row justify-content-center">
-                                        <div class="col-6 pr-0">
+                                        <div class="col-12">
                                             <a href="{{ route('vote.voter.index', $election->id) }}"
                                                 class="btn btn-info btn-flat btn-block py-2">Vote</a>
                                         </div>
-                                        <div class="col-6 pl-0">
+                                        {{-- <div class="col-6 pl-0">
                                             <a href="{{ route('vote.result-page', $election->id) }}"
                                                 class="btn btn-info btn-flat btn-block py-2">View Result</a>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +120,7 @@
                                     </div>
                                 </div>
 
-                                <div class="card-footer text-center" style="padding: 0px 0px!important;">
+                                {{-- <div class="card-footer text-center" style="padding: 0px 0px!important;">
                                     <div class="row">
                                         <div class="col-md-12">
                                             <a href="{{ route('vote.result-page', $election->id) }}"
@@ -128,7 +128,7 @@
                                                 Result</a>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                             @elseif($election->start_time == "0000-00-00 00:00:00" && $election->end_time == "0000-00-00 00:00:00")
                             <div class="card mt-4" style="background-color:rgb(220, 222, 222);">

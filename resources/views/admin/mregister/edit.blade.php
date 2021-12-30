@@ -230,12 +230,14 @@
  </section>
 @endsection
 @section('javascript')
+    <script src="{{asset('js/mm-nrc.js')}}"></script>   
     <script>
         $(document).ready(function(){
 
-            var nrc_no = "{{$member->nrc}}";
-            // console.log(nrc_no);
-            var nrc_no = nrc_no.split("/");
+            let nrc_no = "{{$member->nrc}}";                        
+            nrc_no = new MMNRC(nrc_no);
+            nrc_no = nrc_no.getFormat();                        
+            nrc_no = nrc_no.split("/");
             $("#nrc_first option[value="+nrc_no[0]+"]").attr('selected','selected');
 
             var value1 = nrc_no[0];
@@ -246,11 +248,11 @@
 
             $("#nrc_second").html(select);
             $.each(data1,function(i,v){
-                var html = `<option value="${v}">${v}</option>`;
+                var html = `<option value="${v.toUpperCase()}">${v}</option>`;
                 $("#nrc_second").append(html);
             })
 
-            var nrcSecond = nrc_no[1].split("(N)");
+            var nrcSecond = nrc_no[1].split("(N)");            
             $("#nrc_second option[value="+nrcSecond[0]+"]").attr('selected','selected');
 
             $("#nrc_third").val(nrcSecond[1]);
@@ -306,7 +308,9 @@
 
 
                 var nrc_no = nrc_first + "/" + nrc_second + "(N)" + nrc_third;
-                $("input[name=nrc]").val(nrc_no);
+                let nrc = new MMNRC(nrc_no);
+                nrc = nrc.getFormat("mm");                    
+                $("input[name=nrc]").val(nrc);
 
                 $.ajax({
                         url: "{{ route('admin.register.update') }}",

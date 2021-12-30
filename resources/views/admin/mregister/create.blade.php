@@ -57,20 +57,9 @@
                                         <div class="col-3">
                                             <select name="nrc_first" id="nrc_first" class="form-control w-100">
                                             <option disabled selected value> </option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
+                                                @for ($i = 0; $i < 10; $i++)
+                                                <option value="1">1</option>                                               
+                                                @endfor
                                             </select>
                                         </div>
                                         <div class="col-5 col-lg-4">
@@ -225,12 +214,13 @@
  </section>
 @endsection
 @section('javascript')
-    <script src="{{asset('js/mm-nrc.js')}}"></script>
-    <script>
-        $(document).ready(function(){
+    <script src="{{asset('js/mm-nrc.js')}}"></script>   
+    <script src="{{asset('backend/js/nrc-data.js')}}"></script> 
+    <script>    
+        $(document).ready(function(){            
 
         $("#nrc_first").on('change',function(){
-            var value = $(this).val();
+            var value = $(this).val();            
             var data = nrc_data[value];
 
             var data = data.sort();
@@ -240,10 +230,6 @@
                 var html = `<option value="${v}">${v}</option>`;
                 $("#nrc_second").append(html);
             })
-
-            // $("#nrc_second").autocomplete({
-            //     source:data
-            // });
         })
 
             $('form#createForm').on('submit',function(event){
@@ -284,10 +270,10 @@
                 }
 
                 var nrc_no = nrc_first + "/" + nrc_second + "(N)" + nrc_third;
-                // console.log(nrc_no);
-                // return false;
+                let nrc = new MMNRC(nrc_no);
+                nrc = nrc.getFormat("mm");                
                 
-                $("input[name=nrc]").val(nrc_no);
+                $("input[name=nrc]").val(nrc);
 
                 $.ajax({
                     url: "{{ route('admin.register.store') }}",

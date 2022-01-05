@@ -15,14 +15,7 @@
                 <form action="{{ route('vote.sendOtp') }}" method="post" id="sendOtp">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="form-group row">
-                        <div class="col-md-12 text-center">                            
-                            @if (count($phones) > 1)
-                                <input value="{{ old('phone') }}" type="phone" name="phone" class="col-12 form-control"
-                                style="margin-bottom: 14px; padding: 5px;"
-                                placeholder="09123456789" required />    
-                                <input type="hidden" name="phones" value="true">                        
-                            @endif
-
+                        <div class="col-md-12 text-center">                                                                                 
                             <input type="submit" value="GET OTP" class="btn btn-info btn-block login-btn">
                         </div>
                     </div>
@@ -143,5 +136,5 @@
                 });
             })
         })
-    </script>
+    </script>    
 @endsection

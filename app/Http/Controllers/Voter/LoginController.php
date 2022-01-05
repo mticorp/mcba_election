@@ -6,7 +6,9 @@ use App\Classes\BulkSMS;
 use App\Election;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Setting;
 use App\Voter;
+use Carbon\Carbon;
 use CyberWings\MyanmarPhoneNumber;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
@@ -24,29 +26,48 @@ class LoginController extends Controller
         } else {
             Session::forget('voter_table_id');
             Session::put('voter_table_id', $data->id);
-            $phones = explode(',',$data->phone_no);
-            return view('voter.get-otp',compact('phones'));
+
+            $setting = Setting::first();
+            if($setting && $setting->otp_enable == 0)
+            {
+                return redirect()->route('voter.select.election');
+            }else{
+                $phones = explode(',',$data->phone_no);
+                return view('voter.get-otp',compact('phones'));
+            }            
         }
     }
 
     public function sendOtp(Request $request)
-    {
+    {        
         $voter_table_id = $request->session()->get('voter_table_id');
         $voter = Voter::find($voter_table_id);
 
         if ($voter->phone_no == "") {
             return redirect()->back()->with('status', 'Phone Number is not exist in this voter!');
-        } else {
+        } else {            
+            
             $phones = explode(',',$voter->phone_no);
-            $otp = rand(100000, 999999);
+            $otp = rand(100000, 999999);            
+
+            $setting = Setting::first();
+
+            if($setting->otp_valid_time_type == 's')
+            {
+                $expire_time = Carbon::now()->addSeconds($setting->otp_valid_time);
+            }elseif($setting->otp_valid_time_type == 'm')
+            {
+                $expire_time = Carbon::now()->addMinutes($setting->otp_valid_time);
+            }else{
+                $expire_time = Carbon::now()->addHours($setting->otp_valid_time);
+            }
             
             $message = "$otp is your OTP, Welcome to MTI's eVoting System ";
-            $bulksms = new BulkSMS();
-            $msgResponse = $bulksms->sendSMS($phones, $message);
+            $msgResponse = BulkSMS::sendSMS($phones,$voter,'otp',$message);
 
             if (isset($msgResponse->getData()->success)) {
-                Session::forget('OTP');
-                Session::put('OTP', $otp);
+                Session::forget(['OTP','OTP_expire_at']);
+                session(['OTP' => $otp,'OTP_expire_at' => $expire_time]);
 
                 return redirect()->route('voter.verifyView');
             } else {
@@ -63,13 +84,20 @@ class LoginController extends Controller
     public function verifyOtp(Request $request)
     {
         $voter_table_id = $request->session()->get('voter_table_id');
-        $enteredOtp = $request->otp;
+        $enteredOtp = $request->otp;                
 
         if ($enteredOtp == "") {
             return redirect()->back()->with('status', 'OTP code is required!');
         } else {
             $OTP = $request->session()->get('OTP');
-            if ($OTP === (int) $enteredOtp) {
+            $expire_time = $request->session()->get('OTP_expire_at');
+            if(Carbon::now() > $expire_time)
+            {
+                Session::forget('OTP');
+                Session::forget('OTP_expire_at');
+                return redirect()->back()->with('status', 'OTP code is expired!');
+            }
+            if ($OTP === (int) $enteredOtp) {                
                 // Updating user's status "isVerified" as 1.
                 $voter = Voter::find($voter_table_id);
                 $voter->isVerified = 1;

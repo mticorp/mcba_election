@@ -45,10 +45,13 @@
                 </form>
             </div>
         </div>
-    </div>
-@endsection
+    </div>            
+@endsection 
 @section('javascript')
-    <script>
+    <script>        
+        let time = "{{$setting->otp_valid_time}}";
+        let time_type = "{{$setting->otp_valid_time_type}}";
+
         $(document).ready(function() {
 
             var timeDisplay = document.getElementById("time");
@@ -60,74 +63,47 @@
                 var formattedString = dateString.replace(", ", " - ");
                 timeDisplay.innerHTML = formattedString;
             }
-            setInterval(refreshTime, 10);
+            setInterval(refreshTime, 10);            
 
-            var counter = 60;
-            var interval = setInterval(function() {
-                counter--;
+            var counter = 0;
+            if(time_type == 's')
+            {
+                counter = time;
+            }else if(time_type == 'm')
+            {
+                counter = time * 60;
+            }else{
+                counter = time * 3600;
+            }            
+            
+            if(sessionStorage.getItem('counter_refresh') == null || sessionStorage.getItem('counter_refresh') == "null")
+            {                
+                sessionStorage.setItem("counter",counter);                
+            }
+            sessionStorage.setItem("counter_refresh",false);
+
+                        
+            var interval = setInterval(function() {                
+                sessionStorage.setItem("counter",sessionStorage.getItem("counter") -1);
+                let timer = sessionStorage.getItem("counter");
                 // Display 'counter' wherever you want to display it.
-                if (counter <= 0) {
+                if (timer <= 0) {
                     clearInterval(interval);
-                    $('#resend').val("Resend Code Again?");
+                    $('#resend').val("Resend Code Again?");                    
                     return;
                 } else {
-                    $('#resend').val("Resend Code Again? " + counter + "s");
+                    $('#resend').val("Resend Code Again? " + timer + "s");
                 }
             }, 1000);
 
             $("#resend").attr("disabled", "disabled");
+            
             setInterval(function() {
-                $("#resend").removeAttr("disabled", "disabled");
-            }, 60000);
+                $("#resend").removeAttr("disabled", "disabled");                
+            }, sessionStorage.getItem("counter")*1000);
 
-
-            $("form#verifyOtp").on('submit', function() {
-                $('input').blur();
-                $.blockUI({
-                    css: {
-                        backgroundColor: 'transparent',
-                        top: '0px',
-                        left: '0px',
-                        width: $(document).width(),
-                        height: $(document).height(),
-                        padding: '20%',
-                    },
-                    baseZ: 2000,
-                    message: '<img src="{{ url('images/loader.gif') }}" width="150" />',
-                });
-            })
-
-            $("form#resendForm").on("submit", function() {
-                $('input').blur();
-                $.blockUI({
-                    css: {
-                        backgroundColor: 'transparent',
-                        top: '0px',
-                        left: '0px',
-                        width: $(document).width(),
-                        height: $(document).height(),
-                        padding: '20%',
-                    },
-                    baseZ: 2000,
-                    message: '<img src="{{ url('images/loader.gif') }}" width="150" />',
-                });
-                var counter = 60;
-                var interval = setInterval(function() {
-                    counter--;
-                    // Display 'counter' wherever you want to display it.
-                    if (counter <= 0) {
-                        clearInterval(interval);
-                        $('#resend').val("Resend Code Again?");
-                        return;
-                    } else {
-                        $('#resend').val("Resend Code Again? " + counter + "s");
-                    }
-                }, 1000);
-
-                $("#resend").attr("disabled", "disabled");
-                setInterval(function() {
-                    $("#resend").removeAttr("disabled", "disabled");
-                }, 60000);
+            $("#resendForm").on('submit',function(e){
+                sessionStorage.setItem("counter_refresh",null);
             })
         })
 

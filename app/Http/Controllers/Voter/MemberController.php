@@ -28,7 +28,7 @@ class MemberController extends Controller
             'phone_no' => 'required',
         ], [
             'refer_code.required' => 'Reference Code is required.',
-            'nrc_no.required' => 'Nrc is required.',
+            'nrc_no.required' => 'NRC is required.',
             'phone_no.required' => 'Phone Number is required.',
         ]);
 
@@ -41,9 +41,7 @@ class MemberController extends Controller
         $phone_no = $request->phone_no;
 
         $member = MRegister::where('refer_code', $refer_code)->orWhere('phone_number',$phone_no)->orWhere('nrc',$nrc_no)->first();
-        // $phone_number = explode(",", $member->phone_number);
-        
-        $check = [];
+                
         if ($member) {
             if ($member->check_flag == 0) {
                 $encrypted = Crypt::encryptString($member->id);
@@ -60,8 +58,6 @@ class MemberController extends Controller
 
     public function refill($member_id)
     {
-
-
         $decrypted_member_id = Crypt::decryptString($member_id);
         $member = MRegister::where('id', $decrypted_member_id)->first();
 
@@ -76,15 +72,11 @@ class MemberController extends Controller
         $error =  Validator::make($request->all(), [
             'refer_code' => 'required|max:255',
             'name' => 'required|string|max:255',
-            'phone_number' => 'required',            
-            'email' => 'nullable',
-            'officeEmail' => 'nullable',
+            'phone_number' => 'required',
         ], [
             'refer_code.required' => 'Reference Code ဖြည့်စွက်ရန်.',
             'name.required' => 'အမည် ဖြည့်စွက်ရန်.',
-            'phone_number.required' => 'ဖုန်းနံပါတ်၊ ဖက်စ်နံပါတ်၊ မိုလ်ဘိုင်းဖုန်း ဖြည့်စွက်ရန်.',
-            'email.email' => "Email is Invaild Format",
-            'officeEmail.email' => "Email is Invaild Format",
+            'phone_number.required' => 'ဖုန်းနံပါတ်၊ ဖက်စ်နံပါတ်၊ မိုလ်ဘိုင်းဖုန်း ဖြည့်စွက်ရန်.',              
         ]);
 
         if ($error->fails()) {

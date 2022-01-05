@@ -22,6 +22,10 @@ class CreateSettingsTable extends Migration
             $table->longText('sms_text')->nullable();
             $table->longText('reminder_text')->nullable();
             $table->longText('member_sms_text')->nullable();
+            $table->tinyInteger('otp_enable')->default(0);
+            $table->tinyInteger('result_enable')->default(0);
+            $table->string('otp_valid_time')->nullable();
+            $table->string('otp_valid_time_type')->nullable();
             $table->timestamps();
         });
     }

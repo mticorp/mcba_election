@@ -27,16 +27,8 @@ class ImportMember implements ToModel,WithHeadingRow,WithValidation,WithChunkRea
         }else{
             $profile = $row['profile'];
         }
-        
-        // $en = new GoogleTranslate('en');
-        // $nrc_no = $en->translate($row['nrc_no']);        
-        // $nrc_no = str_replace(' ', '', $nrc_no);
-        // $state_district = explode('/',$nrc_no);
-        // $state_no = $state_district[0];
-        // $district = explode('(',$state_district[1]);        
-        // $register_no = explode(')',$nrc_no)[1];
 
-        // $myanmar_nrc = $state_no . "/" . Str::lower($district[0]) . "(N)" . $register_no; 
+        
         
         return new MRegister([
             'profile' =>   $profile,

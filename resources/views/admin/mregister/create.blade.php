@@ -56,20 +56,30 @@
                                     <div class="row">
                                         <div class="col-3">
                                             <select name="nrc_first" id="nrc_first" class="form-control w-100">
-                                            <option disabled selected value> </option>
-                                                @for ($i = 0; $i < 10; $i++)
-                                                <option value="1">1</option>                                               
-                                                @endfor
+                                                <option disabled selected value> </option>
+                                                <option value="1">၁</option>
+                                                <option value="2">၂</option>
+                                                <option value="3">၃</option>
+                                                <option value="4">၄</option>
+                                                <option value="5">၅</option>
+                                                <option value="6">၆</option>
+                                                <option value="7">၇</option>
+                                                <option value="8">၈</option>
+                                                <option value="9">၉</option>
+                                                <option value="10">၁၀</option>
+                                                <option value="11">၁၁</option>
+                                                <option value="12">၁၂</option>
+                                                <option value="13">၁၃</option>
+                                                <option value="14">၁၄</option>
                                             </select>
                                         </div>
-                                        <div class="col-5 col-lg-4">
-                                            <!-- <input type="text" name="nrc_second" id="nrc_second" class="form-control w-100" placeholder="xxxxxx"> -->
+                                        <div class="col-5 col-lg-4">                                           
                                             <select name="nrc_second" id="nrc_second" class="form-control form-control select2 select2-primary" data-dropdown-css-class="select2-primary" style="width:100%;">
 
                                             </select>
                                         </div>
                                         <div class="col-4 col-lg-5">
-                                            <input type="text" name="nrc_third" id="nrc_third" class="form-control w-100" placeholder="000000">
+                                            <input type="text" name="nrc_third" id="nrc_third" class="form-control w-100" placeholder="၁၂၃၄၅၆" maxlength="6">
                                         </div>
                                     </div>
                                 </div>
@@ -214,13 +224,12 @@
  </section>
 @endsection
 @section('javascript')
-    <script src="{{asset('js/mm-nrc.js')}}"></script>   
-    <script src="{{asset('backend/js/nrc-data.js')}}"></script> 
+    <script src="{{asset('js/mm-nrc.js')}}"></script>       
     <script>    
         $(document).ready(function(){            
 
         $("#nrc_first").on('change',function(){
-            var value = $(this).val();            
+            var value = $(this).val();
             var data = nrc_data[value];
 
             var data = data.sort();
@@ -230,7 +239,7 @@
                 var html = `<option value="${v}">${v}</option>`;
                 $("#nrc_second").append(html);
             })
-        })
+        })        
 
             $('form#createForm').on('submit',function(event){
                 event.preventDefault();
@@ -249,8 +258,8 @@
 
                 var nrc_first = $("select[name=nrc_first]").val();
                 var nrc_second = $("select[name=nrc_second]").val();
-                var nrc_third = $("input[name=nrc_third]").val();
-
+                var nrc_third = $("input[name=nrc_third]").val();                
+                
                 if (nrc_first == '') {
                     $.unblockUI();
                     toastr.error('Info - NRC is Required.')
@@ -267,11 +276,18 @@
                     $.unblockUI();
                     toastr.error('Info - NRC is Required.')
                     return false;
+                }                
+                
+                if(!regx_mm_num.test(nrc_third))
+                {
+                    $.unblockUI();
+                    toastr.error('Info - NRC အား မြန်မာစာဖြင့် ဖြည့်ရန်.')
+                    return false;
                 }
 
-                var nrc_no = nrc_first + "/" + nrc_second + "(N)" + nrc_third;
+                var nrc_no = MMNRC.toMyaNum(nrc_first) + "/" + nrc_second + "(နိုင်)" + nrc_third;                
                 let nrc = new MMNRC(nrc_no);
-                nrc = nrc.getFormat("mm");                
+                nrc = nrc.getFormat();
                 
                 $("input[name=nrc]").val(nrc);
 

@@ -141,7 +141,10 @@ Route::group(['middleware' => 'setting'], function () {
             Route::post('/sms/voter/update', 'Admin\SmsController@update')->name('admin.sms.update');
              //Reminder route
             Route::get('/reminder', 'Admin\SmsController@reminderIndex')->name('admin.reminder.index');
-            Route::post('/reminder/update', 'Admin\SmsController@reminderUpdate')->name('admin.reminder.update');                   
+            Route::post('/reminder/update', 'Admin\SmsController@reminderUpdate')->name('admin.reminder.update');               
+            
+            Route::get('/security', 'Admin\SecurityController@index')->name('admin.security.index');
+            Route::post('/security/update', 'Admin\SecurityController@update')->name('admin.security.update');   
 
 
             //dashboard route

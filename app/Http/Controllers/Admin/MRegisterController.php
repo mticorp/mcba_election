@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Classes\BulkEmail;
 use App\Classes\BulkSMS;
 use App\Election;
 use App\ElectionVoter;
@@ -25,6 +26,7 @@ class MRegisterController extends Controller
     public function __construct()
     {        
         $this->middleware(['auth','admin']);
+        $this->url = route('vote.member.register');
     }
 
     public function index()
@@ -59,16 +61,12 @@ class MRegisterController extends Controller
             'refer_code' => 'required|max:255',
             'name' => 'required|string|max:255',
             'phone_number' => 'required',
-            'nrc' => 'required|max:255',
-            'email' => 'email|nullable',
-            'officeEmail' => 'email|nullable',
+            'nrc' => 'required|max:255',          
         ],[
             'refer_code.required'=>'Reference Code ဖြည့်စွက်ရန်.',
             'name.required'=>'အမည် ဖြည့်စွက်ရန်.',
             'phone_number.required'=>'ဖုန်းနံပါတ်၊ ဖက်စ်နံပါတ်၊ မိုလ်ဘိုင်းဖုန်း ဖြည့်စွက်ရန်.',
-            'nrc.required'=>'နိုင်ငံသားစီစစ်ရေး / အမျိုးသားမှတ်ပုံတင်အမှတ် ဖြည့်စွက်ရန်.',
-            'email.email' => "Email is Invaild Format",
-            'officeEmail.email' => "Email is Invaild Format",
+            'nrc.required'=>'နိုင်ငံသားစီစစ်ရေး / အမျိုးသားမှတ်ပုံတင်အမှတ် ဖြည့်စွက်ရန်.',           
         ]);
 
         if ($error->fails()) {
@@ -88,17 +86,7 @@ class MRegisterController extends Controller
             $new_name = '/upload/member/' . $filename;
         }else{
             $new_name = '/images/user.png';
-        }
-
-        // $en = new GoogleTranslate('en');
-        // $nrc_no = $en->translate($request->nrc);
-        // $nrc_no = str_replace(' ', '', $nrc_no);
-        // $state_district = explode('/',$nrc_no);
-        // $state_no = $state_district[0];
-        // $district = explode('(',$state_district[1]);        
-        // $register_no = explode(')',$nrc_no)[1];
-
-        // $myanmar_nrc = $state_no . "/" . Str::lower($district[0]) . "(N)" . $register_no;        
+        }              
         
         $form_data = array(
             "refer_code" => $request->refer_code,
@@ -157,16 +145,12 @@ class MRegisterController extends Controller
             'refer_code' => 'required|max:255',
             'name' => 'required|string|max:255',
             'phone_number' => 'required',
-            'nrc' => 'required|max:255',
-            'email' => 'email|nullable',
-            'officeEmail' => 'email|nullable',
+            'nrc' => 'required|max:255',          
         ],[
             'refer_code.required'=>'Reference Code ဖြည့်စွက်ရန်.',
             'name.required'=>'အမည် ဖြည့်စွက်ရန်.',
             'phone_number.required'=>'ဖုန်းနံပါတ်၊ ဖက်စ်နံပါတ်၊ မိုလ်ဘိုင်းဖုန်း ဖြည့်စွက်ရန်.',
-            'nrc.required'=>'နိုင်ငံသားစီစစ်ရေး / အမျိုးသားမှတ်ပုံတင်အမှတ် ဖြည့်စွက်ရန်.',
-            'email.email' => "Email is Invaild Format",
-            'officeEmail.email' => "Email is Invaild Format",
+            'nrc.required'=>'နိုင်ငံသားစီစစ်ရေး / အမျိုးသားမှတ်ပုံတင်အမှတ် ဖြည့်စွက်ရန်.',           
         ]);
 
         if ($error->fails()) {
@@ -195,17 +179,7 @@ class MRegisterController extends Controller
             });
             $image_resize->save(public_path('/upload/member/' . $filename));
             $image_name = '/upload/member/' . $filename;
-        }
-
-        // $en = new GoogleTranslate('en');
-        // $nrc_no = $en->translate($request->nrc);
-        // $nrc_no = str_replace(' ', '', $nrc_no);
-        // $state_district = explode('/',$nrc_no);
-        // $state_no = $state_district[0];
-        // $district = explode('(',$state_district[1]);        
-        // $register_no = explode(')',$nrc_no)[1];
-
-        // $myanmar_nrc = $state_no . "/" . Str::lower($district[0]) . "(N)" . $register_no;     
+        }        
 
         $form_data = array(
             "refer_code" => $request->refer_code,
@@ -265,7 +239,7 @@ class MRegisterController extends Controller
     }
 
     public function excelImport()
-    {                
+    {                        
         return view('admin.mregister.import-excel');
     }
 
@@ -286,7 +260,6 @@ class MRegisterController extends Controller
             }
 
             if ($request->hasFile('file')) {
-                // dd('hi');
                 Excel::import(new ImportMember(), $request->file('file'));
                 return response()->json(['success' => 'Data Added Successfully']);
             }else{
@@ -313,15 +286,14 @@ class MRegisterController extends Controller
     }
 
     public function sendMessage(Request $request)
-    {
-        $setting = Setting::first();
+    {        
         $errors = [];
         if($request->check_val)
         {
             foreach($request->check_val as $member_id)
             {
                 $member = DB::table('m_registers')->where('id', $member_id)->first();
-                $url = route('vote.member.register');
+                
 
                 $phone  = $member->phone_number;
                 $email = $member->email;
@@ -329,18 +301,13 @@ class MRegisterController extends Controller
                 if($phone)
                 {
                     $phones = explode(',', $phone);
-                    $phone_content = ($setting->member_sms_text == null) ?
-                    "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
-                    တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။" :
-                    str_replace('[:MemberName]', $member->name, $setting->member_sms_text) . $url;                    
-
-                    $result = BulkSMS::sendSMS($phones, $phone_content);
-                    if (isset($result->getData()->success)) {                        
-                    } else {
+            
+                    $result = BulkSMS::sendSMS($phones, $member,'member',$this->url);
+                    if (isset($result->getData()->errors)) {
                         array_push($errors,[
                             $member->name.' SMS Send Fail'
                         ]);
-                    }                                        
+                    }
                 }else{
                     array_push($errors,[
                         $member->name.' Phone is Empty'
@@ -349,33 +316,11 @@ class MRegisterController extends Controller
 
                 if($email)
                 {
-                    $content = ($setting->member_sms_text == null) ?
-                    "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
-                    တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။" :
-                    str_replace('[:MemberName]', $member->name, $setting->member_sms_text);
+                    $emails = explode(',', $email);
 
-                    $time = Carbon::now();
-                    $datetime = $time->toDateTimeString();
-                    $DT = explode(' ', $datetime);
-                    $image = public_path().'/images/mti_logo.png';
+                    $result = BulkEmail::sendEmail($emails,$member,'member',$this->url);
 
-                    Mail::send(
-                        'vid_email',
-                        array(
-                            'link' => $url,
-                            'image' => $image,
-                            'content' => $content,
-                            'date' => $DT[0],
-                            'time' => $DT[1],
-                        ),
-                        function ($message) use ($email) {
-                            $message->from('evoting.mti@gmail.com');
-                            $message->subject('MTI - Election Voting System');
-                            $message->to($email);
-                        }
-                    );
-
-                    if (Mail::failures()) {
+                    if (isset($result->getData()->errors)) {
                         array_push($errors,[
                             $member->name.' Mail Send Fail'
                         ]);
@@ -410,22 +355,16 @@ class MRegisterController extends Controller
         {
             foreach($request->check_val as $member_id)
             {
-                $member = DB::table('m_registers')->where('id', $member_id)->first();
-                $url = route('vote.member.register');
+                $member = DB::table('m_registers')->where('id', $member_id)->first();               
 
                 $phone  = $member->phone_number;
 
                 if($phone)
                 {                    
                     $phones = explode(',', $phone);
-                    $phone_content = ($setting->member_sms_text == null) ?
-                    "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
-                    တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။" :
-                    str_replace('[:MemberName]', $member->name, $setting->member_sms_text) . $url;    
-
-                    $result = BulkSMS::sendSMS($phones, $phone_content);
-                    if (isset($result->getData()->success)) {                        
-                    } else {
+            
+                    $result = BulkSMS::sendSMS($phones, $member,'member',$this->url);
+                    if (isset($result->getData()->errors)) {
                         array_push($errors,[
                             $member->name.' SMS Send Fail'
                         ]);
@@ -460,39 +399,16 @@ class MRegisterController extends Controller
         {
             foreach($request->check_val as $member_id)
             {
-                $member = DB::table('m_registers')->where('id', $member_id)->first();
-                $url = route('vote.member.register');
+                $member = DB::table('m_registers')->where('id', $member_id)->first();                
                 $email = $member->email;
 
                 if($email)
                 {
-                    $content = ($setting->member_sms_text == null) ?
-                    "(စမ်းသပ်ခြင်း)မင်္ဂလာ! အောက်ဖော်ပြပါ Link အားနှိပ်၍ မန်ဘာဒေတာအား စစ်ဆေးနိုင်ပါပြီ ".$url." 
-                    တစ်စုံတစ်ရာအခက်အခဲရှိပါက 09767629043 - Aye Aye Aung ( Technical Project Manager ) သို့ဆက်သွယ်မေးမြန်းနိုင်ပါသည်။" :
-                    str_replace('[:MemberName]', $member->name, $setting->member_sms_text);
+                    $emails = explode(',', $email);
 
-                    $time = Carbon::now();
-                    $datetime = $time->toDateTimeString();
-                    $DT = explode(' ', $datetime);
-                    $image = public_path().'/images/mti_logo.png';
+                    $result = BulkEmail::sendEmail($emails,$member,'member',$this->url);
 
-                    Mail::send(
-                        'vid_email',
-                        array(
-                            'link' => $url,
-                            'image' => $image,
-                            'content' => $content,
-                            'date' => $DT[0],
-                            'time' => $DT[1],
-                        ),
-                        function ($message) use ($email) {
-                            $message->from('helper.mti.evoting.mm@gmail.com');
-                            $message->subject('MTI - Election Voting System');
-                            $message->to($email);
-                        }
-                    );
-
-                    if (Mail::failures()) {
+                    if (isset($result->getData()->errors)) {
                         array_push($errors,[
                             $member->name.' Mail Send Fail'
                         ]);

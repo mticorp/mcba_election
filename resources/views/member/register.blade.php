@@ -36,21 +36,21 @@
                                 <div class="row">
                                     <div class="col-3">
                                         <select name="nrc_first" id="nrc_first" class="form-control w-100">
-                                        <option disabled selected value> </option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
+                                            <option disabled selected value> </option>
+                                            <option value="1">၁</option>
+                                            <option value="2">၂</option>
+                                            <option value="3">၃</option>
+                                            <option value="4">၄</option>
+                                            <option value="5">၅</option>
+                                            <option value="6">၆</option>
+                                            <option value="7">၇</option>
+                                            <option value="8">၈</option>
+                                            <option value="9">၉</option>
+                                            <option value="10">၁၀</option>
+                                            <option value="11">၁၁</option>
+                                            <option value="12">၁၂</option>
+                                            <option value="13">၁၃</option>
+                                            <option value="14">၁၄</option>
                                         </select>
                                     </div>
                                     <div class="col-5">                                      
@@ -62,10 +62,10 @@
                                         (N)
                                     </div>
                                     <div class="col-3">                                    
-                                        <input type="text" name="nrc_third" id="nrc_third" class="form-control w-100" placeholder="000000">
+                                        <input type="text" name="nrc_third" id="nrc_third" class="form-control w-100" placeholder="၁၂၃၄၅၆" maxlength="6">
                                     </div>
                                 </div>
-                                <small class="text-muted"><span class="text-danger"> * ( အင်္ဂလိပ်စာဖြင့် ရိုက်ထည့်ရန် )</span></small>
+                                <small class="text-muted"><span class="text-danger"> * ( မြန်မာစာဖြင့် ရိုက်ထည့်ရန် )</span></small>
                             </div>
                         </div>
                     </div>
@@ -112,11 +112,7 @@
             $.each(data,function(i,v){
                 var html = `<option value="${v}">${v}</option>`;
                 $("#nrc_second").append(html);
-            })
-                        
-            // $("#nrc_second").autocomplete({
-            //     source:data
-            // });
+            })                                
         })
 
         $("form#checkCode").on('submit', function(e) {
@@ -159,12 +155,19 @@
                 return false;
             }
 
+            if(!regx_mm_num.test(nrc_third))
+            {
+                $.unblockUI();
+                toastr.error('Info - NRC အား မြန်မာစာဖြင့် ဖြည့်ရန်.')
+                return false;
+            }
 
-            var nrc_no = nrc_first + "/" + nrc_second + "(N)" + nrc_third;
-            $("input[name=nrc_no]").val(nrc_no);
-
-            // console.log(nrc_second);
-            // return false;                
+            var nrc_no = MMNRC.toMyaNum(nrc_first) + "/" + nrc_second + "(နိုင်)" + nrc_third;                
+            let nrc = new MMNRC(nrc_no);
+            nrc = nrc.getFormat();
+            
+            $("input[name=nrc_no]").val(nrc);
+                      
             $.ajax({
                 url: "{{ route('vote.member.register.check') }}",
                 method: "POST",

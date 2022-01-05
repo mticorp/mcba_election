@@ -10,10 +10,10 @@
 
 var MM_NUM = "\u1040-\u1049";
 var MM_NUM_CHARS = "\u1040\u1041\u1042\u1043\u1044\u1045\u1046\u1047\u1048\u1049\u1040";
-var mmChar = "\u1000\u1001\u1002\u1003\u1004\u1005\u1006\u1007\u1008\u100A\u100E\u100F\u1010\u1011\u1012\u1013\u1014\u1015\u1016\u1017\u1018\u1019\u101A\u101B\u101C\u101D\u101E\u101F\u1020\u1025\u1027";
+var mmChar = "\u1000\u1001\u1002\u1003\u1004\u1005\u1006\u1007\u1008\u1009\u100A\u100B\u100C\u100D\u100E\u100F\u1010\u1011\u1012\u1013\u1014\u1015\u1016\u1017\u1018\u1019\u101A\u101B\u101C\u101D\u101E\u101F\u1020\u1021\u1025\u1027";
 var NAING_MM = "\u1014\u102D\u102F\u1004\u103A";
 var regx_eng = /^[a-zA-Z0-9\/\(\)]+$/;
-//  var regx_mm = new RegExp("^(["+MM_NUM+"]{1,2})\/(["+mmChar+"]{3}|["+mmChar+"]{6})\((?:"+NAING_MM+")\)(["+MM_NUM+"]{6})$");
+var regx_mm_num = new RegExp("^([" + MM_NUM + "]{1,6})\$");
 var regx_mm = new RegExp("^([" + MM_NUM + "]{1,2})\/([" + mmChar + "]{3}|[" + mmChar + "]{6})\$");
 
 
@@ -126,24 +126,28 @@ function MMNRC(nrc) {
 }
 
 MMNRC.prototype.init = function (nrc) {
-    let nrc_no = nrc.split('/');
-    this.state = nrc_no[0];
-    this.dist = nrc_no[1].split('(')[0];
-    this.num = nrc_no[1].split(')')[1];
+    const start = /\//;
+    if(nrc.match(start) != null)
+    {
+        let nrc_no = nrc.split('/');
+        this.state = nrc_no[0];
+        this.dist = nrc_no[1].split('(')[0];
+        this.num = nrc_no[1].split(')')[1];      
 
-    if ((this.match = regx_eng.exec(nrc))) {
-        this.lang = "en";
-        // 3 Characters Districts are not compete and can"t be generate Full Format
-        if (this.dist.length === 3)
-            this.inCompleteInfo = true;
+        if ((this.match = regx_eng.exec(nrc))) {
+            this.lang = "en";
+            // 3 Characters Districts are not compete and can"t be generate Full Format
+            if (this.dist.length === 3)
+                this.inCompleteInfo = true;
+            return this;
+        } else if (this.match = regx_mm.exec(nrc.split('(')[0])) {
+            this.lang = "mm";
+            return this;
+        }
+    }else{       
+        this.inCompleteInfo = true;
         return this;
-    } else if (this.match = regx_mm.exec(nrc.split('(')[0])) {
-        this.lang = "mm";
-        this.state = MMNRC.toEngNum(this.state, 10);
-        this.dist = MMNRC.enConvDistrict(this.dist, 10);
-        this.num = MMNRC.toEngNum(this.num, 10);
-        return this;
-    }
+    }    
 
     // Return for error
     throw new Error("Type Not Match!");
@@ -155,14 +159,35 @@ MMNRC.prototype.isEqual = function (nrc) {
 
 MMNRC.prototype.init.prototype = MMNRC.prototype;
 
-MMNRC.prototype.getFormat = function (lang) {
-    if (lang && lang === "mm" && !this.inCompleteInfo) {
-        return MMNRC.toMyaNum(this.state) + "/" + MMNRC.mmConvDistrict(this.dist) + "(" + NAING_MM + ")" + MMNRC.toMyaNum(this.num);
-    } else {
+MMNRC.prototype.getFormat = function (lang = null,line = null) {    
+    // if (lang && lang === "mm" && !this.inCompleteInfo) {        
+    //     return MMNRC.toMyaNum(this.state) + "/" + MMNRC.mmConvDistrict(this.dist) + "(" + NAING_MM + ")" + MMNRC.toMyaNum(this.num);
+    // } else if(lang && lang === "mm_only" && !this.inCompleteInfo){
+    //     return this.state + "/" + this.dist + "(နိုင်)" + this.num;
+    // }else {
+    //     this.state = MMNRC.toEngNum(this.state, 10);
+    //     this.dist = MMNRC.enConvDistrict(this.dist, 10);
+    //     this.num = MMNRC.toEngNum(this.num, 10);
+
+    //     return this.state + "/" + this.dist + "(N)" + this.num;
+    // }
+
+    if(lang && lang === "en" && !this.inCompleteInfo)
+    {
         return this.state + "/" + this.dist + "(N)" + this.num;
+    }else if(!this.inCompleteInfo){
+        if(this.lang && this.lang == "en" && !this.inCompleteInfo)
+        {
+            return MMNRC.toMyaNum(this.state) + "/" + MMNRC.mmConvDistrict(this.dist) + "(" + NAING_MM + ")" + MMNRC.toMyaNum(this.num);
+        }else if(this.lang && this.lang == "mm")
+        {
+            return this.state + "/" + this.dist + "(နိုင်)" + this.num;
+        }
+    }else{
+        toastr.error("Info - "+ line ? line +" ၏ နိင်ငံသားမှတ်ပုံတင်အမှတ် မှားနေပါသည်။" : "Invalid NRC Format")
     }
 
-    throw new Error("Invalid NRC Format");
+    throw new Error(line ? line + " ၏ နိင်ငံသားမှတ်ပုံတင်အမှတ် မှားနေပါသည်။" : "Invalid NRC Format");
 };
 
 /**
@@ -198,9 +223,22 @@ MMNRC.toMyaNum = function (enNum) {
     return _res;
 };
 
-MMNRC.mmConvDistrict = function (dist) {
-    dist = dist.replace(/(.{2})/g, "$1,");
-    dist = dist.split(',');
+MMNRC.mmConvDistrict = function (dist) {        
+    let District = "";    
+    dist_full = dist;
+
+    for (let i = 0; i < dist_full.length; i++) {
+        for (let j = 0; j < dist.length; j++) {
+            check = dist_full.substr(0,j);
+            if(check in CHARACTERS)
+            {
+                District += check + ',';                
+                dist_full = dist_full.substr(j);                
+            }
+        }
+    }
+    
+    dist = District.split(',');
     dist.splice(3);
 
     var _res = "";

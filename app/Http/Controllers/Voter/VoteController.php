@@ -11,6 +11,7 @@ use App\Voting;
 use App\Question;
 use App\Answer;
 use App\ElectionVoter;
+use App\Setting;
 use App\Voter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -18,18 +19,17 @@ use Illuminate\Support\Facades\Session;
 class VoteController extends Controller
 {
     public function result($election_id)
-    {
-        
-       
+    {        
+        Setting::first()->result_enable ? '' : abort(403);
         $election_modal = new Election();
         $election = $election_modal->electionWithId($election_id);
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
-            // $DT_data = Result::orderBy('result.vote_count', 'desc')
-            //     ->where('candidate.election_id', $election_id)
-            //     ->leftJoin('candidate', 'candidate.id', '=', 'result.candidate_id')
-            //     ->get(['candidate.*', 'result.vote_count as result_vote_count', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
-            $DT_data = Candidate::orderBy('candidate.vote_count','desc')->where('candidate.election_id',$election_id)->get(['candidate.*','candidate.vote_count as result_vote_count', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
+            $DT_data = Result::orderBy('result.vote_count', 'desc')
+                ->where('candidate.election_id', $election_id)
+                ->leftJoin('candidate', 'candidate.id', '=', 'result.candidate_id')
+                ->get(['candidate.*', 'result.vote_count as result_vote_count', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
+            // $DT_data = Candidate::orderBy('candidate.vote_count','desc')->where('candidate.election_id',$election_id)->get(['candidate.*','candidate.vote_count as result_vote_count', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
             return datatables()->of($DT_data)
                 ->make(true);
         }
@@ -44,9 +44,7 @@ class VoteController extends Controller
     }
 
     public function candidateList($election_id)
-    {
-        
-       
+    {              
         $voter_table_id = Session::get('voter_table_id');
         // dd($voter_table_id);
         $election_modal = new Election;

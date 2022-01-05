@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Generator;
 
+use App\Classes\BulkEmail;
 use App\Election;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,6 +18,7 @@ use App\Imports\VoterImport;
 use App\Setting;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 use function PHPSTORM_META\map;
 
@@ -24,7 +26,7 @@ class GenerateController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth']);
+        $this->middleware(['auth']);        
     }
 
     public function index()
@@ -69,82 +71,32 @@ class GenerateController extends Controller
         return view('generator.generatedVid-list');
     }
 
-    public function store()
-    {
-        $vid = $_POST['vid'];
-        $vote_count = $_POST['vote_count'];
-        $email = $_POST['email'];
-        $name = $_POST['name'];
-        $ph_no = $_POST['ph_no'];
+    public function store(Request $request)
+    {        
+        $voter = new Voter;
+        $voter->voter_id = $request->vid;
+        $voter->vote_count = $request->vote_count;
+        $voter->name = $request->name;
+        $voter->email = $request->email;
+        $voter->phone_no = $request->ph_no;
+        $voter->save();
 
-        $check_voter = Voter::where("voter_id", $vid)->first();
-        $check_email = Voter::where("email", $email)->first();
-        $check_phone = Voter::where("phone_no", $ph_no)->first();
-        if ($check_email) {
-            if ($check_email->email == "") {
-                if (!$check_voter) {
-                    $voter = new Voter;
-                    $voter->voter_id = $vid;
-                    $voter->vote_count = $vote_count;
-                    $voter->name = $name;
-                    $voter->email = $email;
-                    $voter->phone_no = $ph_no;
-                    $voter->save();
-
-                    $voter_data = Voter::where("voter_id", $vid)->first();
-                    $elections = Election::all();
-                    if (count($elections) > 0) {
-                        foreach ($elections as $election) {
-                            $election_voter = new ElectionVoter();
-                            $election_voter->election_id = $election->id;
-                            $election_voter->voter_id = $voter_data->id;
-                            $election_voter->save();
-                        }
-                    }
-
-                    DB::table('logs')->insert([
-                        'voter_id' => $voter->id,
-                    ]);
-
-                    return response()->json(['success' => 'Voter ID Generated Successfully.', 'vid' => $vid]);
-                } else {
-                    return response()->json(['errors' => 'Voter ID is Already Exist!']);
-                }
-            } else {
-                return response()->json(['errors' => 'Email is Already Exist!']);
-            }
-        } else if ($check_phone) {
-            return response()->json(['errors' => 'Phone Number is Already Exist!']);
-        } else {
-            if (!$check_voter) {
-                $voter = new Voter;
-                $voter->voter_id = $vid;
-                $voter->vote_count = $vote_count;
-                $voter->name = $name;
-                $voter->email = $email;
-                $voter->phone_no = $ph_no;
-                $voter->save();
-
-                $voter_data = Voter::where("voter_id", $vid)->first();
-                $elections = Election::all();
-                if (count($elections) > 0) {
-                    foreach ($elections as $election) {
-                        $election_voter = new ElectionVoter();
-                        $election_voter->election_id = $election->id;
-                        $election_voter->voter_id = $voter_data->id;
-                        $election_voter->save();
-                    }
-                }
-
-                DB::table('logs')->insert([
-                    'voter_id' => $voter->id,
-                ]);
-
-                return response()->json(['success' => 'Voter ID Generated Successfully.', 'vid' => $vid]);
-            } else {
-                return response()->json(['errors' => 'Voter ID is Already Exist!']);
+        $voter_data = Voter::where("voter_id", $request->vid)->first();
+        $elections = Election::all();
+        if (count($elections) > 0) {
+            foreach ($elections as $election) {
+                $election_voter = new ElectionVoter();
+                $election_voter->election_id = $election->id;
+                $election_voter->voter_id = $voter_data->id;
+                $election_voter->save();
             }
         }
+
+        DB::table('logs')->insert([
+            'voter_id' => $voter->id,
+        ]);
+
+        return response()->json(['success' => 'Voter ID Generated Successfully.', 'vid' => $request->vid]);        
     }
 
     public function generateVidBlade()
@@ -155,22 +107,31 @@ class GenerateController extends Controller
     public function excelGenerate(Request $request)
     {
         if ($request->ajax()) {
-            $validator = Validator::make(
-                [
-                    'file'      => $request->file,
-                    'extension' => strtolower($request->file->getClientOriginalExtension()),
-                ],
-                [
-                    'file'          => 'required',
-                    'extension'      => 'required|in:csv,xlsx,xls',
-                ]
-            );
-            if ($validator->fails()) {
-                return response()->json(['errors' => $validator->errors()->all()]);
-            }
+            
 
             if ($request->hasFile('file')) {
-                $data = Excel::import(new VoterImport(), $request->file('file'));
+                $validator = Validator::make(
+                    [                   
+                        'extension' => strtolower($request->file->getClientOriginalExtension()),
+                    ],
+                    [                    
+                        'extension'      => 'required|in:csv,xlsx,xls',
+                    ]
+                );
+                
+                if ($validator->fails()) {                
+                    return response()->json(['errors' => $validator->errors()->all()]);
+                }
+                
+                try {
+                    $import = new VoterImport();
+                    $import->import($request->file('file'));
+                } catch (ValidationException $e) {
+                    
+                     $failures = $e->failures();
+                     return response()->json($failures[0]->errors());
+                }
+                
                 return response()->json(['success' => 'Data Added Successfully']);
             } else {
                 return response()->json(['errors' => 'Excel File is Required!']);
@@ -199,63 +160,39 @@ class GenerateController extends Controller
 
     public function sendMessage(Request $request)
     {
-        $vid = $request->vid;
-        $setting = Setting::first();
-        $voters = DB::table('voter')
+        $vid = $request->vid;        
+        $voter = DB::table('voter')
             ->select('voter.*', 'election_voters.election_id as election_id')
             ->where('voter.voter_id', $vid)
             ->orWhere('voter.id', $vid)
             ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
             ->first();
-        $url = route('vote.link', ['voter_id' => $voters->voter_id]);
-        $email = $voters->email;
-        $phone  = $voters->phone_no;
+        
+        $email = $voter->email;
+        $phone  = $voter->phone_no;
 
         if ($phone) {
-            $phones = explode(',', $phone);                   
-            $phone_content = ($setting->sms_text == null) ?
-                " မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။ "  . $url :
-                str_replace(['[:VoterName]', '[:ShareCount]'], [$voters->name, "(" . $voters->vote_count . ")"], $setting->sms_text) . $url;
-            $result = BulkSMS::sendSMS($phones, $phone_content);
+            $phones = explode(',', $phone);
+            
+            $result = BulkSMS::sendSMS($phones, $voter);
             if (isset($result->getData()->success)) {
-                DB::table('logs')->where('voter_id', $voters->id)->update(['sms_flag' => 2]);
+                DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
             } else {
-                DB::table('logs')->where('voter_id', $voters->id)->update(['sms_flag' => 1]);
+                DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
                 return response()->json(['errors' => $result->getData()->errors]);
             }
         }        
 
         if ($email) {
-            $content = ($setting->sms_text == null) ?
-            " မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။ " :
-            str_replace(['[:VoterName]', '[:ShareCount]'], [$voters->name, "(" . $voters->vote_count . ")"], $setting->sms_text);
+            $emails = explode(',', $email);
 
-            $time = Carbon::now();
-            $datetime = $time->toDateTimeString();
-            $DT = explode(' ', $datetime);
-            $image = public_path() . '/images/mti_logo.png';
+            $result = BulkEmail::sendEmail($emails,$voter);
 
-            Mail::send(
-                'vid_email',
-                array(
-                    'link' => $url,
-                    'image' => $image,
-                    'content' => $content,
-                    'date' => $DT[0],
-                    'time' => $DT[1],
-                ),
-                function ($message) use ($email) {
-                    $message->from('evoting.mti@gmail.com');
-                    $message->subject('E-Voting');
-                    $message->to($email);
-                }
-            );
-
-            if (Mail::failures()) {
-                DB::table('logs')->where('voter_id', $voters->id)->update(['email_flag' => 1]);
-                return response()->json(['errors' => 'Email Send Failed.']);
+            if (isset($result->getData()->success)) {
+                DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
             } else {
-                DB::table('logs')->where('voter_id', $voters->id)->update(['email_flag' => 2]);
+                DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
+                return response()->json(['errors' => $result->getData()->errors]);
             }
         }
 
@@ -263,30 +200,26 @@ class GenerateController extends Controller
     }
 
     public function smsMessageOnly(Request $request)
-    {
-        $setting = Setting::first();
+    {        
         $vid = $request->vid;
-        $voters = DB::table('voter')
+        $voter = DB::table('voter')
             ->select('voter.*', 'election_voters.election_id as election_id')
             ->where('voter.voter_id', $vid)
             ->orWhere('voter.id', $vid)
             ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
             ->first();
-        $url = route('vote.link', ['voter_id' => $voters->voter_id]);
-        $phone  = $voters->phone_no;
+
+        $phone  = $voter->phone_no;
         if ($phone) {            
             $phones = explode(',', $phone);
-            $phone_content =
-                ($setting->sms_text == null) ?
-                " မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။ "  . $url :
-                str_replace(['[:VoterName]', '[:ShareCount]'], [$voters->name, "(" . $voters->vote_count . ")"], $setting->sms_text) . $url;
-            $result = BulkSMS::sendSMS($phones, $phone_content);
+                            
+            $result = BulkSMS::sendSMS($phones, $voter);
 
             if (isset($result->getData()->success)) {
-                DB::table('logs')->where('voter_id', $voters->id)->update(['sms_flag' => 2]);
+                DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
                 return response()->json(['success' => 'SMS Send Successfully.']);
             } else {                
-                DB::table('logs')->where('voter_id', $voters->id)->update(['sms_flag' => 1]);
+                DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
                 return response()->json(['errors' => $result->getData()->errors]);
             }
         } else {
@@ -296,49 +229,26 @@ class GenerateController extends Controller
 
     public function emailMessageOnly(Request $request)
     {
-        $vid = $request->vid;
-        $setting = Setting::first();
-        $voters = DB::table('voter')
+        $vid = $request->vid;        
+        $voter = DB::table('voter')
             ->select('voter.*', 'election_voters.election_id as election_id')
             ->where('voter.voter_id', $vid)
             ->orWhere('voter.id', $vid)
             ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
             ->first();
-        $url = route('vote.link', ['voter_id' => $voters->voter_id]);
-        $email = $voters->email;
-        $setting = Setting::first();
+        
+        $email = $voter->email;
 
         if ($email) {
-            $content =  ($setting->sms_text == null) ?
-                "မင်္ဂလာပါ (share holder) (share) MCB Bank  ဒါရိုက်တာအဖွဲ့၏ ၂၀၂၀-၂၀၂၁ ဘဏ္ဍာနှစ် အစီရင်ခံချက်နှင့် ဆွေးနွေးဆုံးဖြတ်ချက်များအပေါ် သဘောထားဆန္ဒပြုရန် အောက်ပါ Link ကို နှိပ်ပါ။" :
-                str_replace(['[:VoterName]', '[:ShareCount]'], [$voters->name, "(" . $voters->vote_count . ")"], $setting->sms_text);
-            $time = Carbon::now();
-            $datetime = $time->toDateTimeString();
-            $DT = explode(' ', $datetime);
-            $image = public_path() . '/images/mti_logo.png';
+            $emails = explode(',', $email);
 
-            Mail::send(
-                'vid_email',
-                array(
-                    'link' => $url,
-                    'image' => $image,
-                    'content' => $content,
-                    'date' => $DT[0],
-                    'time' => $DT[1],
-                ),
-                function ($message) use ($email) {
-                    $message->from('evoting.mti@gmail.com');
-                    $message->subject("E-Voting");
-                    $message->to($email);
-                }
-            );
+            $result = BulkEmail::sendEmail($emails,$voter);
 
-            if (Mail::failures()) {
-                DB::table('logs')->where('voter_id', $voters->id)->update(['email_flag' => 1]);
-                return response()->json(['errors' => 'Email Send Failed.']);
+            if (isset($result->getData()->success)) {
+                DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
             } else {
-                DB::table('logs')->where('voter_id', $voters->id)->update(['email_flag' => 2]);
-                return response()->json(['success' => 'Email Send Successfully.']);
+                DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
+                return response()->json(['errors' => $result->getData()->errors]);
             }
         } else {
             return response()->json(['errors' => 'Email Does not Exist!.']);
@@ -353,20 +263,14 @@ class GenerateController extends Controller
             ->where('voter.voter_id', $vid)
             ->orWhere('voter.id', $vid)
             ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-            ->first();
-        $url = route('vote.link', ['voter_id' => $non_vote_voter->voter_id]);
-        $setting = Setting::first();
-
+            ->first();        
         
-
         if ($non_vote_voter->phone_no) {
-            $phones = explode(',', $non_vote_voter->phone_no);
-            $phone_content = ($setting->reminder_text == Null) ?
-                "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Link ကိုနှိပ်ပါ။ " . $url :
-                str_replace(['[:VoterName]', '[:ShareCount]'], [$non_vote_voter->name, "(" . $non_vote_voter->vote_count . ")"], $setting->reminder_text) . $url;
 
+            $phones = explode(',', $non_vote_voter->phone_no);            
 
-            $result = BulkSMS::sendSMS($phones, $phone_content);
+            $result = BulkSMS::sendSMS($phones, $non_vote_voter,'reminder');
+            
             if (isset($result->getData()->success)) {
                 DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_sms_flag' => 2]);
             } else {
@@ -377,36 +281,15 @@ class GenerateController extends Controller
 
         if ($non_vote_voter->email) {
 
-            $content =  ($setting->reminder_text == Null) ?
-            "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။" :
-            str_replace(['[:VoterName]', '[:ShareCount]'], [$non_vote_voter->name, "(" . $non_vote_voter->vote_count . ")"], $setting->reminder_text);
+            $emails = explode(',', $non_vote_voter->email);
 
-            $time = Carbon::now();
-            $datetime = $time->toDateTimeString();
-            $DT = explode(' ', $datetime);
-            $image = public_path() . '/images/mti_logo.png';
+            $result = BulkEmail::sendEmail($emails,$non_vote_voter,'reminder');
 
-            Mail::send(
-                'vid_email',
-                array(
-                    'link' => $url,
-                    'image' => $image,
-                    'content' => $content,
-                    'date' => $DT[0],
-                    'time' => $DT[1],
-                ),
-                function ($message) use ($non_vote_voter) {
-                    $message->from('evoting.mti@gmail.com');
-                    $message->subject("E-Voting");
-                    $message->to($non_vote_voter->email);
-                }
-            );
-
-            if (Mail::failures()) {
-                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_email_flag' => 1]);
-                return response()->json(['errors' => 'Email Send Failed.']);
+            if (isset($result->getData()->success)) {
+                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['email_flag' => 2]);
             } else {
-                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_email_flag' => 2]);
+                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['email_flag' => 1]);
+                return response()->json(['errors' => $result->getData()->errors]);
             }
         }
 
@@ -422,41 +305,17 @@ class GenerateController extends Controller
             ->orWhere('voter.id', $vid)
             ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
             ->first();
-        $setting = Setting::first();
-        $url = route('vote.link', ['voter_id' => $non_vote_voter->voter_id]);
+        
         if ($non_vote_voter->email) {
-            //$content = "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။";
-            $content =  ($setting->reminder_text == Null) ?
-                "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Click here Button ကိုနှိပ်ပါ။":
-                str_replace(['[:VoterName]', '[:ShareCount]'], [$non_vote_voter->name, "(" . $non_vote_voter->vote_count . ")"], $setting->reminder_text);
+            $emails = explode(',', $non_vote_voter->email);
 
-            $time = Carbon::now();
-            $datetime = $time->toDateTimeString();
-            $DT = explode(' ', $datetime);
-            $image = public_path() . '/images/mti_logo.png';
+            $result = BulkEmail::sendEmail($emails,$non_vote_voter,'reminder');
 
-            Mail::send(
-                'vid_email',
-                array(
-                    'link' => $url,
-                    'image' => $image,
-                    'content' => $content,
-                    'date' => $DT[0],
-                    'time' => $DT[1],
-                ),
-                function ($message) use ($non_vote_voter) {
-                    $message->from('evoting.mti@gmail.com');
-                    $message->subject("E-Voting");
-                    $message->to($non_vote_voter->email);
-                }
-            );
-
-            // check for failures
-            if (Mail::failures()) {
-                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_email_flag' => 1]);
-                return response()->json(['errors' => 'Email Send Failed.']);
+            if (isset($result->getData()->success)) {
+                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['email_flag' => 2]);
             } else {
-                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_email_flag' => 2]);
+                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['email_flag' => 1]);
+                return response()->json(['errors' => $result->getData()->errors]);
             }
 
             return response()->json(['success' => 'Email Send Successfully.']);
@@ -474,20 +333,14 @@ class GenerateController extends Controller
             ->orWhere('voter.id', $vid)
             ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
             ->first();
-        $url = route('vote.link', ['voter_id' => $non_vote_voter->voter_id]);
-        $setting = Setting::first();
+        
         if ($non_vote_voter->phone_no) {
             $phones = explode(',', $non_vote_voter->phone_no);            
-            
-            $url = route('vote.link', ['voter_id' => $non_vote_voter->voter_id]);
 
-            $phone_content = ($setting->reminder_text == Null) ?
-                "လူကြီးမင်းသည် အွန်လိုင်းစနစ်ဖြင့် မဲပေးရန် ကျန်ရှိနေပါသည်။ မဲပေးရန်အတွက် Link ကိုနှိပ်ပါ။ " . $url :
-                str_replace(['[:VoterName]', '[:ShareCount]'], [$non_vote_voter->name, "(" . $non_vote_voter->vote_count . ")"], $setting->reminder_text) . $url;
-            $result = BulkSMS::sendSMS($phones, $phone_content);
+            $result = BulkSMS::sendSMS($phones, $non_vote_voter);
+            
             if (isset($result->getData()->success)) {
                 DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_sms_flag' => 2]);
-                return response()->json(['success' => 'SMS Send Successfully.']);
             } else {
                 DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_sms_flag' => 1]);
                 return response()->json(['errors' => $result->getData()->errors]);

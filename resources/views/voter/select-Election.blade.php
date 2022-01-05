@@ -62,12 +62,14 @@
                 </div>
                 <div class="card-footer text-center" style="padding: 0px 0px!important;">
                     <div class="row">
-                        <div class="col-12">
+                        <div class="{{$setting->result_enable ? 'col-6 pr-0' : 'col-12'}}">
                             <a href="{{ route('vote.candidatelist', ['election_id' => $election->id]) }}" class="btn btn-info btn-flat btn-block py-2">Vote</a>
                         </div>
-                        {{-- <div class="col-6 pl-0">
+                        @if ($setting->result_enable)
+                        <div class="col-6 pl-0">
                             <a href="{{ route('vote.result-page', ['election_id' => $election->id]) }}" class="btn btn-info btn-flat btn-block py-2">Result</a>
-                        </div> --}}
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -120,13 +122,15 @@
                         </div>
                     </div>
 
-                    {{-- <div class="card-footer text-center" style="padding: 0px 0px!important;">
+                    @if ($setting->result_enable)
+                    <div class="card-footer text-center" style="padding: 0px 0px!important;">
                         <div class="row">
                             <div class="col-md-12">
                                 <a href="{{ route('vote.result-page', ['election_id' => $election->id]) }}" class="btn btn-info btn-flat btn-block py-2">View Result</a>
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
+                    @endif
                 </div>
                 @elseif($election->start_time == "0000-00-00 00:00:00" && $election->end_time == "0000-00-00 00:00:00")
                 <div class="card mt-4" style="background-color:rgb(220, 222, 222);">

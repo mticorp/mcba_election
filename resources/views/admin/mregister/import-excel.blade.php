@@ -34,17 +34,21 @@
                     <div class="card-body">
                         <div class="row justify-content-md-center">
                             <div class="col-md-10">
-                                <div class="form-group">
-                                    <div class="custom-file">
-                                        <input type="file" name="file" class="custom-file-input" id="fileUpload">
-                                        <label class="custom-file-label" for="fileUpload">Choose Excel file</label>
+                                <form id="addExcel">
+                                    @csrf
+                                    <div class="form-group">
+                                        <div class="custom-file">
+                                            <input type="file" name="file" class="custom-file-input" id="fileUpload">
+                                            <label class="custom-file-label" for="fileUpload">Choose Excel file</label>
+                                            <p class="mt-2 hidden loading text-info"><i class="fas fa-spinner fa-spin"></i> Please wait while reading your excel file!</p>
                                         </div>
-                                </div>
-                                <div class="form-group text-right">
-                                    <a href="{{route('member-excel-download')}}" class="btn btn-flat btn-info float-left"><i class="fa fa-download" aria-hidden="true"></i> Download Excel Template</a>
-                                    <button type="button" class="btn btn-flat btn-success" onclick="UploadProcess()" ><i class="fas fa-upload"></i> Import</button>
-                                    <a href="{{route('admin.register.index')}}" type="button" class="btn btn-flat btn-danger"><i class="fas fa-reply-all"></i> Member List</a>
-                                </div>
+                                    </div>
+                                    <div class="form-group text-right">
+                                        <a href="{{route('member-excel-download')}}" class="btn btn-flat btn-info float-left"><i class="fa fa-download" aria-hidden="true"></i> Download Excel Template</a>
+                                        <button type="button" class="btn btn-flat btn-success" id="import_btn" ><i class="fas fa-upload"></i> Import</button>
+                                        <a href="{{route('admin.register.index')}}" type="button" class="btn btn-flat btn-danger"><i class="fas fa-reply-all"></i> Member List</a>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -61,11 +65,12 @@
 <script type="text/javascript" src="{{asset('backend/plugins/xlsx/jszip.js')}}"></script>
 <script src="{{asset('js/mm-nrc.js')}}"></script>  
 <script>
+    var error_log = [];
     $(document).ready(function(){
         bsCustomFileInput.init();        
     })
 
-    function UploadProcess() {
+    $("#import_btn").on('click',function(){
         $.blockUI({
             css: {
                 backgroundColor:'transparent',
@@ -78,15 +83,23 @@
             baseZ: 2000,
             message: '<img src="{{ url("images/loader.gif") }}" width="150" />',
         });
+
+        $(".loading").removeClass('hidden');
+
+        UploadProcess();
+    })
+
+    function UploadProcess() {            
+    
         //Reference the FileUpload element.
         var fileUpload = document.getElementById("fileUpload");
+       
  
         //Validate whether File is valid Excel file.
         var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
         if (regex.test(fileUpload.value.toLowerCase())) {
             if (typeof (FileReader) != "undefined") {
-                var reader = new FileReader();
- 
+                var reader = new FileReader();                
                 //For Browsers other than IE.
                 if (reader.readAsBinaryString) {
                     reader.onload = function (e) {
@@ -106,20 +119,25 @@
                     reader.readAsArrayBuffer(fileUpload.files[0]);
                 }
             } else {
-                alert("This browser does not support HTML5.");
+                $(".loading").addClass('hidden');
+                $.unblockUI();
+                toastr.error('Info - This browser does not support HTML5.')                
             }
         } else {
-            alert("Please upload a valid Excel file.");
+            $(".loading").addClass('hidden');
+            $.unblockUI();
+            toastr.error('Info - Please upload a valid Excel file.')            
         }
     };
 
-    function GetDataFromExcel(data) {        
+    function GetDataFromExcel(data) {              
         //Read the Excel File data in binary
         var workbook = XLSX.read(data, {
             type: 'binary'
         });        
+        
 
-        workbook.SheetNames.forEach(function(sheetName) {
+        workbook.SheetNames.forEach(function(sheetName) {          
             // Here is your object            
             var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
             XL_row_object.forEach(function(el,index) {
@@ -133,39 +151,50 @@
                 
                 let dist = nrc.split('/')[1].split('(')[0];
                 let num = nrc.split(')')[1];
-                if(nrc_data[state_no].includes(dist))
+                if(!nrc_data[state_no].includes(dist))
                 {                    
-                    $.ajax({
-                        type: 'POST',
-                        dataType: "json",
-                        url: "{{ route('admin.register.excel-import') }}",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(data) {
-                            $.unblockUI();
-                            if (data.errors) {
-                                $('form#addExcel').trigger("reset");
-                                toastr.error('Info - ' + data.errors)
-                            } else if (data.success) {
-                                $('form#addExcel').trigger("reset");
-                                toastr.success('Info - ' + data.success)
-                            }
-                        },
-                        error: function(response) {
-                            $.unblockUI();
-                            if(response['responseJSON'])
-                            {
-                                toastr.error('Info - ' + response['responseJSON'].message)
-                            }else{
-                                toastr.error('Info - Something Went Wrong!')
-                            }
-                        },
-                    });
-                } else{
-                    console.log(state_no + "/" + dist + "(N)" + num + " is Invalid NRC");
-                }
-            });
+                   error_log.push("Invalid NRC at line - "+index);
+                }                               
+            });            
+            
+            if(error_log.length < 1)
+            {            
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    type: 'POST',                    
+                    url: "{{ route('admin.register.excel-import') }}",
+                    data: {
+                        data:XL_row_object,
+                    },                
+                    success: function(data) {
+                        $(".loading").addClass('hidden');
+                        $.unblockUI();
+                        if (data.errors) {
+                            $('form#addExcel').trigger("reset");
+                            toastr.error('Info - ' + data.errors)
+                        } else if (data.success) {
+                            $('form#addExcel').trigger("reset");
+                            toastr.success('Info - ' + data.success)
+                        }
+                    },
+                    error: function(response) {
+                        $.unblockUI();
+                        if(response['responseJSON'])
+                        {
+                            toastr.error('Info - ' + response['responseJSON'].message)
+                        }else{
+                            toastr.error('Info - Something Went Wrong!')
+                        }
+                    },
+                });
+            }
+
+            
         })
     };
 </script>

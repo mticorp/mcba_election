@@ -246,25 +246,48 @@ class MRegisterController extends Controller
     public function Import(Request $request)
     {        
         if($request->ajax())
-        {
-            $validator = Validator::make([
-                    'file'      => $request->file,
-                    'extension' => strtolower($request->file->getClientOriginalExtension()),
-                ],
-                [
-                    'file'          => 'required',
-                    'extension'      => 'required|in:csv,xlsx,xls',
-                ]);
+        {            
+            $validator = Validator::make($request->all(),[
+                'data'          => 'required',                    
+            ]);
+
             if ($validator->fails()) {
                 return response()->json(['errors' => $validator->errors()->all()]);
             }
 
-            if ($request->hasFile('file')) {
-                Excel::import(new ImportMember(), $request->file('file'));
-                return response()->json(['success' => 'Data Added Successfully']);
-            }else{
-                return response()->json(['errors' => 'Excel File is Required!']);
+            foreach($request->data as $row)
+            {
+                if(!isset($row['Profile']))
+                {
+                    $profile = '/images/user.png';
+                }else{
+                    $profile = isset($row['Profile']) ? $row['Profile'] : '';
+                }
+
+                MRegister::create([
+                    'profile' => $profile,
+                    'name' => isset($row['Name']) ? $row['Name'] : '',
+                    'nrc' => isset($row['NRC No']) ? $row['NRC No'] : '',
+                    'refer_code' => isset($row['Customs Reference Code']) ? $row['Customs Reference Code'] : '',
+                    'complete_training_no' => isset($row['Complete Training No']) ? $row['Complete Training No'] : '',
+                    'valuation_training_no' => isset($row['Valuation Training No']) ? $row['Valuation Training No'] : '',
+                    'AHTN_training_no' => isset($row['AHTN Training No']) ? $row['AHTN Training No'] : '',
+                    'graduation' => isset($row['Graduation']) ? $row['Graduation'] : '',
+                    'address' => isset($row['Address']) ? $row['Address'] : '',
+                    'phone_number' => isset($row['Phone Number']) ? $row['Phone Number'] : '',
+                    'email' => isset($row['Email']) ? $row['Email'] : '',
+                    'officeName' => isset($row['Office Name']) ? $row['Office Name'] : '',
+                    'office_startDate' => isset($row['Office Start Date']) ? $row['Office Start Date'] : '',
+                    'officeAddress' => isset($row['Office Address']) ? $row['Office Address'] : '',
+                    'officePhone' => isset($row['Office Phone Number']) ? $row['Office Phone Number'] : '',
+                    'officeFax' => isset($row['Office Fax']) ? $row['Office Fax'] : '',
+                    'officeEmail' => isset($row['Office Email']) ? $row['Office Email'] : '',
+                    'yellowCard' => isset($row['Yellow Card']) ? $row['Yellow Card'] : '',
+                    'pinkCard' => isset($row['Pink Card']) ? $row['Pink Card'] : '',                    
+                ]);
             }
+
+            return response()->json(['success' => "Successfully Imported!"]);
         }else{
             return abort(404);
         }

@@ -124,7 +124,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                   {!! Form::label('address', trans('admin.address')  , ['class' => "form-label"]) !!}
-                                    {!! Form::textarea('address', old('address'), ['class' => 'form-control']) !!}
+                                    {!! Form::textarea('address', old('address',$candidate->address), ['class' => 'form-control']) !!}
                                 </div>
                             </div>
                         </div>

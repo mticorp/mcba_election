@@ -142,7 +142,7 @@
             var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
             XL_row_object.forEach(function(el,index) {
                 index = index + 2;                
-                let nrc = new MMNRC(el['NRC No']);
+                let nrc = new MMNRC(el['NRC No'],index);
                 nrc = nrc.getFormat(null,index);
                 
                 let check = /^[A-Za-z][A-Za-z0-9]*$/;

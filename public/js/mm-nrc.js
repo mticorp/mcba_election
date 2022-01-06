@@ -42,21 +42,21 @@ var CHARACTERS = {
     "\u1002": "GA",
     "\u1003": "GHA",
     "\u1004": "NGA",
-    "\u1005": "CA",
-    "\u1006": "CHA",
+    "\u1005": "SA",
+    "\u1006": "HSA",
     "\u1007": "JA",
     "\u1008": "JHA",
     // TODO: NNYA
-    "\u1009": "NYA",
-    "\u100A": "NNYA",
+    "\u100A": "NYA",
+    // "\u100A": "NNYA",
     "\u100B": "TTA",
     "\u100C": "TTHA",
-    "\u100D": "DDA",
-    "\u100E": "DDHA",
+    // "\u100D": "DDA",
+    // "\u100E": "DDHA",
     // TODO: NNA
     "\u100F": "NNA",
     "\u1010": "TA",
-    "\u1011": "THA",
+    "\u1011": "HTA",
     "\u1012": "DA",
     "\u1013": "DHA",
     "\u1014": "NA",
@@ -81,19 +81,19 @@ var CHARACTERS = {
     "GA": "\u1002",
     "GHA": "\u1003",
     "NGA": "\u1004",
-    "CA": "\u1005",
-    "CHA": "\u1006",
+    "SA": "\u1005",
+    "HSA": "\u1006",
     "JA": "\u1007",
     "JHA": "\u1008",
-    "NYA": "\u1009",
-    "NNYA": "\u100A",
+    "NYA": "\u100A",
+    // "NNYA": "\u100A",
     "TTA": "\u100B",
     "TTHA": "\u100C",
-    "DDA": "\u100D",
-    "DDHA": "\u100E",
+    // "DDA": "\u100D",
+    // "DDHA": "\u100E",
     "NNA": "\u100F",
     "TA": "\u1010",
-    "THA": "\u1011",
+    "HTA": "\u1011",
     "DA": "\u1012",
     "DHA": "\u1013",
     "NA": "\u1014",
@@ -113,6 +113,8 @@ var CHARACTERS = {
     "OU": "\u1025",
     "AE": "\u1027"
 };
+
+console.log(CHARACTERS);
 
 /**
  * Constructor
@@ -160,7 +162,7 @@ MMNRC.prototype.isEqual = function(nrc) {
 MMNRC.prototype.init.prototype = MMNRC.prototype;
 
 MMNRC.prototype.getFormat = function(lang = null, line = null) {
-    // if (lang && lang === "mm" && !this.inCompleteInfo) {        
+    // if (lang && lang === "mm" && !this.inCompleteInfo) {
     //     return MMNRC.toMyaNum(this.state) + "/" + MMNRC.mmConvDistrict(this.dist) + "(" + NAING_MM + ")" + MMNRC.toMyaNum(this.num);
     // } else if(lang && lang === "mm_only" && !this.inCompleteInfo){
     //     return this.state + "/" + this.dist + "(နိုင်)" + this.num;

@@ -154,8 +154,59 @@
                 if(!nrc_data[state_no].includes(dist))
                 {                    
                    error_log.push("Invalid NRC at line - "+index);
-                }                               
-            });            
+                }                
+                
+                if(el['Phone Number'] != undefined)
+                {
+                    let phone_no = el['Phone Number'];
+                    phone_no = phone_no.replace('-','');
+                    phone_no = phone_no.replace(' ','');
+                    let split_phone_no = phone_no.split(',');                    
+                    let phone_pattern = /09\d{7}/;
+                    split_phone_no.forEach(function(phone,key) {
+                        if(!phone_pattern.test(phone) || phone.length > 11)
+                        {
+                            split_phone_no.splice(key,1);
+                        }
+                    });
+
+                    if(split_phone_no.length < 1)
+                    {
+                        error_log.push("Invalid Phone at line - " + index);
+                    }
+                                    
+                    el['Phone Number'] = split_phone_no.join(',');                    
+                }else{
+                    error_log.push("Phone Number is required at line - " + index);
+                }
+
+                if(el['Email'] != undefined)
+                {
+                    let email = el['Email'];
+                    email = email.replace('-','');
+                    email = email.replace(' ','');
+                    if(email.length > 0)
+                    {
+                        let split_email = email.split(',');
+                        let email_pattern = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                        split_email.forEach(function(email,key) {
+                            if(!email_pattern.test(email))
+                            {
+                                split_email.splice(key,1);
+                            }
+                        });
+
+                        if(split_email.length < 1)
+                        {
+                            error_log.push("Invalid Email at line - " + index);
+                        }
+
+                        el['Email'] = split_email.join(',');
+                    }else{
+                        el['Email'] = null;
+                    }
+                }                                            
+            })          
             
             if(error_log.length < 1)
             {            
@@ -192,9 +243,11 @@
                         }
                     },
                 });
-            }
-
-            
+            }else{           
+                error_log.forEach(element => {
+                    toastr.error('Info - ' + element)
+                });
+            }   
         })
     };
 </script>

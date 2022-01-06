@@ -114,8 +114,6 @@ var CHARACTERS = {
     "AE": "\u1027"
 };
 
-console.log(CHARACTERS);
-
 /**
  * Constructor
  * {String} NRC String

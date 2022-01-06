@@ -17,7 +17,7 @@ class BulkSMS{
                 $message = ($setting->reminder_text == null) ? Lang::get('message.reminder') . $url :
                 str_replace(['[:VoterName]', '[:ShareCount]'], [$voter->name, "(" . $voter->vote_count . ")"], $setting->reminder_text) . $url;
             }else if($type == 'member'){
-                $message = ($setting->member_sms_text == null) ? Lang::get('message.member') .$url. Lang::get('message.contact'):
+                $message = ($setting->member_sms_text == null) ? Lang::get('message.member') .$url." \n". Lang::get('message.contact'):
                 str_replace('[:MemberName]', $voter->name, $setting->member_sms_text) . $url;
             }else if($type == 'otp'){
                 $message = $url;

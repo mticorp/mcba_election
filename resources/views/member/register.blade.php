@@ -99,6 +99,7 @@
 </div>
 @endsection
 @section('javascript')
+<script src="{{asset('js/mm-nrc.js')}}"></script> 
 <script>
     $(document).ready(function() {
         

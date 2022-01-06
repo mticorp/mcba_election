@@ -1,19 +1,42 @@
 <?php
 namespace App\Classes;
+
+use App\Setting;
+use Illuminate\Support\Facades\Lang;
+
 class BulkSMS{
-    public static function sendSMS($mobileNumber,$message){
+    public static function sendSMS($mobileNumber,$voter,$type = null,$url = null){
+        $setting = Setting::first();
+        
+        if($voter)
+        {
+            $url != null ? $url : $url = route('vote.link', ['voter_id' => $voter->voter_id]);
+
+            if($type == 'reminder')
+            {
+                $message = ($setting->reminder_text == null) ? Lang::get('message.reminder') . $url :
+                str_replace(['[:VoterName]', '[:ShareCount]'], [$voter->name, "(" . $voter->vote_count . ")"], $setting->reminder_text) . $url;
+            }else if($type == 'member'){
+                $message = ($setting->member_sms_text == null) ? Lang::get('message.member') .$url. Lang::get('message.contact'):
+                str_replace('[:MemberName]', $voter->name, $setting->member_sms_text) . $url;
+            }else if($type == 'otp'){
+                $message = $url;
+            }else{
+                $message = ($setting->sms_text == null) ? Lang::get('message.text') . $url :
+                str_replace(['[:VoterName]', '[:ShareCount]'], [$voter->name, "(" . $voter->vote_count . ")"], $setting->sms_text) . $url;
+            }
+        }else{
+            return response()->json(['errors' => $type == "member" ? 'Member' : 'Voter'.' Not Found!']);
+        }
         
         $isError = 0;
-        $errorMessage = true;
-        //Your message to send, Adding URL encoding.
-        //Preparing post parameters
+        $errorMessage = true;        
         $token = "lKwrR0do7Ncd8ebzire137tt";
         if(count($mobileNumber) > 1)
         {
-            $response = "";
-            $error = "";
+            $response = "";            
             foreach($mobileNumber as $phone)
-            {      
+            {
                 $phone = str_replace("-", "", $phone);                                          
                 $phone = str_replace(" ", "", $phone);
                 // Prepare data for POST request
@@ -46,9 +69,8 @@ class BulkSMS{
                         $response .= $phone . " ";
                     }                    
                 }
-                               
-                return response()->json(['success' => $response. "Successfully Send!"]);
             }
+            return response()->json(['success' => $response. "Successfully Send!"]);
         }else{
             $phone = str_replace("-", "", $mobileNumber[0]);                                          
             $phone = str_replace(" ", "", $phone);

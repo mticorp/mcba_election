@@ -61,21 +61,21 @@
                                             <div class="row">
                                                 <div class="col-3">
                                                     <select name="nrc_first" id="nrc_first" class="form-control w-100">
-                                                    <option disabled selected value> </option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
-                                                        <option value="6">6</option>
-                                                        <option value="7">7</option>
-                                                        <option value="8">8</option>
-                                                        <option value="9">9</option>
-                                                        <option value="10">10</option>
-                                                        <option value="11">11</option>
-                                                        <option value="12">12</option>
-                                                        <option value="13">13</option>
-                                                        <option value="14">14</option>
+                                                        <option disabled selected value> </option>
+                                                        <option value="1">၁</option>
+                                                        <option value="2">၂</option>
+                                                        <option value="3">၃</option>
+                                                        <option value="4">၄</option>
+                                                        <option value="5">၅</option>
+                                                        <option value="6">၆</option>
+                                                        <option value="7">၇</option>
+                                                        <option value="8">၈</option>
+                                                        <option value="9">၉</option>
+                                                        <option value="10">၁၀</option>
+                                                        <option value="11">၁၁</option>
+                                                        <option value="12">၁၂</option>
+                                                        <option value="13">၁၃</option>
+                                                        <option value="14">၁၄</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-5 col-lg-4">                                                    
@@ -84,7 +84,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-4 col-lg-5">
-                                                    <input type="text" name="nrc_third" id="nrc_third" class="form-control w-100" placeholder="000000">
+                                                    <input type="text" name="nrc_third" id="nrc_third" class="form-control w-100" placeholder="၁၂၃၄၅၆"  maxlength="6">
                                                 </div>
                                             </div>
                                         </div>
@@ -212,7 +212,7 @@
                                 </div>
                                 <div class="row my-3">
                                     <div class="col-md-12 text-center">
-                                        <button type="submit" class="btn btn-info btn-md btn-block"><i class="fas fa-save"></i> Save</button>
+                                        <button type="submit" class="btn btn-info btn-md btn-block" id="btn_save"><i class="fas fa-save"></i> Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -225,36 +225,40 @@
 </div>
 @endsection
 @section('javascript')
+<script src="{{asset('js/mm-nrc.js')}}"></script>       
 <script>
-    $(document).ready(function(){        
-
-        var nrc_no = "{{$member->nrc}}";
-        // console.log(nrc_no);
-        var nrc_no = nrc_no.split("/");
-        $("#nrc_first option[value="+nrc_no[0]+"]").attr('selected','selected');
+    $(document).ready(function(){
+        let nrc_no = "{{$member->nrc}}";                        
+        nrc_no = new MMNRC(nrc_no);            
+        nrc_no = nrc_no.getFormat();            
+        nrc_no = nrc_no.split("/");
+        let state_no = MMNRC.toEngNum(nrc_no[0]);
         
-        var value1 = nrc_no[0];
-        var data1 = nrc_data[value1];
-           
-        var data1 = data1.sort();
+        $("#nrc_first option[value="+state_no+"]").attr('selected','selected');            
+        let data = nrc_data[state_no];
+
+        data = data.sort();
         var select = `<option disabled selected value> </option>`;
 
         $("#nrc_second").html(select);
-        $.each(data1,function(i,v){
+
+        $.each(data,function(i,v){
             var html = `<option value="${v}">${v}</option>`;
             $("#nrc_second").append(html);
         })
+
+        let nrcSecond = nrc_no[1].split("(");
         
-        var nrcSecond = nrc_no[1].split("(N)");
         $("#nrc_second option[value="+nrcSecond[0]+"]").attr('selected','selected');
 
-        $("#nrc_third").val(nrcSecond[1]);
+
+        $("#nrc_third").val(nrcSecond[1].split(")")[1]);
 
         $("#nrc_first").on('change',function(){
             var value = $(this).val();
             var data = nrc_data[value];
-           
-            var data = data.sort();            
+
+            var data = data.sort();
             $("#nrc_second").html(select);
             $.each(data,function(i,v){
                 var html = `<option value="${v}">${v}</option>`;
@@ -264,6 +268,7 @@
 
         $('form#EditForm').on('submit',function(event){
             event.preventDefault();
+            $("#btn_save").attr('disabled',true);
             $('input').blur();
             $.blockUI({
                 css: {
@@ -284,25 +289,37 @@
 
             if (nrc_first == '') {
                 $.unblockUI();
+                $("#btn_save").attr('disabled',false);
                 toastr.error('Info - NRC is Required.')
                 return false;
             }
 
             if (nrc_second == '') {
                 $.unblockUI();
+                $("#btn_save").attr('disabled',false);
                 toastr.error('Info - NRC is Required.')
                 return false;
             }
 
             if (nrc_third == '') {
                 $.unblockUI();
+                $("#btn_save").attr('disabled',false);
                 toastr.error('Info - NRC is Required.')
                 return false;
             }
 
+            if(!regx_mm_num.test(nrc_third))
+            {
+                $.unblockUI();
+                toastr.error('Info - NRC အား မြန်မာစာဖြင့် ဖြည့်ရန်.')
+                return false;
+            }
 
-            var nrc_no = nrc_first + "/" + nrc_second + "(N)" + nrc_third;
-            $("input[name=nrc_no]").val(nrc_no);
+            var nrc_no = MMNRC.toMyaNum(nrc_first) + "/" + nrc_second + "(နိုင်)" + nrc_third;                
+            let nrc = new MMNRC(nrc_no);
+            nrc = nrc.getFormat();
+                       
+            $("input[name=nrc_no]").val(nrc);
 
             $.ajax({
                     url: "{{route('vote.member.register.confirm')}}",
@@ -315,15 +332,21 @@
                     success: function(data) {
                         if (data.errors) {
                             $.unblockUI();
+                            $("#btn_save").attr('disabled',false);
                             for (var count = 0; count < data.errors.length; count++) {
                                 toastr.error('Info - ' + data.errors[count])
                             }
                         }
                         if (data.success) {
                             var url = '{{ route("vote.member.register.complete") }}';
-
+                            
                             window.location.href = url;
                         }
+                    },
+                    errors:function(res){
+                        $.unblockUI();
+                        $("#btn_save").attr('disabled',false);
+                        toastr.error('Info - Failed Network Connection! Please Reload and Try Again!');
                     }
                 })
         })

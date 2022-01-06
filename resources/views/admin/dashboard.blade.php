@@ -23,7 +23,7 @@
     <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
         <div class="row">
-            <!-- <div class="col-lg-3 col-6">
+           <div class="col-lg-3 col-6">
               <div class="small-box bg-success">
                 <div class="inner">
                   <h3>{{$percent_voting_count}} %</h3>
@@ -35,9 +35,9 @@
                 </div>
             <a href="{{route('admin.election.voting-record',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
               </div>
-            </div> -->
+            </div>
             <!-- ./col -->
-            <!-- <div class="col-lg-3 col-6">
+             <div class="col-lg-3 col-6">
               <div class="small-box bg-danger">
                 <div class="inner">
                   <h3>{{$pecrent_voting_reject_count}} %</h3>
@@ -49,9 +49,9 @@
                 </div>
             <a href="{{route('admin.election.rejectvoting-record',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
               </div>
-            </div> -->
+            </div> 
             <!-- ./col -->
-            <!-- <div class="col-lg-3 col-6">
+             <div class="col-lg-3 col-6">
               <div class="small-box bg-warning">
                 <div class="inner">
                   <h3>{{$percent_not_voted_count}} %</h3>
@@ -63,9 +63,9 @@
                 </div>
             <a href="{{route('admin.election.notvoted-record',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
               </div>
-            </div> -->
+            </div>
             <!-- ./col -->
-            <!-- <div class="col-lg-3 col-6">
+             <div class="col-lg-3 col-6">
               <div class="small-box bg-info">
                 <div class="inner">
                   <h3>{{$percent_voting_count}} %</h3>
@@ -77,9 +77,9 @@
                 </div>
             <a href="{{route('admin.election.voting-result',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
               </div>
-            </div> -->
+            </div> 
           </div>
-          <div class="row">
+          {{-- <div class="row">
             <div class="col-lg-4 col-6">
               <!-- small box -->
               <div class="small-box bg-warning">
@@ -124,10 +124,7 @@
                 </div>
                 <!-- <a href="{{route('admin.election.voting-result',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a> -->
               </div>
-            </div> 
-         <div class="row">   
-            <!-- ./col -->
-          </div>
+            </div>          
           <!-- /.row -->
           <div class="col-lg-4 col-6">
               <!-- small box -->
@@ -176,7 +173,7 @@
             </div> 
             
             <!-- ./col -->
-          </div>
+          </div> --}}
           <!-- /.row -->
           {{-- row --}}
           <div class="row">

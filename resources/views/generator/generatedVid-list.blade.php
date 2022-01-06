@@ -91,11 +91,10 @@
                                 </form>
                             </div>
                         </div>
-                        <table id="vidtable" class="table table-bordered datatable datatable-Client">
+                        <table id="vidtable" class="table table-bordered datatable datatable-Client" style="width: 100%;">
                             <thead>
                                 <tr>
-                                    <th width="5%" class="text-center"> &nbsp; <input type="checkbox" name="checked_all"
-                                            class=""></th>
+                                    <th width="5%" class="text-center"> &nbsp; <input type="checkbox" name="checked_all"></th>
                                     <th>NO</th>
                                     <th>Voter ID</th>
                                     <th>Name</th>

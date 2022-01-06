@@ -100,8 +100,8 @@
                                                             <strong id="error_msg"></strong>
                                                         </span>
                                                         <input type="text" id="vid"
-                                                            class="form-control input-lg text-center"
-                                                            style="font-size:50px; font-family: 'Roboto Mono', monospace;"
+                                                            class="form-control  text-center"
+                                                            style="font-size:50px; font-family: 'Roboto Mono', monospace; height:60px;"
                                                             disabled>
                                                     </div>
                                                 </div>
@@ -145,7 +145,7 @@
                                                                 {{-- <div class="col-md-8"> --}}
                                                                 <input type="phone" class="form-control form-control-sm"
                                                                     name="ph_no" id="ph_no"
-                                                                    placeholder="09xxxxxxxxx, 09xxxxxxxxx">
+                                                                    placeholder="09xxxxxxxxx,09xxxxxxxxx">
                                                                 {{-- </div> --}}
                                                             </div>
                                                         </div>
@@ -217,6 +217,12 @@
         }
 
         $(document).ready(function() {
+
+            $('#ph_no').keyup(function() {                
+                if (this.value.match(/[^,0-9]/g)) {
+                    this.value = this.value.replace(/[^,0-9]/g, '');
+                }
+            });
 
             bsCustomFileInput.init();
 

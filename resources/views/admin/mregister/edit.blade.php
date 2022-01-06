@@ -62,21 +62,21 @@
                                     <div class="row">
                                         <div class="col-3">
                                             <select name="nrc_first" id="nrc_first" class="form-control w-100">
-                                            <option disabled selected value> </option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
+                                                <option disabled selected value> </option>
+                                                <option value="1">၁</option>
+                                                <option value="2">၂</option>
+                                                <option value="3">၃</option>
+                                                <option value="4">၄</option>
+                                                <option value="5">၅</option>
+                                                <option value="6">၆</option>
+                                                <option value="7">၇</option>
+                                                <option value="8">၈</option>
+                                                <option value="9">၉</option>
+                                                <option value="10">၁၀</option>
+                                                <option value="11">၁၁</option>
+                                                <option value="12">၁၂</option>
+                                                <option value="13">၁၃</option>
+                                                <option value="14">၁၄</option>
                                             </select>
                                         </div>
                                         <div class="col-5 col-lg-4">
@@ -85,7 +85,7 @@
                                             </select>
                                         </div>
                                         <div class="col-4 col-lg-5">
-                                            <input type="text" name="nrc_third" id="nrc_third" class="form-control w-100" placeholder="000000">
+                                            <input type="text" name="nrc_third" id="nrc_third" class="form-control w-100" placeholder="၁၂၃၄၅၆" maxlength="6">
                                         </div>
                                     </div>
                                 </div>
@@ -230,30 +230,34 @@
  </section>
 @endsection
 @section('javascript')
+    <script src="{{asset('js/mm-nrc.js')}}"></script>   
     <script>
         $(document).ready(function(){
+            let nrc_no = "{{$member->nrc}}";                        
+            nrc_no = new MMNRC(nrc_no);            
+            nrc_no = nrc_no.getFormat();
+            nrc_no = nrc_no.split("/");
+            let state_no = MMNRC.toEngNum(nrc_no[0]);
+            
+            $("#nrc_first option[value="+state_no+"]").attr('selected','selected');            
+            let data = nrc_data[state_no];
 
-            var nrc_no = "{{$member->nrc}}";
-            // console.log(nrc_no);
-            var nrc_no = nrc_no.split("/");
-            $("#nrc_first option[value="+nrc_no[0]+"]").attr('selected','selected');
-
-            var value1 = nrc_no[0];
-            var data1 = nrc_data[value1];
-
-            var data1 = data1.sort();
+            data = data.sort();
             var select = `<option disabled selected value> </option>`;
 
             $("#nrc_second").html(select);
-            $.each(data1,function(i,v){
+
+            $.each(data,function(i,v){
                 var html = `<option value="${v}">${v}</option>`;
                 $("#nrc_second").append(html);
             })
 
-            var nrcSecond = nrc_no[1].split("(N)");
+            let nrcSecond = nrc_no[1].split("(");
+            
             $("#nrc_second option[value="+nrcSecond[0]+"]").attr('selected','selected');
 
-            $("#nrc_third").val(nrcSecond[1]);
+
+            $("#nrc_third").val(nrcSecond[1].split(")")[1]);
 
             $("#nrc_first").on('change',function(){
                 var value = $(this).val();
@@ -265,7 +269,7 @@
                     var html = `<option value="${v}">${v}</option>`;
                     $("#nrc_second").append(html);
                 })
-            })
+            })            
 
             $('form#editForm').on('submit',function(event){
                 event.preventDefault();
@@ -305,8 +309,18 @@
                 }
 
 
-                var nrc_no = nrc_first + "/" + nrc_second + "(N)" + nrc_third;
-                $("input[name=nrc]").val(nrc_no);
+                if(!regx_mm_num.test(nrc_third))
+                {
+                    $.unblockUI();
+                    toastr.error('Info - NRC အား မြန်မာစာဖြင့် ဖြည့်ရန်.')
+                    return false;
+                }
+
+                var nrc_no = MMNRC.toMyaNum(nrc_first) + "/" + nrc_second + "(နိုင်)" + nrc_third;                
+                let nrc = new MMNRC(nrc_no);
+                nrc = nrc.getFormat();     
+                
+                $("input[name=nrc]").val(nrc);
 
                 $.ajax({
                         url: "{{ route('admin.register.update') }}",

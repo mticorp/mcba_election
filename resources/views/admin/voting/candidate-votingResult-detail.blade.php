@@ -56,13 +56,13 @@
            <div class="card-body">
                <div class="row">
                    <div class="col-4 text-center">
-                    <p>VoterID</p>
+                    <p><b>VoterID</b></p>
                    </div>
                    <div class="col-4 text-center">
-                    <p>Voter Vote Count</p>
+                    <p><b>Voter Vote Count</b></p>
                    </div>
                    <div class="col-4 text-center">
-                    <p>Vote Date</p>
+                    <p><b>Vote Date</b></p>
                    </div>
                </div>
                <div class="row">

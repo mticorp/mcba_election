@@ -35,7 +35,7 @@
                 @endif
              </div>
 
-             <h3 class="profile-username text-center">{{$voting_detail->ques}}</h3>
+             <h3 class="profile-username text-center">{!!$voting_detail->ques!!}</h3>
              <hr>
              <a href="{{route('admin.election.voting-result',$election->id)}}" class="btn btn-success btn-block"><b><i class="fas fa-reply-all"></i> Go Back</b></a>
            </div>
@@ -47,18 +47,18 @@
        <div class="col-md-9">
          <div class="card">
            <div class="card-header">
-               <h3 class="card-title"><b>{{$voting_detail->ques}}</b> @lang('admin.information')</h3>
+               <h3 class="card-title"> အသေးစိတ် ရလဒ်များ</h3>
            </div><!-- /.card-header -->
            <div class="card-body">
                <div class="row">
                    <div class="col-4 text-center">
-                    <p>VoterID</p>
+                    <p><b>VoterID</b></p>
                    </div>
                    <div class="col-4 text-center">
-                    <p>Voter Vote</p>
+                    <p><b>Voter Vote</b></p>
                    </div>
                    <div class="col-4 text-center">
-                    <p>Vote Date</p>
+                    <p><b>Vote Date</b></p>
                    </div>
                </div>
                <div class="row">

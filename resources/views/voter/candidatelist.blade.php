@@ -315,10 +315,10 @@
                 var $el = $(this);
                 var select_item = $el.val();
                 var key = 0;
-                $(".card").each(function() {
-                    key = key + 1;
+                $(".card").each(function() {                    
                     var selected_id = $(this).find("input[type=checkbox]").val();
                     if (selected_id == select_item) {
+                        key = key + 1;
                         var selected_name = $(this).find("#name").text();
                         candidate_array.push('<br>' + key + '. ' + selected_name);
                     }

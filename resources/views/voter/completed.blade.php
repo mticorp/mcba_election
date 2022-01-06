@@ -58,7 +58,7 @@
                 @if (count($candidates) > 0)                
                 <p class="pl-1">ကိုယ်စားလှယ်လောင်းများ</p>                
                     @foreach($candidates as $key => $candidate) 
-                        <p><i class="fas fa-user-circle" style="font-size:20px;"></i> {{$key+1}}.  {{$candidate->mname}}</p>
+                        <p> {{$key+1}}.  {{$candidate->mname}}</p>
                     @endforeach
                 @endif
 

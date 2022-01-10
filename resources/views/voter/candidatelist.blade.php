@@ -311,11 +311,11 @@
             var selected = $("input[type=checkbox]:checked").length;
 
             var candidate_array = [];
+            var key = 0;
             $('input[type=checkbox]:checked').each(function() {
                 var $el = $(this);
-                var select_item = $el.val();
-                var key = 0;
-                $(".card").each(function() {                    
+                var select_item = $el.val();                
+                $(".card").each(function() {
                     var selected_id = $(this).find("input[type=checkbox]").val();
                     if (selected_id == select_item) {
                         key = key + 1;

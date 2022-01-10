@@ -136,38 +136,37 @@
             // return false;
             var nrc_first = $("select[name=nrc_first]").val();
             var nrc_second = $("select[name=nrc_second]").val();            
-            var nrc_third = $("input[name=nrc_third]").val();
-
-            if (nrc_first == '') {
-                $.unblockUI();
-                toastr.error('Info - NRC is Required.')
-                return false;
-            }
-
-            if (nrc_second == '') {
-                $.unblockUI();
-                toastr.error('Info - NRC is Required.')
-                return false;
-            }
-
-            if (nrc_third == '') {
-                $.unblockUI();
-                toastr.error('Info - NRC is Required.')
-                return false;
-            }
-
-            if(!regx_mm_num.test(nrc_third))
-            {
-                $.unblockUI();
-                toastr.error('Info - NRC အား မြန်မာစာဖြင့် ဖြည့်ရန်.')
-                return false;
-            }
-
-            var nrc_no = MMNRC.toMyaNum(nrc_first) + "/" + nrc_second + "(နိုင်)" + nrc_third;                
-            let nrc = new MMNRC(nrc_no);
-            nrc = nrc.getFormat();
+            var nrc_third = $("input[name=nrc_third]").val();            
             
-            $("input[name=nrc_no]").val(nrc);
+            if (nrc_first != null) {                
+                if(nrc_second != '')
+                {
+                    if(nrc_third != '')
+                    {
+                        if(!regx_mm_num.test(nrc_third))
+                        {
+                            $.unblockUI();
+                            toastr.error('Info - NRC အား မြန်မာစာဖြင့် ဖြည့်ရန်.')
+                            return false;
+                        }
+                    }else{
+                        $.unblockUI();
+                        toastr.error('Info - Full NRC is Required.')
+                        return false;
+                    }
+                }else{
+                    $.unblockUI();
+                    toastr.error('Info - Full NRC is Required.')
+                    return false;
+                }
+               
+                
+                var nrc_no = MMNRC.toMyaNum(nrc_first) + "/" + nrc_second + "(နိုင်)" + nrc_third;                
+                let nrc = new MMNRC(nrc_no);
+                nrc = nrc.getFormat();
+                
+                $("input[name=nrc_no]").val(nrc);
+            }
                       
             $.ajax({
                 url: "{{ route('vote.member.register.check') }}",

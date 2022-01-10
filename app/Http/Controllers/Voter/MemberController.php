@@ -22,6 +22,20 @@ class MemberController extends Controller
 
     public function check(Request $request)
     {        
+        // $validator = Validator::make($request->all(), [
+        //     'refer_code' => 'required',
+        //     'nrc_no' => 'required',
+        //     'phone_no' => 'required',
+        // ], [
+        //     'refer_code.required' => 'Reference Code is required.',
+        //     'nrc_no.required' => 'NRC is required.',
+        //     'phone_no.required' => 'Phone Number is required.',
+        // ]);
+
+        // if ($validator->fails()) {
+        //     return response()->json(['errors' => $validator->errors()->all()]);
+        // }
+
         $refer_code = $request->refer_code;
         $nrc_no = $request->nrc_no;
         $phone_no = $request->phone_no;

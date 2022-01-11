@@ -14,7 +14,7 @@
         <style>
              html,
             body {
-                background-color: #fff;
+                background-color: #EAF0FE;
                 color: #000;
                 font-family: 'Raleway', sans-serif;
                 font-weight: 100;
@@ -67,11 +67,34 @@
                 color: #000;
                 font-size: 30px;
             }
+
+            .image{
+                display: flex;
+                justify-content: center;
+                align-items: center;            
+            }
+
+            .image img{
+                margin-top: 5%;
+                width: 30vw;
+                height: auto;
+            }
+
+            @media screen and (max-width: 676px) {
+                .image img {
+                    margin-top: 20%;
+                    width: 100%;
+                    margin-bottom: 5px;
+                }
+            }
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
-            <div class="content">
+        <div class="position-ref full-height">
+            <div class="image">
+                <img src="{{ url('images/voting.jpg') }}" alt="">
+            </div>
+            <div class="content flex-center">
 				<div class="title m-b-md">
                    <strong>{{$msg}}</strong><br>
 				</div>

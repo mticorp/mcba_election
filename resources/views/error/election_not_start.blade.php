@@ -30,6 +30,7 @@
                 align-items: center;
                 display: flex;
                 justify-content: center;
+                flex-direction: column;
             }
 
             .position-ref {
@@ -95,7 +96,7 @@
             <div class="image">
                 <img src="{{ url('images/voting.jpg') }}" alt="">
             </div>
-            <div class="content flex-center ">
+            <div class="content flex-center">
 				<div class="title m-b-md">
                    Access Denied!<strong> {{$msg}}</strong><br>
 				</div>

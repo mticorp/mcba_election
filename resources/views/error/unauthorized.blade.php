@@ -29,6 +29,7 @@
                 align-items: center;
                 display: flex;
                 justify-content: center;
+                flex-direction: column;
             }
 
             .position-ref {

@@ -202,7 +202,7 @@ class VotingController extends Controller
         if (request()->ajax()) {
             $election_id = $_GET['election_id'];
             DB::statement(DB::raw('set @rownum=0'));
-            $DT_data = Candidate::orderBy('vote_count', 'desc')->where('election_id', '=', $election_id)->get(['candidate.*', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
+            $DT_data = Candidate::orderBy('candidate_no', 'asc')->orderBy('vote_count','desc')->where('election_id', '=', $election_id)->get(['candidate.*', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
             return datatables()->of($DT_data)
                 ->addColumn('action', function ($DT_data) {
                     $button = '&nbsp;&nbsp;';

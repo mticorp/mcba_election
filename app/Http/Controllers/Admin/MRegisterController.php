@@ -6,6 +6,7 @@ use App\Classes\BulkEmail;
 use App\Classes\BulkSMS;
 use App\Election;
 use App\ElectionVoter;
+use App\Exports\ExportMemberList;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -295,17 +296,8 @@ class MRegisterController extends Controller
 
     public function export()
     {
-        $file_path = public_path() . '/upload/Member_List_template.xlsx';
-        // dd($file_path);
-        if (file_exists($file_path))
-        {
-            return response()->download($file_path);
-        }
-        else
-        {
-            // Error
-            exit('Requested file does not exist on our server!');
-        }
+        
+        return Excel::download(new ExportMemberList(), 'Member_List.xlsx');
     }
 
     public function sendMessage(Request $request)

@@ -36,11 +36,14 @@
                         <div class="card-header">
                             <div class="card-title">Member List</div>
                             <div class="card-tools">
-                                {{-- <button type="button" id="btn_print_member" class="btn btn-flat btn-info"><i class="fa fa-print" aria-hidden="true"></i> Print</button> --}}
+                                
+                            <a href="{{route('member-excel-download')}}" class="btn btn-success btn-flat"><i
+                                class="fa fa-download"></i> Download Excel</a>
                                 <a href="{{ route('admin.register.excel.import') }}" class="btn btn-danger btn-flat"><i
                                         class="fas fa-file-excel" aria-hidden="true"></i> Excel Import</a>
                                 <a href="{{ route('admin.register.create') }}" class="btn btn-success btn-flat"><i
-                                        class="fa fa-plus" aria-hidden="true"></i> Add Member</a>                                
+                                        class="fa fa-plus" aria-hidden="true"></i> Add Member</a>   
+
                             </div>
                         </div>
                         <div class="card-body table-responsive">

@@ -53,9 +53,13 @@
                 <p>လူကြီးမင်း၏ မဲပေးမှုအတွက် ကျေးဇူးအထူးတင်ရှိပါသည်။</p>
             
             <div class="text-left fieldset">
+                @if (count($candidates) > 0 || count($answers) > 0)
                 <p>Transaction ID - {{$voter->VId}} ဖြင့် ရွေးချယ်ခဲ့သော </p>
+                @else
+                <p>Transaction ID - {{$voter->VId}} ဖြင့် မည်သူမျှ မရွေးချယ်ခဲ့ပါ။ </p>
+                @endif
                 
-                @if (count($candidates) > 0)                
+                @if (count($candidates) > 0)
                 <p class="pl-1">ကိုယ်စားလှယ်လောင်းများ</p>                
                     @foreach($candidates as $key => $candidate) 
                         <p> {{$key+1}}.  {{$candidate->mname}}</p>

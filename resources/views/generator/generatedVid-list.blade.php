@@ -180,18 +180,18 @@
 </div>
 
 <div style="display:none;">
-    <div style="border:2px;" id="print_content">
-        <p style="color:red; text-align:center">
+    <div style="border:2px;" class="justify-content-center" id="print_content">
+        <p style="color:red; text-align:center; font-size:34px">
             *Voter ID စာရွက်အား နောက် Election ကို မဲပေးရန်အတွက် သိမ်းဆည်းထားပေးပါ။  
 
         <h4 style="text-align:center"></h4>
-        <p style="text-align:center;font-size:13px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}</p>
+        <p style="text-align:center;font-size:34px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}</p>
         <br>
-        <p style="text-align:center;font-size:26px;">Voter ID: <span id="voter_id"
+        <p style="text-align:center;font-size:50px; color: black; font-weight: bold">Voter ID: <span id="voter_id"
                 style="border:2px solid red;margin-left:15px;padding-left:8px;padding-right:8px; font-family: 'Roboto Mono', monospace;"></span>
         </p>
         <br>
-        <p style="text-align:center"> Thank You</p>
+        <p style="text-align:center;font-size:34px;"> Thank You </p>
         <p>.</p>
     </div>
 </div>

@@ -57,10 +57,10 @@ class VoteController extends Controller
                 ->count() ? true : false;
             $voter = Voter::find($voter_table_id);
             if ($exist) {
-                return view('error.already-voted', compact('voter'))->with('msg', "You are already Voted!");
+                return view('error.already-voted', compact('voter'))->with('msg', "သင်သည် မဲပေးပြီးသွားပါပြီ။");
             }
             if ($election->status == 0) {
-                return view('error.election_not_start', compact('voter'))->with('msg', 'Election is not Started Yet!');
+                return view('error.election_not_start', compact('voter'))->with('msg', 'မဲပေးပွဲ မစသေးပါ။');
             }
             if ($election->candidate_flag == 0) {
                 if ($election->ques_flag == 1) {
@@ -114,19 +114,15 @@ class VoteController extends Controller
     }
 
     public function already()
-    {
-        
-       
+    {               
         $voter_table_id = Session::get('voter_table_id');
         $voter = Voter::find($voter_table_id);
-        return view('error.already-voted', compact('voter'))->with('msg', "Already Voted!");
+        return view('error.already-voted', compact('voter'))->with('msg', "သင်သည် မဲပေးပြီးသွားပါပြီ။");
     }
 
     public function unauthorized()
-    {
-        
-       
-        return view('error.not-found')->with('msg', "UnAuthorized Request");
+    {               
+        return view('error.not-found')->with('msg', "ခွင့်ပြုချက် မရှိပါ။");
     }
 
     public function changeStatus(Request $request)
@@ -275,7 +271,7 @@ class VoteController extends Controller
             if ($election->ques_flag == 1) {
                 $already_ans = DB::table('answers')->where('voter_id', $voter_table_id)->where('election_id', $election_id)->join('questions', 'questions.id', '=', 'answers.ques_id')->count() != 0 ? true : false;
                 if ($already_ans) {
-                    return view('error.alreadyanswer', compact('election'))->with('msg', "You are Already Answered!");
+                    return view('error.alreadyanswer', compact('election'))->with('msg', "သင်သည် မေးခွန်းများကို ဖြေဆိုပြီးသား ဖြစ်သည်။");
                 } else {
                     $ques = Question::where('election_id', $election_id)->get();
                     return view('voter.FAQ', compact('election', 'ques', 'voter_table_id'));

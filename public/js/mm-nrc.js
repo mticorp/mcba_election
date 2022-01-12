@@ -44,7 +44,7 @@ var CHARACTERS = {
     "\u1004": "NGA",
     "\u1005": "SA",
     "\u1006": "HSA",
-    "\u1007": "JA",
+    "\u1007": "ZA",
     "\u1008": "JHA",
     // TODO: NNYA
     "\u100A": "NYA",
@@ -83,7 +83,7 @@ var CHARACTERS = {
     "NGA": "\u1004",
     "SA": "\u1005",
     "HSA": "\u1006",
-    "JA": "\u1007",
+    "ZA": "\u1007",
     "JHA": "\u1008",
     "NYA": "\u100A",
     // "NNYA": "\u100A",

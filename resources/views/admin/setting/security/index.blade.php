@@ -31,7 +31,7 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label class="ml-2"> <i class="fa fa-unlock-alt"></i> Enable / Disable OTP Code</label>
+                                    <label class="ml-2"> <i class="fa fa-unlock-alt"></i> OTP Code</label>
                                 </div>
                                 <div class="col-md-8">                                    
                                     <input class="otp_enable toggle-class" type="checkbox" id="otp_enable" name="otp_enable"
@@ -44,7 +44,7 @@
 
                             <div class="row mt-4">
                                 <div class="col-md-4">
-                                    <label class="ml-2"> <i class="fas fa-file-excel"></i> Enable / Disable Voting Result</label>
+                                    <label class="ml-2"> <i class="fas fa-file-excel"></i> Voting Result</label>
                                 </div>
                                 <div class="col-md-8">                                    
                                     <input class="result_enable toggle-class" type="checkbox" id="result_enable" name="result_enable"

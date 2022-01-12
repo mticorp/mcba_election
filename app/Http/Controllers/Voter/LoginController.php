@@ -144,7 +144,7 @@ class LoginController extends Controller
             if ($election->status == 1) {
                 return view('voter.manual-vote', compact('election'));
             } else {
-                return view('error.election_not_start')->with('msg', 'Election is not Started Yet!');
+                return view('error.election_not_start')->with('msg', 'မဲပေးပွဲ မစသေးပါ။');
             }
         } else {
             abort(404);

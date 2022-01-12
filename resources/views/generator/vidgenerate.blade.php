@@ -190,7 +190,7 @@
         <p style="text-align:center;font-size:34px;">Print Date: {{ Carbon\Carbon::now()->format('d/M/Y h:i:s A') }}
         </p>
         <br>
-        <p style="text-align:center;font-size:42px;">Voter ID: <span id="voter_id"
+        <p style="text-align:center;font-size:50px; color: black; font-weight: bold">Voter ID : <span id="voter_id"
                 style="border:2px solid red;margin-left:15px;padding-left:8px;padding-right:8px; font-family: 'Roboto Mono', monospace;"></span>
         </p>
         <br>

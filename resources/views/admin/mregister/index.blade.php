@@ -66,6 +66,7 @@
                                         <th>NO</th>
                                         <th>Photo</th>
                                         <th>Name</th>
+                                        <th>NRC</th>
                                         <th>Reference Code</th>
                                         <th>Phone Number</th>
                                         <th>Created_Date</th>
@@ -213,6 +214,10 @@
                     {
                         data: 'name',
                         name: 'name'
+                    },
+                    {
+                        data: 'nrc',
+                        name: 'nrc',
                     },
                     {
                         data: 'refer_code',

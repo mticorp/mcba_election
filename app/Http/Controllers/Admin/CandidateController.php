@@ -106,7 +106,7 @@ class CandidateController extends Controller
 
     public function export()
     {
-      
+
         return Excel::download(new ExportCandidate(), 'Candidate_List.xlsx');
     }
 

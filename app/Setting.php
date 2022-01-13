@@ -17,7 +17,9 @@ class Setting extends Model
         'otp_enable',
         'result_enable',
         'otp_valid_time',
-        'otp_valid_time_type'
+        'otp_valid_time_type',
+        'member_annouce',
+        'voter_annouce',
     ];
 
     protected $table = 'settings';

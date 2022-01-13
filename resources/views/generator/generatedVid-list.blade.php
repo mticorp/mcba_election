@@ -68,17 +68,26 @@
                                 <form method="post" id="reminder" style="display: inline;">
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                     <div class="row mb-2">
-                                        <div class="col-md-6">
-                                            <button type="submit" class="btn btn-outline-danger my-2"><i
+                                        <div class="col-md-8">
+                                            <button type="submit" class="btn btn-outline-danger my-1"><i
                                                     class="fa fa-bell" aria-hidden="true"></i>
                                                 Send Reminder (All "Not
                                                 Voted")
                                             </button>
-                                            <button type="button" class="btn btn-outline-danger my-2"
+                                            <button type="button" class="btn btn-sm btn-outline-danger my-1"
                                                 id="select_reminder"><i class="fa fa-bell" aria-hidden="true"></i> Send
                                                 Reminder (Selected)</button>
+
+                                            <button type="button" id="btn_annouceAll"
+                                                class="btn btn-sm btn-outline-primary my-1"><i class="fa fa-bell"
+                                                    aria-hidden="true"></i>
+                                                Annouce (All)
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-primary my-1"
+                                                id="btn_annouceSelected"><i class="fa fa-bell" aria-hidden="true"></i>
+                                                Annouce (Selected)</button>
                                         </div>
-                                        <div class="col-md-6 text-lg-right">
+                                        <div class="col-md-4 text-lg-right">
                                             <button type="button" class="btn btn-outline-success" id="btn_sendAll"><i
                                                     class="fa fa-paper-plane" aria-hidden="true"></i> Send Message (All)
                                             </button>
@@ -91,10 +100,12 @@
                                 </form>
                             </div>
                         </div>
-                        <table id="vidtable" class="table table-bordered datatable datatable-Client" style="width: 100%;">
+                        <table id="vidtable" class="table table-bordered datatable datatable-Client"
+                            style="width: 100%;">
                             <thead>
                                 <tr>
-                                    <th width="5%" class="text-center"> &nbsp; <input type="checkbox" name="checked_all"></th>
+                                    <th width="5%" class="text-center"> &nbsp; <input type="checkbox"
+                                            name="checked_all"></th>
                                     <th>NO</th>
                                     <th>Voter ID</th>
                                     <th>Name</th>
@@ -182,7 +193,7 @@
 <div style="display:none;">
     <div style="border:2px;" id="print_content">
         <p style="color:red; text-align:center">
-            *Voter ID စာရွက်အား နောက် Election ကို မဲပေးရန်အတွက် သိမ်းဆည်းထားပေးပါ။  
+            *Voter ID စာရွက်အား နောက် Election ကို မဲပေးရန်အတွက် သိမ်းဆည်းထားပေးပါ။
 
         <h4 style="text-align:center"></h4>
         <p style="text-align:center;font-size:13px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}</p>
@@ -510,7 +521,113 @@
                           }
                       });
                 })
-              }else if(action == "select_message")
+              }
+              else if(action == "select_annouce")
+              {
+                $("tbody tr input[name=checked]:checked").each(function() {
+                    var check_val = $(this).val();
+                    if(method == "sms")
+                    {
+                      //sms only
+                      var url = "{{ route('vid.message.smsOnly') }}";
+                    }else if(method == "email")
+                    {
+                      //email only
+                      var url = "{{ route('vid.message.emailOnly') }}";
+                    }else if(method == "both")
+                    {
+                      //both sms & email
+                      var url = "{{ route('vid.message') }}";
+                    }else{
+                      $.unblockUI();
+                      toastr.error('Info - Method Failed!')
+                      $("#confirmModal").modal('hide');
+                      return false;
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {
+                            vid: check_val,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            $.unblockUI();
+                            $("#confirmModal").modal('hide');
+                            if (data.errors) {
+                                toastr.error('Info - ' + data.errors)
+                            } else if (data.success) {
+                                toastr.success('Info - ' + data.success)
+                            }
+                        },
+                        error: function(response) {
+                          $.unblockUI();
+                          $("#confirmModal").modal('hide');
+                          if(response['responseJSON'])
+                          {
+                            toastr.error('Info - ' + response['responseJSON'].message)
+                          }else{
+                            toastr.error('Info - Something Went Wrong!')
+                          }
+                        }
+                    });
+                })
+              }else if(action == "all_annouce")
+              {
+                $("tbody tr").each(function() {
+                    var check_val = $(this).find('input[name=checked]').val();
+                    if(method == "sms")
+                    {
+                      //sms only
+                      var url = "{{ route('vid.message.smsOnly') }}";
+                    }else if(method == "email")
+                    {
+                      //email only
+                      var url = "{{ route('vid.message.emailOnly') }}";
+                    }else if(method == "both")
+                    {
+                      //both sms & email
+                      var url = "{{ route('vid.message') }}";
+                    }else{
+                      $.unblockUI();
+                      toastr.error('Info - Method Failed!')
+                      $("#confirmModal").modal('hide');
+                      return false;
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {
+                            vid: check_val,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            $.unblockUI();
+                            $("#confirmModal").modal('hide');
+                            if (data.errors) {
+                                toastr.error('Info - ' + data.errors)
+                            } else if (data.success) {
+                                toastr.success('Info - ' + data.success)
+                            }
+                        },
+                        error: function(response) {
+                          $.unblockUI();
+                          $("#confirmModal").modal('hide');
+                          if(response['responseJSON'])
+                          {
+                            toastr.error('Info - ' + response['responseJSON'].message)
+                          }else{
+                            toastr.error('Info - Something Went Wrong!')
+                          }
+                        }
+                    });
+                })
+              }
+              else if(action == "select_message")
               {
                 $("tbody tr input[name=checked]:checked").each(function() {
                     var check_val = $(this).val();
@@ -691,6 +808,34 @@
                 // }
 
                 $('input[name=action]').val('all_message');
+                $("#confirmModal").modal('show');
+            })
+
+            $("#btn_annouceAll").on("click", function() {
+                console.log("btn_annouceAll");
+                // if (election_status == 0) {
+                //     toastr.error("Warning - Election is not Started!")
+                //     return false;
+                // }
+
+                $('input[name=action]').val('all_annouce');
+                $("#confirmModal").modal('show');
+            })
+            
+
+            $("#btn_annouceSelected").on('click', function() {
+                var check = $('input[name=checked]:checked').length;
+                console.log(check);
+                if (check == 0) {
+                    toastr.error("Warning - Please Select At Least One Row to send Message!")
+                    return false;
+                }
+                // if (election_status == 0) {
+                //     toastr.error("Warning - Election is not Started!")
+                //     return false;
+                // }
+
+                $('input[name=action]').val('select_annouce');
                 $("#confirmModal").modal('show');
             })
 

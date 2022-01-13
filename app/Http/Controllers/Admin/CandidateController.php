@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Candidate;
 use App\Election;
+use App\Exports\ExportCandidate;
 use App\Result;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,24 +18,23 @@ class CandidateController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth','admin']);
+        $this->middleware(['auth', 'admin']);
     }
 
     public function index($election_id)
-    {        
+    {
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
-            $DT_data = Candidate::orderBy('candidate_no', 'asc')->where('candidate.election_id',$election_id)->join('election','election.id','candidate.election_id')->get(['candidate.*','election.status', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
+            $DT_data = Candidate::orderBy('candidate_no', 'asc')->where('candidate.election_id', $election_id)->join('election', 'election.id', 'candidate.election_id')->get(['candidate.*', 'election.status', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
             return datatables()->of($DT_data)
                 ->addColumn('action', function ($DT_data) {
                     $button = '<button type="button" name="detail" id="' . $DT_data->id . '" class="detail btn btn-dark btn-xs btn-flat"><i class="fa fa-eye"></i> Detail</button>';
                     $button .= '&nbsp;&nbsp;';
-                    if($DT_data->status == 1)
-                    {
+                    if ($DT_data->status == 1) {
                         $button .= '<button type="button" name="edit" id="' . $DT_data->id . '" class="edit btn btn-info btn-xs btn-flat" disabled><i class="fas fa-edit"></i> Edit</button>';
                         $button .= '&nbsp;&nbsp;';
                         $button .= '<button type="button" name="delete" id="' . $DT_data->id . '" class="delete btn btn-danger btn-xs btn-flat" disabled><i class="fa fa-trash"></i> Delete</button>';
-                    }else{
+                    } else {
                         $button .= '<button type="button" name="edit" id="' . $DT_data->id . '" class="edit btn btn-info btn-xs btn-flat"><i class="fas fa-edit"></i> Edit</button>';
                         $button .= '&nbsp;&nbsp;';
                         $button .= '<button type="button" name="delete" id="' . $DT_data->id . '" class="delete btn btn-danger btn-xs btn-flat"><i class="fa fa-trash"></i> Delete</button>';
@@ -46,142 +46,124 @@ class CandidateController extends Controller
         }
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
-        if($election)
-        {
+        if ($election) {
             $elections = $election_modal->electionWithoutCurrent($election_id);
             $candidates = Candidate::where('election_id', '=', $election_id)->orderby('id', 'asc')->get();
             // dd($candidates);
-            return view('admin.candidate.index',compact('elections','election','candidates'));
-        }else{
+            return view('admin.candidate.index', compact('elections', 'election', 'candidates'));
+        } else {
             return abort(404);
         }
     }
 
     public function excelImport($election_id)
     {
-        
-       
+
+
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
-        if($election)
-        {
+        if ($election) {
             $elections = $election_modal->electionWithoutCurrent($election_id);
-            return view('admin.candidate.import-excel',compact('election','elections'));
-        }else{
+            return view('admin.candidate.import-excel', compact('election', 'elections'));
+        } else {
             return abort(404);
         }
     }
 
     public function Import(Request $request)
     {
-        if($request->ajax())
-        {
+        if ($request->ajax()) {
             $election_id = $request->election_id;
             if ($request->hasFile('file')) {
-                $validator = Validator::make([
-                    'file'      => $request->file,
-                    'extension' => strtolower($request->file->getClientOriginalExtension()),
-                ],
-                [
-                    'file'          => 'required',
-                    'extension'      => 'required|in:csv,xlsx,xls',
-                ]);
+                $validator = Validator::make(
+                    [
+                        'file'      => $request->file,
+                        'extension' => strtolower($request->file->getClientOriginalExtension()),
+                    ],
+                    [
+                        'file'          => 'required',
+                        'extension'      => 'required|in:csv,xlsx,xls',
+                    ]
+                );
 
                 if ($validator->fails()) {
                     return response()->json(['errors' => $validator->errors()->all()]);
                 }
-                try{
+                try {
                     Excel::import(new ImportCandidate($election_id), $request->file('file'));
-                }
-                catch (\Maatwebsite\Excel\Validators\ValidationException $failures)
-                {
+                } catch (\Maatwebsite\Excel\Validators\ValidationException $failures) {
                     return response()->json(['validator' => $failures]);
                 }
 
                 return response()->json(['success' => 'Data Added Successfully']);
-            }else{
+            } else {
                 return response()->json(['errors' => 'Excel File is Required!']);
             }
-        }else{
+        } else {
             return abort(404);
         }
     }
 
     public function export()
     {
-        $file_path = public_path() . '/upload/Candidate_List_template.xlsx';
-        // dd($file_path);
-        if (file_exists($file_path))
-        {
-            return response()->download($file_path);
-        }
-        else
-        {
-            // Error
-            exit('Requested file does not exist on our server!');
-        }
+      
+        return Excel::download(new ExportCandidate(), 'Candidate_List.xlsx');
     }
 
     public function create($election_id)
-    {       
+    {
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
-        if($election)
-        {
-            if($election->status == 0)
-            {
+        if ($election) {
+            if ($election->status == 0) {
                 $elections = $election_modal->electionWithoutCurrent($election_id);
-                return view('admin.candidate.create',compact('election','elections'));
-            }else{
-                abort(403,'Election is already Started!');
+                return view('admin.candidate.create', compact('election', 'elections'));
+            } else {
+                abort(403, 'Election is already Started!');
             }
-        }else{
+        } else {
             return abort(404);
         }
-
     }
 
-    public function detail($election_id,$candidate_id)
+    public function detail($election_id, $candidate_id)
     {
-        
-       
+
+
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
-        if($election)
-        {
+        if ($election) {
             $candidate = Candidate::find($candidate_id);
             if ($candidate != null) {
                 $elections = $election_modal->electionWithoutCurrent($election_id);
-                return view('admin.candidate.detail', compact('candidate','election','elections'));
+                return view('admin.candidate.detail', compact('candidate', 'election', 'elections'));
             } else {
                 return abort(404);
             }
-        }else{
+        } else {
             return abort(404);
         }
     }
 
-    public function edit($election_id,$candidate_id)
+    public function edit($election_id, $candidate_id)
     {
-        
-       
+
+
         $election_modal = new Election;
         $election = $election_modal->electionWithId($election_id);
-        if($election)
-        {
-            if($election->status == 0)
-            {
+        if ($election) {
+            if ($election->status == 0) {
                 $candidate = Candidate::find($candidate_id);
                 if ($candidate != null) {
                     $elections = $election_modal->electionWithoutCurrent($election_id);
-                    return view('admin.candidate.edit', compact('candidate','election','elections'));
+                    return view('admin.candidate.edit', compact('candidate', 'election', 'elections'));
                 } else {
                     return abort(404);
                 }
-            }else{
-                abort(403,'Election is already Started!');
+            } else {
+                abort(403, 'Election is already Started!');
             }
-        }else{
+        } else {
             return abort(404);
         }
     }
@@ -204,9 +186,9 @@ class CandidateController extends Controller
             // // 'position' => 'required',
             // 'phone_no' => 'required',
             // 'company' => 'required',
-        ],[
-            'candidate_no.required'=>'ကိုယ်စားလှယ်လောင်းအမှတ် ဖြည့်စွက်ရန်.',
-            'mname.required'=>'အမည် ဖြည့်စွက်ရန်.',
+        ], [
+            'candidate_no.required' => 'ကိုယ်စားလှယ်လောင်းအမှတ် ဖြည့်စွက်ရန်.',
+            'mname.required' => 'အမည် ဖြည့်စွက်ရန်.',
             // 'company.required'=>'လုပ်ငန်းအမည် ဖြည့်စွက်ရန်.',
             // 'nrc_no.required'=>'နိုင်ငံသားမှတ်ပုံတင်အမှတ် ဖြည့်စွက်ရန်.',
             // 'dob.required'=>'မွေးသက္ကရာဇ် ဖြည့်စွက်ရန်.',
@@ -218,8 +200,7 @@ class CandidateController extends Controller
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
-        if($request->hasfile('image'))
-        {
+        if ($request->hasfile('image')) {
             $image = $request->file('image');
             $filename = rand() . '.jpg';
 
@@ -229,7 +210,7 @@ class CandidateController extends Controller
             });
             $image_resize->save(public_path('/upload/candidate/' . $filename));
             $new_name = '/upload/candidate/' . $filename;
-        }else{
+        } else {
             $new_name = '/images/user.png';
         }
 
@@ -259,8 +240,8 @@ class CandidateController extends Controller
         $candidate = Candidate::create($form_data);
 
         $result_data = array(
-           "candidate_id" => $candidate->id,
-           "election_id" => $request->election_id,
+            "candidate_id" => $candidate->id,
+            "election_id" => $request->election_id,
         );
 
         Result::create($result_data);
@@ -278,9 +259,9 @@ class CandidateController extends Controller
             // // 'position' => 'required',
             // 'phone_no' => 'required',
             // 'company' => 'required',
-        ],[
-            'candidate_no.required'=>'ကိုယ်စားလှယ်လောင်းအမှတ် ဖြည့်စွက်ရန်.',
-            'mname.required'=>'အမည် ဖြည့်စွက်ရန်.',
+        ], [
+            'candidate_no.required' => 'ကိုယ်စားလှယ်လောင်းအမှတ် ဖြည့်စွက်ရန်.',
+            'mname.required' => 'အမည် ဖြည့်စွက်ရန်.',
             // 'company.required'=>'လုပ်ငန်းအမည် ဖြည့်စွက်ရန်.',
             // 'nrc_no.required'=>'နိုင်ငံသားမှတ်ပုံတင်အမှတ် ဖြည့်စွက်ရန်.',
             // 'dob.required'=>'မွေးသက္ကရာဇ် ဖြည့်စွက်ရန်.',
@@ -294,10 +275,8 @@ class CandidateController extends Controller
 
         if ($request->hasfile('image')) {
             $image = $request->file('image');
-            if($request->old_image || $request->old_image != '')
-            {
-                if($request->old_image != '/images/user.png')
-                {
+            if ($request->old_image || $request->old_image != '') {
+                if ($request->old_image != '/images/user.png') {
                     $oldpath = public_path() . $request->old_image;
                     if (file_exists($oldpath)) {
                         unlink($oldpath);
@@ -313,7 +292,7 @@ class CandidateController extends Controller
             });
             $image_resize->save(public_path('/upload/candidate/' . $filename));
             $image_name = '/upload/candidate/' . $filename;
-        }else{
+        } else {
             $image_name = $request->old_image;
         }
 
@@ -345,17 +324,14 @@ class CandidateController extends Controller
         return response()->json(['success' => 'Data is successfully updated']);
     }
 
-    public function destroy($election_id,$candidate_id)
+    public function destroy($election_id, $candidate_id)
     {
-        $data = Candidate::where('id',$candidate_id)->where('election_id',$election_id)->first();
-        $path = public_path(). $data->photo_url;
+        $data = Candidate::where('id', $candidate_id)->where('election_id', $election_id)->first();
+        $path = public_path() . $data->photo_url;
 
-        if($data->photo_url || $data->photo_url != null)
-        {
-            if($data->photo_url != '/images/user.png')
-            {
-                if(file_exists($path))
-                {
+        if ($data->photo_url || $data->photo_url != null) {
+            if ($data->photo_url != '/images/user.png') {
+                if (file_exists($path)) {
                     unlink($path);
                 }
             }
@@ -383,17 +359,14 @@ class CandidateController extends Controller
             DB::statement("ALTER TABLE `result` AUTO_INCREMENT = $last_id");
         }
 
-        return response()->json(['success' => 'Successfully Deleted!']);        
+        return response()->json(['success' => 'Successfully Deleted!']);
     }
     public function DownloadCandidateTemplateExcel()
     {
         $file_path = public_path() . '/upload/Candidate_List_Download_Template.xlsx';
-        if (file_exists($file_path))
-        {
+        if (file_exists($file_path)) {
             return response()->download($file_path);
-        }
-        else
-        {
+        } else {
             // Error
             exit('Requested file does not exist on our server!');
         }

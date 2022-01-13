@@ -37,7 +37,7 @@
                             <div class="card-title">Member List</div>
                             <div class="card-tools">
                                 
-                            <a href="{{route('member-excel-download')}}" class="btn btn-success btn-flat"><i
+                            <a href="{{route('candidate-excel-export')}}" class="btn btn-dark btn-flat"><i
                                 class="fa fa-download"></i> Download Excel</a>
                                 <a href="{{ route('admin.register.excel.import') }}" class="btn btn-danger btn-flat"><i
                                         class="fas fa-file-excel" aria-hidden="true"></i> Excel Import</a>

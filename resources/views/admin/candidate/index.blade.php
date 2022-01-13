@@ -27,6 +27,9 @@
                             <div class="card-title">Candidates List</div>
                             <div class="card-tools">
                                 @if ($election->status == 0)
+                                
+                            <a href="{{route('candidate-excel-export')}}" class="btn btn-dark btn-flat"><i
+                                class="fa fa-download"></i> Download Excel</a>
                                 <a href="{{ route('admin.candidate.excel.import', $election->id) }}"
                                     class="btn btn-danger btn-flat"><i class="fas fa-file-excel" aria-hidden="true"></i>
                                     Excel Import</a>

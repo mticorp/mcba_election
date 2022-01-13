@@ -35,33 +35,31 @@ class ExportMemberList implements FromQuery, WithHeadings
             'officeEmail',
             'yellowCard',
             'pinkCard',
-            'check_flag',
         );
     }
 
     public function headings(): array
     {
         return [
-            'profile',
+            'Profile',
             'Name',
-            'NRC',
-            'refer_code',
-            'complete_training_no',
-            'valuation_training_no',
-            'AHTN_training_no',
-            'graduation',
-            'address',
-            'phone_number',
-            'email',
-            'officeName',
-            'office_startDate',
-            'officeAddress',
-            'officePhone',
-            'officeFax',
-            'officeEmail',
-            'yellowCard',
-            'pinkCard',
-            'check_flag',
+            'NRC No',
+            'Customs Reference Code',
+            'Complete Training No',
+            'Valuation Training No',
+            'AHTN Training No',
+            'Graduation',
+            'Address',
+            'Phone Number',
+            'Email',
+            'Office Name',
+            'Office Start Date',
+            'Office Address',
+            'Office Phone Number',
+            'Office Fax',
+            'Office Email',
+            'Yellow Card',
+            'Pink Card',
         ];
     }
 }

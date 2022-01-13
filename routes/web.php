@@ -38,11 +38,11 @@ Route::group(['middleware' => 'setting'], function () {
     Route::post('/vote/redirect/', 'Voter\LoginController@VoteLogin')->name('vote.voter.login');
 
     //For MCBA
-    Route::get('/vote/register/check-Form','Voter\MemberController@register')->name('vote.member.register');
-    Route::post('/vote/check_refer_code/','Voter\MemberController@check')->name('vote.member.register.check');
-    Route::get('/vote/register/refill-form/{member_id}','Voter\MemberController@refill')->name('vote.member.register.form');
+    Route::get('/vote/register/check-Form', 'Voter\MemberController@register')->name('vote.member.register');
+    Route::post('/vote/check_refer_code/', 'Voter\MemberController@check')->name('vote.member.register.check');
+    Route::get('/vote/register/refill-form/{member_id}', 'Voter\MemberController@refill')->name('vote.member.register.form');
     Route::post('/vote/register/confirm', 'Voter\MemberController@confirm')->name('vote.member.register.confirm');
-    Route::get('/vote/register/complete/','Voter\MemberController@completeMessage')->name('vote.member.register.complete');
+    Route::get('/vote/register/complete/', 'Voter\MemberController@completeMessage')->name('vote.member.register.complete');
     //For END MCBA
 
     //start login routes...
@@ -139,12 +139,12 @@ Route::group(['middleware' => 'setting'], function () {
             //Voter SMS route
             Route::get('/sms/voter', 'Admin\SmsController@index')->name('admin.sms.index');
             Route::post('/sms/voter/update', 'Admin\SmsController@update')->name('admin.sms.update');
-             //Reminder route
+            //Reminder route
             Route::get('/reminder', 'Admin\SmsController@reminderIndex')->name('admin.reminder.index');
-            Route::post('/reminder/update', 'Admin\SmsController@reminderUpdate')->name('admin.reminder.update');               
-            
+            Route::post('/reminder/update', 'Admin\SmsController@reminderUpdate')->name('admin.reminder.update');
+
             Route::get('/security', 'Admin\SecurityController@index')->name('admin.security.index');
-            Route::post('/security/update', 'Admin\SecurityController@update')->name('admin.security.update');   
+            Route::post('/security/update', 'Admin\SecurityController@update')->name('admin.security.update');
 
 
             //dashboard route
@@ -161,6 +161,8 @@ Route::group(['middleware' => 'setting'], function () {
             Route::get('/candidate/excel-import/{election_id}', 'Admin\CandidateController@excelImport')->name('admin.candidate.excel.import');
             Route::post('/candidate/import/', 'Admin\CandidateController@Import')->name('admin.candidate.excel-import');
             Route::get('/candidate-excel-download', 'Admin\CandidateController@export')->name('candidate-excel-export');
+            Route::get('candidate/excel/template', 'Admin\CandidateController@DownloadCandidateTemplateExcel')->name('candidate.excel-template.download');
+            
 
             //voting information route
             Route::get('/voting/votingrecord/{election_id}', 'Admin\VotingController@votingRecord')->name('admin.election.voting-record');
@@ -179,16 +181,17 @@ Route::group(['middleware' => 'setting'], function () {
             // Route::get('/voting/answer/{election_id}','Admin\VotingController@answer')->name('admin.answer.index');
             //register route
             Route::get('/register/', 'Admin\MRegisterController@index')->name('admin.register.index');
-            Route::get('/register/create','Admin\MRegisterController@create')->name('admin.register.create');
+            Route::get('/register/create', 'Admin\MRegisterController@create')->name('admin.register.create');
             Route::post('/register/store', 'Admin\MRegisterController@store')->name('admin.register.store');
-            Route::get('/register/detail/{member_id}','Admin\MRegisterController@detail')->name('admin.register.detail');
+            Route::get('/register/detail/{member_id}', 'Admin\MRegisterController@detail')->name('admin.register.detail');
             Route::get('/register/edit/{member_id}', 'Admin\MRegisterController@edit')->name('admin.register.edit');
             Route::post('/register/update', 'Admin\MRegisterController@update')->name('admin.register.update');
             Route::get('/register/destroy/{member_id}', 'Admin\MRegisterController@destroy')->name('admin.register.delete');
-            Route::get('/register/excel-import','Admin\MRegisterController@excelImport')->name('admin.register.excel.import');
-            Route::post('/register/import/','Admin\MRegisterController@Import')->name('admin.register.excel-import');
-            Route::get('/member-excel-download','Admin\MRegisterController@export')->name('member-excel-download');
-
+            Route::get('/register/excel-import', 'Admin\MRegisterController@excelImport')->name('admin.register.excel.import');
+            Route::post('/register/import/', 'Admin\MRegisterController@Import')->name('admin.register.excel-import');
+            Route::get('/member-excel-download', 'Admin\MRegisterController@export')->name('member-excel-download');
+            Route::get('member/excel/template', 'Admin\MRegisterController@DownloadTemplateExcel')->name('member.excel-template.download');
+            
             Route::get('/index', 'Generator\GenerateController@index')->name('generator.index');
 
             Route::get('/vid/list/', 'Generator\GenerateController@vidList')->name('generator.vid-list');
@@ -211,7 +214,7 @@ Route::group(['middleware' => 'setting'], function () {
             Route::post('/register/send-message(SMS)', 'Admin\MRegisterController@smsMessageOnly')->name('member.message.smsOnly');
             Route::post('/register/send-message(Email)', 'Admin\MRegisterController@emailMessageOnly')->name('member.message.emailOnly');
 
-            Route::post('/register/generate/voterID','Admin\MRegisterController@generateVID')->name('member.generate.vid');
+            Route::post('/register/generate/voterID', 'Admin\MRegisterController@generateVID')->name('member.generate.vid');
 
             Route::post('/excel/generate-vid', 'Generator\GenerateController@excelGenerate')->name('vid.excel.generate-vid');
             Route::get('/excel-download', 'Generator\GenerateController@excelDownload')->name('vid.excel.template-download');

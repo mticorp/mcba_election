@@ -43,7 +43,10 @@
                                             </div>
                                     </div>
                                     <div class="form-group text-right">
-                                        <a href="{{route('candidate-excel-export')}}" class="btn btn-flat btn-info float-left"><i class="fa fa-download" aria-hidden="true"></i> Download Excel Template</a>
+                                        <button type="button" class="btn btn-flat btn-info float-left"
+                                        onclick="templateDownload()">
+                                        <i class="fa fa-file-download"></i> Download Excel Template</button>
+                                    
                                         <button type="submit" class="btn btn-flat btn-success"><i class="fas fa-upload"></i> Import</button>
                                         <a href="{{route('admin.candidate.index',$election->id)}}" type="button" class="btn btn-flat btn-danger"><i class="fas fa-reply-all"></i> Candidate List</a>
                                     </div>
@@ -59,6 +62,9 @@
 @endsection
 @section('javascript')
 <script>
+    function templateDownload(){
+            window.location.href = "{{route('candidate.excel-template.download')}}";
+        }
     $(document).ready(function(){
         bsCustomFileInput.init();
         jQuery('form#addExcel').on('submit', function(e) {

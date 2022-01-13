@@ -2,20 +2,20 @@
 @section('breadcrumb')
 <section class="content-header">
     <div class="container-fluid">
-      <div class="row mb-2">
-        <div class="col-sm-6">
+        <div class="row mb-2">
+            <div class="col-sm-6">
 
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item active"><a href="{{route('admin.election.index')}}">Home</a></li>
+                    <li class="breadcrumb-item active"><a href="{{route('admin.register.index')}}">Member List</a></li>
+                    <li class="breadcrumb-item active">Exel Import</li>
+                </ol>
+            </div>
         </div>
-        <div class="col-sm-6">
-          <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item active"><a href="{{route('admin.election.index')}}">Home</a></li>
-            <li class="breadcrumb-item active"><a href="{{route('admin.register.index')}}">Member List</a></li>
-            <li class="breadcrumb-item active">Exel Import</li>
-          </ol>
-        </div>
-      </div>
     </div><!-- /.container-fluid -->
-  </section>
+</section>
 @endsection
 @section('content')
 <div class="content">
@@ -40,13 +40,22 @@
                                         <div class="custom-file">
                                             <input type="file" name="file" class="custom-file-input" id="fileUpload">
                                             <label class="custom-file-label" for="fileUpload">Choose Excel file</label>
-                                            <p class="mt-2 hidden loading text-info"><i class="fas fa-spinner fa-spin"></i> Please wait while reading your excel file!</p>
+                                            <p class="mt-2 hidden loading text-info"><i
+                                                    class="fas fa-spinner fa-spin"></i> Please wait while reading your
+                                                excel file!</p>
                                         </div>
                                     </div>
                                     <div class="form-group text-right">
-                                        <a href="{{route('member-excel-download')}}" class="btn btn-flat btn-info float-left"><i class="fa fa-download" aria-hidden="true"></i> Download Excel Template</a>
-                                        <button type="button" class="btn btn-flat btn-success" id="import_btn" ><i class="fas fa-upload"></i> Import</button>
-                                        <a href="{{route('admin.register.index')}}" type="button" class="btn btn-flat btn-danger"><i class="fas fa-reply-all"></i> Member List</a>
+
+                                        <button type="button" class="btn btn-flat btn-info float-left"
+                                            onclick="templateDownload()">
+                                            <i class="fa fa-file-download"></i> Download Excel Template</button>
+                                        
+                                        <button type="button" class="btn btn-flat btn-success" id="import_btn"><i
+                                                class="fas fa-upload"></i> Import</button>
+                                        <a href="{{route('admin.register.index')}}" type="button"
+                                            class="btn btn-flat btn-danger"><i class="fas fa-reply-all"></i> Member
+                                            List</a>
                                     </div>
                                 </form>
                             </div>
@@ -63,9 +72,12 @@
 @section('javascript')
 <script type="text/javascript" src="{{asset('backend/plugins/xlsx/xlxs.full.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('backend/plugins/xlsx/jszip.js')}}"></script>
-<script src="{{asset('js/mm-nrc.js')}}"></script>  
+<script src="{{asset('js/mm-nrc.js')}}"></script>
 <script>
     var error_log = [];
+    function templateDownload(){
+            window.location.href = "{{route('member.excel-template.download')}}";
+        }
     $(document).ready(function(){
         bsCustomFileInput.init();        
     })

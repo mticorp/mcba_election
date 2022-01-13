@@ -25,13 +25,13 @@ use Illuminate\Support\Str;
 class MRegisterController extends Controller
 {
     public function __construct()
-    {        
-        $this->middleware(['auth','admin']);
+    {
+        $this->middleware(['auth', 'admin']);
         $this->url = route('vote.member.register');
     }
 
     public function index()
-    {            
+    {
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
             $DT_data = MRegister::latest()->get(['m_registers.*', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
@@ -47,35 +47,34 @@ class MRegisterController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-       
+
         return view('admin.mregister.index');
     }
 
     public function create()
-    {            
+    {
         return view('admin.mregister.create');
     }
 
     public function store(Request $request)
-    {                            
+    {
         $error =  Validator::make($request->all(), [
             'refer_code' => 'required|max:255',
             'name' => 'required|string|max:255',
             'phone_number' => 'required',
-            'nrc' => 'required|max:255',          
-        ],[
-            'refer_code.required'=>'Reference Code ဖြည့်စွက်ရန်.',
-            'name.required'=>'အမည် ဖြည့်စွက်ရန်.',
-            'phone_number.required'=>'ဖုန်းနံပါတ်၊ ဖက်စ်နံပါတ်၊ မိုလ်ဘိုင်းဖုန်း ဖြည့်စွက်ရန်.',
-            'nrc.required'=>'နိုင်ငံသားစီစစ်ရေး / အမျိုးသားမှတ်ပုံတင်အမှတ် ဖြည့်စွက်ရန်.',           
+            'nrc' => 'required|max:255',
+        ], [
+            'refer_code.required' => 'Reference Code ဖြည့်စွက်ရန်.',
+            'name.required' => 'အမည် ဖြည့်စွက်ရန်.',
+            'phone_number.required' => 'ဖုန်းနံပါတ်၊ ဖက်စ်နံပါတ်၊ မိုလ်ဘိုင်းဖုန်း ဖြည့်စွက်ရန်.',
+            'nrc.required' => 'နိုင်ငံသားစီစစ်ရေး / အမျိုးသားမှတ်ပုံတင်အမှတ် ဖြည့်စွက်ရန်.',
         ]);
 
         if ($error->fails()) {
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
-        if($request->hasfile('image'))
-        {
+        if ($request->hasfile('image')) {
             $image = $request->file('image');
             $filename = rand() . '.jpg';
 
@@ -85,10 +84,10 @@ class MRegisterController extends Controller
             });
             $image_resize->save(public_path('/upload/member/' . $filename));
             $new_name = '/upload/member/' . $filename;
-        }else{
+        } else {
             $new_name = '/images/user.png';
-        }              
-        
+        }
+
         $form_data = array(
             "refer_code" => $request->refer_code,
             "name"     => $request->name,
@@ -97,7 +96,7 @@ class MRegisterController extends Controller
             "complete_training_no"   => $request->complete_training_no,
             "valuation_training_no"   => $request->valuation_training_no,
             "AHTN_training_no" => $request->AHTN_training_no,
-            "graduation"=> $request->graduation,
+            "graduation" => $request->graduation,
             "phone_number"  => $request->phone_number,
             "address" => $request->address,
             "election_id" => $request->election_id,
@@ -118,7 +117,7 @@ class MRegisterController extends Controller
     }
 
     public function detail($candidate_id)
-    {                
+    {
         $member = MRegister::find($candidate_id);
         if ($member != null) {
             return view('admin.mregister.detail', compact('member'));
@@ -128,7 +127,7 @@ class MRegisterController extends Controller
     }
 
     public function edit($member_id)
-    {        
+    {
         $member = MRegister::find($member_id);
         if ($member != null) {
             return view('admin.mregister.edit', compact('member'));
@@ -146,12 +145,12 @@ class MRegisterController extends Controller
             'refer_code' => 'required|max:255',
             'name' => 'required|string|max:255',
             'phone_number' => 'required',
-            'nrc' => 'required|max:255',          
-        ],[
-            'refer_code.required'=>'Reference Code ဖြည့်စွက်ရန်.',
-            'name.required'=>'အမည် ဖြည့်စွက်ရန်.',
-            'phone_number.required'=>'ဖုန်းနံပါတ်၊ ဖက်စ်နံပါတ်၊ မိုလ်ဘိုင်းဖုန်း ဖြည့်စွက်ရန်.',
-            'nrc.required'=>'နိုင်ငံသားစီစစ်ရေး / အမျိုးသားမှတ်ပုံတင်အမှတ် ဖြည့်စွက်ရန်.',           
+            'nrc' => 'required|max:255',
+        ], [
+            'refer_code.required' => 'Reference Code ဖြည့်စွက်ရန်.',
+            'name.required' => 'အမည် ဖြည့်စွက်ရန်.',
+            'phone_number.required' => 'ဖုန်းနံပါတ်၊ ဖက်စ်နံပါတ်၊ မိုလ်ဘိုင်းဖုန်း ဖြည့်စွက်ရန်.',
+            'nrc.required' => 'နိုင်ငံသားစီစစ်ရေး / အမျိုးသားမှတ်ပုံတင်အမှတ် ဖြည့်စွက်ရန်.',
         ]);
 
         if ($error->fails()) {
@@ -162,12 +161,9 @@ class MRegisterController extends Controller
 
             $oldpath = public_path() . $request->old_image;
 
-            if($request->old_image)
-            {
-                if($request->old_image == '/images/user.png')
-                {
-
-                }else if (file_exists($oldpath)) {
+            if ($request->old_image) {
+                if ($request->old_image == '/images/user.png') {
+                } else if (file_exists($oldpath)) {
                     unlink($oldpath);
                 }
             }
@@ -180,7 +176,7 @@ class MRegisterController extends Controller
             });
             $image_resize->save(public_path('/upload/member/' . $filename));
             $image_name = '/upload/member/' . $filename;
-        }        
+        }
 
         $form_data = array(
             "refer_code" => $request->refer_code,
@@ -190,7 +186,7 @@ class MRegisterController extends Controller
             "complete_training_no"   => $request->complete_training_no,
             "valuation_training_no"   => $request->valuation_training_no,
             "AHTN_training_no" => $request->AHTN_training_no,
-            "graduation"=> $request->graduation,
+            "graduation" => $request->graduation,
             "phone_number"  => $request->phone_number,
             "address" => $request->address,
             "profile" => $image_name,
@@ -211,21 +207,18 @@ class MRegisterController extends Controller
 
     public function destroy($member_id)
     {
-        $data = DB::table('m_registers')->where('id',$member_id)->first();
+        $data = DB::table('m_registers')->where('id', $member_id)->first();
 
-        $path = public_path(). $data->profile;
+        $path = public_path() . $data->profile;
 
-        if($data->profile)
-        {
-            if($data->profile == '/images/user.png')
-            {
-
-            }else if (file_exists($path)) {
+        if ($data->profile) {
+            if ($data->profile == '/images/user.png') {
+            } else if (file_exists($path)) {
                 unlink($path);
             }
         }
 
-        DB::table('m_registers')->where('id',$member_id)->delete();
+        DB::table('m_registers')->where('id', $member_id)->delete();
 
         $nonedata = DB::table('m_registers')->count() == 0 ? true : false;
 
@@ -240,29 +233,26 @@ class MRegisterController extends Controller
     }
 
     public function excelImport()
-    {                        
+    {
         return view('admin.mregister.import-excel');
     }
 
     public function Import(Request $request)
-    {                
-        if($request->ajax())
-        {                 
-                        
-            $validator = Validator::make($request->all(),[
-                'data'          => 'required',                    
+    {
+        if ($request->ajax()) {
+
+            $validator = Validator::make($request->all(), [
+                'data'          => 'required',
             ]);
 
             if ($validator->fails()) {
                 return response()->json(['errors' => $validator->errors()->all()]);
-            }            
+            }
 
-            foreach(json_decode($request->data) as $row)
-            {                                
-                if(!isset($row->{'Profile'}))
-                {
+            foreach (json_decode($request->data) as $row) {
+                if (!isset($row->{'Profile'})) {
                     $profile = '/images/user.png';
-                }else{
+                } else {
                     $profile = isset($row->{'Profile'}) ? $row->{'Profile'} : '';
                 }
 
@@ -285,77 +275,72 @@ class MRegisterController extends Controller
                     'officeFax' => isset($row->{'Office Fax'}) ? $row->{'Office Fax'} : '',
                     'officeEmail' => isset($row->{'Office Email'}) ? $row->{'Office Email'} : '',
                     'yellowCard' => isset($row->{'Yellow Card'}) ? $row->{'Yellow Card'} : '',
-                    'pinkCard' => isset($row->{'Pink Card'}) ? $row->{'Pink Card'} : '',                    
+                    'pinkCard' => isset($row->{'Pink Card'}) ? $row->{'Pink Card'} : '',
                 ]);
             }
 
             return response()->json(['success' => "Successfully Imported!"]);
-        }else{
+        } else {
             return abort(404);
         }
     }
 
     public function export()
     {
-        
+
         return Excel::download(new ExportMemberList(), 'Member_List.xlsx');
     }
 
     public function sendMessage(Request $request)
-    {        
+    {
         $errors = [];
-        if($request->check_val)
-        {
-            foreach($request->check_val as $member_id)
-            {
+        if ($request->check_val) {
+            foreach ($request->check_val as $member_id) {
                 $member = DB::table('m_registers')->where('id', $member_id)->first();
-                
+
 
                 $phone  = $member->phone_number;
                 $email = $member->email;
 
-                if($phone)
-                {
+                if ($phone) {
                     $phones = explode(',', $phone);
-            
-                    $result = BulkSMS::sendSMS($phones, $member,'member',$this->url);
+
+                    $result = BulkSMS::sendSMS($phones, $member, 'member', $this->url);
                     if (isset($result->getData()->errors)) {
-                        array_push($errors,[
-                            $member->name.' SMS Send Fail'
+                        array_push($errors, [
+                            $member->name . ' SMS Send Fail'
                         ]);
                     }
-                }else{
-                    array_push($errors,[
-                        $member->name.' Phone is Empty'
+                } else {
+                    array_push($errors, [
+                        $member->name . ' Phone is Empty'
                     ]);
                 }
 
-                if($email)
-                {
+                if ($email) {
                     $emails = explode(',', $email);
 
-                    $result = BulkEmail::sendEmail($emails,$member,'member',$this->url);
+                    $result = BulkEmail::sendEmail($emails, $member, 'member', $this->url);
 
                     if (isset($result->getData()->errors)) {
-                        array_push($errors,[
-                            $member->name.' Mail Send Fail'
+                        array_push($errors, [
+                            $member->name . ' Mail Send Fail'
                         ]);
                     }
-                }else{
-                    array_push($errors,[
-                        $member->name.' Mail is Empty',
+                } else {
+                    array_push($errors, [
+                        $member->name . ' Mail is Empty',
                     ]);
                 }
             }
 
-            if($errors)
-            {
+            if ($errors) {
                 return response()->json(['errors' => $errors]);
-            }else{
+            } else {
                 return response()->json(['success' => 'Mail and SMS Send Successfully.']);
             }
-        }else{
-            array_push($errors,[
+        } else {
+            array_push($errors, [
                 'No Data Avaliable!',
             ]);
 
@@ -367,39 +352,35 @@ class MRegisterController extends Controller
     {
         $setting = Setting::first();
         $errors = [];
-        if($request->check_val)
-        {
-            foreach($request->check_val as $member_id)
-            {
-                $member = DB::table('m_registers')->where('id', $member_id)->first();               
+        if ($request->check_val) {
+            foreach ($request->check_val as $member_id) {
+                $member = DB::table('m_registers')->where('id', $member_id)->first();
 
                 $phone  = $member->phone_number;
 
-                if($phone)
-                {                    
+                if ($phone) {
                     $phones = explode(',', $phone);
-            
-                    $result = BulkSMS::sendSMS($phones, $member,'member',$this->url);
+
+                    $result = BulkSMS::sendSMS($phones, $member, 'member', $this->url);
                     if (isset($result->getData()->errors)) {
-                        array_push($errors,[
-                            $member->name.' SMS Send Fail'
+                        array_push($errors, [
+                            $member->name . ' SMS Send Fail'
                         ]);
                     }
-                }else{
-                    array_push($errors,[
-                        $member->name.' Phone is Empty'
+                } else {
+                    array_push($errors, [
+                        $member->name . ' Phone is Empty'
                     ]);
                 }
             }
 
-            if($errors)
-            {
+            if ($errors) {
                 return response()->json(['errors' => $errors]);
-            }else{
+            } else {
                 return response()->json(['success' => 'SMS Send Successfully.']);
             }
-        }else{
-            array_push($errors,[
+        } else {
+            array_push($errors, [
                 'No Data Avaliable!',
             ]);
 
@@ -411,39 +392,35 @@ class MRegisterController extends Controller
     {
         $setting = Setting::first();
         $errors = [];
-        if($request->check_val)
-        {
-            foreach($request->check_val as $member_id)
-            {
-                $member = DB::table('m_registers')->where('id', $member_id)->first();                
+        if ($request->check_val) {
+            foreach ($request->check_val as $member_id) {
+                $member = DB::table('m_registers')->where('id', $member_id)->first();
                 $email = $member->email;
 
-                if($email)
-                {
+                if ($email) {
                     $emails = explode(',', $email);
 
-                    $result = BulkEmail::sendEmail($emails,$member,'member',$this->url);
+                    $result = BulkEmail::sendEmail($emails, $member, 'member', $this->url);
 
                     if (isset($result->getData()->errors)) {
-                        array_push($errors,[
-                            $member->name.' Mail Send Fail'
+                        array_push($errors, [
+                            $member->name . ' Mail Send Fail'
                         ]);
                     }
-                }else{
-                    array_push($errors,[
-                        $member->name.' Mail is Empty',
+                } else {
+                    array_push($errors, [
+                        $member->name . ' Mail is Empty',
                     ]);
                 }
             }
 
-            if($errors)
-            {
+            if ($errors) {
                 return response()->json(['errors' => $errors]);
-            }else{
+            } else {
                 return response()->json(['success' => 'Email Send Successfully.']);
             }
-        }else{
-            array_push($errors,[
+        } else {
+            array_push($errors, [
                 'No Data Avaliable!',
             ]);
 
@@ -454,19 +431,16 @@ class MRegisterController extends Controller
     public function generateVID(Request $request)
     {
         $request->validate([
-            'check_val' => 'required|array|min:1',            
+            'check_val' => 'required|array|min:1',
         ]);
 
         $collection = collect($request->check_val);
         $already = [];
-        foreach($collection->chunk(100) as $data)
-        {
-            foreach($data as $val)
-            {                
+        foreach ($collection->chunk(100) as $data) {
+            foreach ($data as $val) {
                 // MRegister::whereId($val)->update(['check_flag' => 1]);
                 $member = MRegister::find($val);
-                if($member && $member->check_flag == 0)
-                {
+                if ($member && $member->check_flag == 0) {
                     $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
                     $pin = $characters[rand(0, strlen($characters) - 1)] . mt_rand(10, 99) . $characters[rand(0, strlen($characters) - 1)];
@@ -497,17 +471,30 @@ class MRegisterController extends Controller
                             $election_voter->save();
                         }
                     }
-                }else{
+                } else {
                     $already['response'] = 'Already Generated Data are not going to generate again!';
                 }
             }
         }
-                
-        if(count($already) > 0)
-        {
+
+        if (count($already) > 0) {
             return response()->json(['success' => 'Successfully Generated (Already Generated Data are not going to generate again!)']);
-        }else{
+        } else {
             return response()->json(['success' => 'Successfully Generated']);
-        }       
+        }
+    }
+
+    public function DownloadTemplateExcel()
+    {
+        $file_path = public_path() . '/upload/Member_List_Download_Template.xlsx';
+        if (file_exists($file_path))
+        {
+            return response()->download($file_path);
+        }
+        else
+        {
+            // Error
+            exit('Requested file does not exist on our server!');
+        }
     }
 }

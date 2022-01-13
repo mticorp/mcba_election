@@ -385,4 +385,17 @@ class CandidateController extends Controller
 
         return response()->json(['success' => 'Successfully Deleted!']);        
     }
+    public function DownloadCandidateTemplateExcel()
+    {
+        $file_path = public_path() . '/upload/Candidate_List_Download_Template.xlsx';
+        if (file_exists($file_path))
+        {
+            return response()->download($file_path);
+        }
+        else
+        {
+            // Error
+            exit('Requested file does not exist on our server!');
+        }
+    }
 }

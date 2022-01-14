@@ -153,7 +153,7 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.member.announce.index') }}"
                                 class="nav-link {{ $request->segment(2) == 'announce' && $request->segment(3) == 'member' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-sms"></i>
+                                <i class="nav-icon fas fa-bell"></i>
                                 <p>
                                     Member Announce
                                 </p>
@@ -163,7 +163,7 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.voter.announce.index') }}"
                                 class="nav-link {{ $request->segment(2) == 'announce' && $request->segment(3) == 'voter' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-sms"></i>
+                                <i class="nav-icon fas fa-bell"></i>
                                 <p>
                                     Voter Announce
                                 </p>

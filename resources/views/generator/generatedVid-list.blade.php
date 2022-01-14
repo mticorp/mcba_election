@@ -559,6 +559,7 @@
                         type: "POST",
                         url: url,
                         data: {
+                            type:action,
                             vid: check_val,
                             _token: '{{ csrf_token() }}'
                         },

@@ -176,6 +176,12 @@ class GenerateController extends Controller
         $phone  = $voter->phone_no;
 
         if ($phone) {
+            if($request->type == 'select_message' || $request->type == 'all_message')
+            {
+                $type = 'member';
+            }else{
+                $type = 'announce';
+            }
             $phones = explode(',', $phone);
             
             $result = BulkSMS::sendSMS($phones, $voter);
@@ -214,7 +220,18 @@ class GenerateController extends Controller
             ->first();
 
         $phone  = $voter->phone_no;
-        if ($phone) {            
+        if ($phone) {           
+            if($request->type == 'select_annouce' || $request->type == 'all_annouce')
+            {
+                $type = 'announce';
+            }
+            // else if($request->type == 'select_message' || $request->type == 'all_message'){
+
+            //     $type = 'message';
+            // }else if($request->type == 'elect_reminder' || $request->type == 'all_reminder'){
+
+            //     $type = 'reminder';
+            // } 
             $phones = explode(',', $phone);
                             
             $result = BulkSMS::sendSMS($phones, $voter);

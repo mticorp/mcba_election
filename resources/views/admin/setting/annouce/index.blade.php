@@ -8,7 +8,7 @@
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item active"><a href="{{ route('admin.election.index') }}">Home</a></li>
                     </li>
-                    <li class="breadcrumb-item active">Reminder</li>
+                    <li class="breadcrumb-item active">Member Announce</li>
                 </ol>
             </div>
         </div>
@@ -23,7 +23,7 @@
                 <div class="card card-red card-outline">
                     <div class="card-header">
                         <h3 class="card-title">
-                            {{ ($setting->reminder_text != Null) ? " Update Reminder" : " Add Reminder" }}
+                            {{ ($setting->reminder_text != Null) ? " Update Member Announce" : " Add Member Announce" }}
                         </h3>                        
                     </div>
                     <div class="card-body">
@@ -33,10 +33,10 @@
                             <div class="row justify-content-md-center">
                                 <div class="col-md-10">
                                     <div class="form-group">
-                                        <label for="reminder_text">Reminder Description*</label>
+                                        <label for="reminder_text">Member Announce Description*</label>
                                         <textarea class="textarea" name="voter_annouce_text" id="reminder_text"
                                             placeholder="Place some text here"
-                                            style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('reminder_text',$setting->reminder_text) }}</textarea>
+                                            style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('reminder_text',$setting->member_annouce) }}</textarea>
                                     </div>
 
                                     <div class="col-sm-12 my-2">
@@ -66,7 +66,7 @@
                                                 <div class="col-md-12">
                                                     <button type="submit" class="btn btn-outline-primary btn-block"><i
                                                             class="fas fa-save" aria-hidden="true"></i>
-                                                        {{ ($setting->reminder_text != Null) ? " Update Reminder" : " Save Reminder" }}</button>
+                                                        {{ ($setting->member_annouce != Null) ? " Update Member Announce" : " Save Member Announce" }}</button>
                                                 </div>                                                
                                             </div>
                                         </div>

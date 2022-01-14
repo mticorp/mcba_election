@@ -191,19 +191,20 @@
 </div>
 
 <div style="display:none;">
-    <div style="border:2px;" id="print_content">
-        <p style="color:red; text-align:center">
-            *Voter ID စာရွက်အား နောက် Election ကို မဲပေးရန်အတွက် သိမ်းဆည်းထားပေးပါ။
+    <div style="border:2px;" class="my-5" id="print_content">
 
-        <h4 style="text-align:center"></h4>
-        <p style="text-align:center;font-size:13px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}</p>
+        <center><img src="{{ $company->company_logo ? url($company->company_logo) : url('images/election_logo.png') }}"
+                alt="Company Logo" class="rounded" style="width: 18%;height: 18%;"></center>
+
+        <p class="my-2" style="color:black;text-align:center;font-size:35px;">{{ $election->name }}</p>
+
+        <p style="text-align:center;font-size:18px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}</p>
         <br>
-        <p style="text-align:center;font-size:26px;">Voter ID: <span id="voter_id"
+        <p style="text-align:center;font-weight: bold; font-size:26px;">Voter ID: <span id="voter_id"
                 style="border:2px solid red;margin-left:15px;padding-left:8px;padding-right:8px; font-family: 'Roboto Mono', monospace;"></span>
         </p>
         <br>
-        <p style="text-align:center"> Thank You</p>
-        <p>.</p>
+        <p style="text-align:center;font-size:18px;"> Thank You</p>
     </div>
 </div>
 @endsection

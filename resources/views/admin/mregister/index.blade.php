@@ -1,181 +1,189 @@
 @extends('layouts.back-app')
 @section('style')
-    <style>
-        .modal-content {
-            -webkit-border-radius: 0px !important;
-            -moz-border-radius: 0px !important;
-            border-radius: 0px !important;
-            background-color: #f8f8f8;
-        }
-
-    </style>
+<style>
+    .modal-content {
+        -webkit-border-radius: 0px !important;
+        -moz-border-radius: 0px !important;
+        border-radius: 0px !important;
+        background-color: #f8f8f8;
+    }
+</style>
 @endsection
 @section('breadcrumb')
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
 
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item active"><a href="{{ route('admin.election.index') }}">Home</a></li>
-                        <li class="breadcrumb-item active">Member List</li>
-                    </ol>
-                </div>
             </div>
-        </div><!-- /.container-fluid -->
-    </section>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item active"><a href="{{ route('admin.election.index') }}">Home</a></li>
+                    <li class="breadcrumb-item active">Member List</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
 @endsection
 @section('content')
-    <div class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="card card-red card-outline">
-                        <div class="card-header">
-                            <div class="card-title">Member List</div>
-                            <div class="card-tools">
-                                
-                            <a href="{{route('member-excel-download')}}" class="btn btn-dark btn-flat"><i
-                                class="fa fa-download"></i> Download Excel</a>
-                                <a href="{{ route('admin.register.excel.import') }}" class="btn btn-danger btn-flat"><i
-                                        class="fas fa-file-excel" aria-hidden="true"></i> Excel Import</a>
-                                <a href="{{ route('admin.register.create') }}" class="btn btn-success btn-flat"><i
-                                        class="fa fa-plus" aria-hidden="true"></i> Add Member</a>   
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card card-red card-outline">
+                    <div class="card-header">
+                        <div class="card-title">Member List</div>
+                        <div class="card-tools">
 
-                            </div>
+                            <a href="{{route('member-excel-download')}}" class="btn btn-dark btn-flat"><i
+                                    class="fa fa-download"></i> Download Excel</a>
+                            <a href="{{ route('admin.register.excel.import') }}" class="btn btn-danger btn-flat"><i
+                                    class="fas fa-file-excel" aria-hidden="true"></i> Excel Import</a>
+                            <a href="{{ route('admin.register.create') }}" class="btn btn-success btn-flat"><i
+                                    class="fa fa-plus" aria-hidden="true"></i> Add Member</a>
+
                         </div>
-                        <div class="card-body table-responsive">
-                            <div class="row mb-4">
-                                <div class="col-md-6">
-                                    <button type="button" class="btn btn-outline-success btn-sm" id="btn_sendAll"><i
-                                            class="fa fa-paper-plane" aria-hidden="true"></i> Send Message (All)
-                                    </button>
-                                    <button type="button" class="btn btn-outline-success btn-sm" id="btn_sendSelected"><i
-                                            class="fa fa-paper-plane" aria-hidden="true"></i> Send Message (Selected)
-                                    </button>
-                                </div>
-                                <div class="col-md-6 text-center text-md-right mt-3 mt-md-0">
-                                    <button type="button" class="btn btn-info btn-sm" id="btn_GenerateVoterID"><i
+                    </div>
+                    <div class="card-body table-responsive">
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <button type="button" class="btn btn-outline-success btn-sm" id="btn_sendAll"><i
+                                        class="fa fa-paper-plane" aria-hidden="true"></i> Send Message (All)
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-sm" id="btn_sendSelected"><i
+                                        class="fa fa-paper-plane" aria-hidden="true"></i> Send Message (Selected)
+                                </button>
+
+                                <button type="button" id="btn_annouceAll" class="btn btn-sm btn-outline-primary my-1"><i
+                                        class="fa fa-bell" aria-hidden="true"></i>
+                                    Annouce (All)
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary my-1"
+                                    id="btn_annouceSelected"><i class="fa fa-bell" aria-hidden="true"></i>
+                                    Annouce (Selected)</button>
+                            </div>
+                            <div class="col-md-4 text-center text-md-right mt-3 mt-md-0">
+                                <button type="button" class="btn btn-info btn-sm" id="btn_GenerateVoterID"><i
                                         class="fa fa-print" aria-hidden="true"></i> Generate VoterID (Selected)
                                 </button>
-                                </div>
                             </div>
-                            <table id="membertable" class="table table-valign-middle table-border" style="width:100%;">
-                                <thead>
-                                    <tr>
-                                        <th> &nbsp; <input type="checkbox" name="checked_all" class="checkbox"></th>
-                                        <th>NO</th>
-                                        <th>Photo</th>
-                                        <th>Name</th>
-                                        <th>NRC</th>
-                                        <th>Reference Code</th>
-                                        <th>Phone Number</th>
-                                        <th>Created_Date</th>
-                                        <th>Modified_Date</th>
-                                        <th>Voter Generated</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
 
-                                </tbody>
-                            </table>
                         </div>
+                        <table id="membertable" class="table table-valign-middle table-border" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th> &nbsp; <input type="checkbox" name="checked_all" class="checkbox"></th>
+                                    <th>NO</th>
+                                    <th>Photo</th>
+                                    <th>Name</th>
+                                    <th>NRC</th>
+                                    <th>Reference Code</th>
+                                    <th>Phone Number</th>
+                                    <th>Created_Date</th>
+                                    <th>Modified_Date</th>
+                                    <th>Voter Generated</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="deleteconfirmModal">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title"><i class="fas fa-exclamation-circle"></i> Confirmation</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h6 align="center" style="margin:0;">Are you sure you want to remove this data?</h6>
-                </div>
-                <div class="modal-footer justify-content-end">
-                    <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                </div>
+<div class="modal fade" id="deleteconfirmModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title"><i class="fas fa-exclamation-circle"></i> Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <!-- /.modal-content -->
+            <div class="modal-body">
+                <h6 align="center" style="margin:0;">Are you sure you want to remove this data?</h6>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
         </div>
-        <!-- /.modal-dialog -->
+        <!-- /.modal-content -->
     </div>
-    <!-- /.modal -->
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
 
-    <!-- Modal -->
-    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalTitle"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Choose Method</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="sendMethod">
-                        <input type="hidden" name="action">
-                        <div class="form-group clearfix">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="icheck-success d-inline">
-                                        <input type="radio" name="method" checked id="radioSuccess1" value="sms">
-                                        <label for="radioSuccess1">
-                                            <span class="label bg-primary"> Via SMS <i class="fa fa-comment"></i></span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="icheck-success d-inline">
-                                        <input type="radio" name="method" id="radioSuccess2" value="email">
-                                        <label for="radioSuccess2">
-                                            <span class="label bg-primary"> Via Email <i class="fa fa-envelope"></i></span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="icheck-success d-inline">
-                                        <input type="radio" name="method" id="radioSuccess3" value="both">
-                                        <label for="radioSuccess3">
-                                            <span class="label bg-primary"> Via Both <i class="fa fa-comment"></i> <i
-                                                    class="fa fa-envelope"></i></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
+<!-- Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Choose Method</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="sendMethod">
+                    <input type="hidden" name="action">
+                    <div class="form-group clearfix">
                         <div class="row">
-                            <div class="col-12 text-center">
-                                <button type="submit" class="btn btn-success btn-flat btn-sm"><i
-                                        class="fa fa-paper-plane"></i> Send</button>
-                                <button type="button" class="btn btn-danger btn-flat btn-sm" data-dismiss="modal"><i
-                                        class="fa fa-reply-all"></i> Close</button>
+                            <div class="col-md-4">
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="method" checked id="radioSuccess1" value="sms">
+                                    <label for="radioSuccess1">
+                                        <span class="label bg-primary"> Via SMS <i class="fa fa-comment"></i></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="method" id="radioSuccess2" value="email">
+                                    <label for="radioSuccess2">
+                                        <span class="label bg-primary"> Via Email <i class="fa fa-envelope"></i></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="method" id="radioSuccess3" value="both">
+                                    <label for="radioSuccess3">
+                                        <span class="label bg-primary"> Via Both <i class="fa fa-comment"></i> <i
+                                                class="fa fa-envelope"></i></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-success btn-flat btn-sm"><i
+                                    class="fa fa-paper-plane"></i> Send</button>
+                            <button type="button" class="btn btn-danger btn-flat btn-sm" data-dismiss="modal"><i
+                                    class="fa fa-reply-all"></i> Close</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 @endsection
 @section('javascript')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             var table = $('#membertable').DataTable({
                 "lengthMenu": [
                     [10, 25, 50, -1],
@@ -335,6 +343,24 @@
                 }
             })
 
+            $("#btn_annouceAll").on("click", function() {
+                $('input[name=action]').val('all_annouce');
+                $("#confirmModal").modal('show');
+            })
+            
+
+            $("#btn_annouceSelected").on('click', function() {
+                var check = $('input[name=checked]:checked').length;
+                console.log(check);
+                if (check == 0) {
+                    toastr.error("Warning - Please Select At Least One Row to send Message!")
+                    return false;
+                }
+
+                $('input[name=action]').val('select_annouce');
+                $("#confirmModal").modal('show');
+            })
+
             $("#btn_sendAll").on("click", function() {
 
                 $('input[name=action]').val('all_message');
@@ -392,7 +418,112 @@
                         var check_val = $(this).val();
                         checkData.push(check_val);
                     })
-                } else if (action == "all_message") {
+                }else if(action == "select_annouce")
+              {
+                $("tbody tr input[name=checked]:checked").each(function() {
+                    var check_val = $(this).val();
+                    if(method == "sms")
+                    {
+                      //sms only
+                      var url = "{{ route('vid.message.smsOnly') }}";
+                    }else if(method == "email")
+                    {
+                      //email only
+                      var url = "{{ route('vid.message.emailOnly') }}";
+                    }else if(method == "both")
+                    {
+                      //both sms & email
+                      var url = "{{ route('vid.message') }}";
+                    }else{
+                      $.unblockUI();
+                      toastr.error('Info - Method Failed!')
+                      $("#confirmModal").modal('hide');
+                      return false;
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {
+                            vid: check_val,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            $.unblockUI();
+                            $("#confirmModal").modal('hide');
+                            if (data.errors) {
+                                toastr.error('Info - ' + data.errors)
+                            } else if (data.success) {
+                                toastr.success('Info - ' + data.success)
+                            }
+                        },
+                        error: function(response) {
+                          $.unblockUI();
+                          $("#confirmModal").modal('hide');
+                          if(response['responseJSON'])
+                          {
+                            toastr.error('Info - ' + response['responseJSON'].message)
+                          }else{
+                            toastr.error('Info - Something Went Wrong!')
+                          }
+                        }
+                    });
+                })
+              }else if(action == "all_annouce")
+              {
+                $("tbody tr").each(function() {
+                    var check_val = $(this).find('input[name=checked]').val();
+                    if(method == "sms")
+                    {
+                      //sms only
+                      var url = "{{ route('vid.message.smsOnly') }}";
+                    }else if(method == "email")
+                    {
+                      //email only
+                      var url = "{{ route('vid.message.emailOnly') }}";
+                    }else if(method == "both")
+                    {
+                      //both sms & email
+                      var url = "{{ route('vid.message') }}";
+                    }else{
+                      $.unblockUI();
+                      toastr.error('Info - Method Failed!')
+                      $("#confirmModal").modal('hide');
+                      return false;
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {
+                            vid: check_val,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            $.unblockUI();
+                            $("#confirmModal").modal('hide');
+                            if (data.errors) {
+                                toastr.error('Info - ' + data.errors)
+                            } else if (data.success) {
+                                toastr.success('Info - ' + data.success)
+                            }
+                        },
+                        error: function(response) {
+                          $.unblockUI();
+                          $("#confirmModal").modal('hide');
+                          if(response['responseJSON'])
+                          {
+                            toastr.error('Info - ' + response['responseJSON'].message)
+                          }else{
+                            toastr.error('Info - Something Went Wrong!')
+                          }
+                        }
+                    });
+                })
+              }
+                 else if (action == "all_message") {
                     $("tbody tr").each(function() {
                         var check_val = $(this).find('input[name=checked]').val();
                         checkData.push(check_val);
@@ -492,5 +623,5 @@
             })
         })
 
-    </script>
+</script>
 @endsection

@@ -67,8 +67,9 @@ class GenerateController extends Controller
                 ->addIndexColumn()
                 ->make(true);
         }
-
-        return view('generator.generatedVid-list');
+        $company =  DB::table('company')->latest('created_at')->first();
+        $election =  DB::table('election')->latest('created_at')->first();
+        return view('generator.generatedVid-list',compact('company','election'));
     }
 
     public function store(Request $request)
@@ -101,7 +102,10 @@ class GenerateController extends Controller
 
     public function generateVidBlade()
     {
-        return view('generator.vidgenerate');
+        
+        $company =  DB::table('company')->latest('created_at')->first();
+        $election =  DB::table('election')->latest('created_at')->first();
+        return view('generator.vidgenerate',compact('company','election'));
     }
 
     public function excelGenerate(Request $request)

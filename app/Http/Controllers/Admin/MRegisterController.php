@@ -293,11 +293,16 @@ class MRegisterController extends Controller
 
     public function sendMessage(Request $request)
     {
-        $errors = [];
+        $errors = [];        
         if ($request->check_val) {
+            if($request->type == 'select_message' || $request->type == 'all_message')
+            {
+                $type = 'member';
+            }else{
+                $type = 'announce';
+            }
             foreach ($request->check_val as $member_id) {
                 $member = DB::table('m_registers')->where('id', $member_id)->first();
-
 
                 $phone  = $member->phone_number;
                 $email = $member->email;
@@ -305,7 +310,7 @@ class MRegisterController extends Controller
                 if ($phone) {
                     $phones = explode(',', $phone);
 
-                    $result = BulkSMS::sendSMS($phones, $member, 'member', $this->url);
+                    $result = BulkSMS::sendSMS($phones, $member, $type,  $this->url);
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [
                             $member->name . ' SMS Send Fail'
@@ -320,7 +325,7 @@ class MRegisterController extends Controller
                 if ($email) {
                     $emails = explode(',', $email);
 
-                    $result = BulkEmail::sendEmail($emails, $member, 'member', $this->url);
+                    $result = BulkEmail::sendEmail($emails, $member, $type, $this->url);
 
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [
@@ -353,6 +358,12 @@ class MRegisterController extends Controller
         $setting = Setting::first();
         $errors = [];
         if ($request->check_val) {
+            if($request->type == 'select_message' || $request->type == 'all_message')
+            {
+                $type = 'member';
+            }else{
+                $type = 'announce';
+            }
             foreach ($request->check_val as $member_id) {
                 $member = DB::table('m_registers')->where('id', $member_id)->first();
 
@@ -361,7 +372,7 @@ class MRegisterController extends Controller
                 if ($phone) {
                     $phones = explode(',', $phone);
 
-                    $result = BulkSMS::sendSMS($phones, $member, 'member', $this->url);
+                    $result = BulkSMS::sendSMS($phones, $member,$type, $this->url);
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [
                             $member->name . ' SMS Send Fail'
@@ -393,6 +404,12 @@ class MRegisterController extends Controller
         $setting = Setting::first();
         $errors = [];
         if ($request->check_val) {
+            if($request->type == 'select_message' || $request->type == 'all_message')
+            {
+                $type = 'member';
+            }else{
+                $type = 'announce';
+            }
             foreach ($request->check_val as $member_id) {
                 $member = DB::table('m_registers')->where('id', $member_id)->first();
                 $email = $member->email;
@@ -400,7 +417,7 @@ class MRegisterController extends Controller
                 if ($email) {
                     $emails = explode(',', $email);
 
-                    $result = BulkEmail::sendEmail($emails, $member, 'member', $this->url);
+                    $result = BulkEmail::sendEmail($emails, $member,$type, $this->url);
 
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [

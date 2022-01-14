@@ -342,28 +342,14 @@
                     $(this).closest('tr').addClass('table-active');
                 }
             })
-
-            $("#btn_annouceAll").on("click", function() {
-                $('input[name=action]').val('all_annouce');
-                $("#confirmModal").modal('show');
-            })
-            
-
-            $("#btn_annouceSelected").on('click', function() {
-                var check = $('input[name=checked]:checked').length;
-                console.log(check);
-                if (check == 0) {
-                    toastr.error("Warning - Please Select At Least One Row to send Message!")
-                    return false;
-                }
-
-                $('input[name=action]').val('select_annouce');
-                $("#confirmModal").modal('show');
-            })
-
             $("#btn_sendAll").on("click", function() {
 
                 $('input[name=action]').val('all_message');
+                $("#confirmModal").modal('show');
+            })
+
+            $("#btn_annouceAll").on("click", function() {
+                $('input[name=action]').val('all_annouce');
                 $("#confirmModal").modal('show');
             })
 
@@ -375,6 +361,17 @@
                 }
 
                 $('input[name=action]').val('select_message');
+                $("#confirmModal").modal('show');
+            })
+            $("#btn_annouceSelected").on('click', function() {
+                var check = $('input[name=checked]:checked').length;
+                console.log(check);
+                if (check == 0) {
+                    toastr.error("Warning - Please Select At Least One Row to send Message!")
+                    return false;
+                }
+
+                $('input[name=action]').val('select_annouce');
                 $("#confirmModal").modal('show');
             })
 
@@ -412,118 +409,24 @@
                     $("#confirmModal").modal('hide');
                     return false;
                 }
-
                 if (action == "select_message") {
                     $("tbody tr input[name=checked]:checked").each(function() {
                         var check_val = $(this).val();
                         checkData.push(check_val);
                     })
-                }else if(action == "select_annouce")
-              {
-                $("tbody tr input[name=checked]:checked").each(function() {
-                    var check_val = $(this).val();
-                    if(method == "sms")
-                    {
-                      //sms only
-                      var url = "{{ route('vid.message.smsOnly') }}";
-                    }else if(method == "email")
-                    {
-                      //email only
-                      var url = "{{ route('vid.message.emailOnly') }}";
-                    }else if(method == "both")
-                    {
-                      //both sms & email
-                      var url = "{{ route('vid.message') }}";
-                    }else{
-                      $.unblockUI();
-                      toastr.error('Info - Method Failed!')
-                      $("#confirmModal").modal('hide');
-                      return false;
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        data: {
-                            vid: check_val,
-                            _token: '{{ csrf_token() }}'
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            $.unblockUI();
-                            $("#confirmModal").modal('hide');
-                            if (data.errors) {
-                                toastr.error('Info - ' + data.errors)
-                            } else if (data.success) {
-                                toastr.success('Info - ' + data.success)
-                            }
-                        },
-                        error: function(response) {
-                          $.unblockUI();
-                          $("#confirmModal").modal('hide');
-                          if(response['responseJSON'])
-                          {
-                            toastr.error('Info - ' + response['responseJSON'].message)
-                          }else{
-                            toastr.error('Info - Something Went Wrong!')
-                          }
-                        }
-                    });
-                })
-              }else if(action == "all_annouce")
-              {
-                $("tbody tr").each(function() {
-                    var check_val = $(this).find('input[name=checked]').val();
-                    if(method == "sms")
-                    {
-                      //sms only
-                      var url = "{{ route('vid.message.smsOnly') }}";
-                    }else if(method == "email")
-                    {
-                      //email only
-                      var url = "{{ route('vid.message.emailOnly') }}";
-                    }else if(method == "both")
-                    {
-                      //both sms & email
-                      var url = "{{ route('vid.message') }}";
-                    }else{
-                      $.unblockUI();
-                      toastr.error('Info - Method Failed!')
-                      $("#confirmModal").modal('hide');
-                      return false;
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        data: {
-                            vid: check_val,
-                            _token: '{{ csrf_token() }}'
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            $.unblockUI();
-                            $("#confirmModal").modal('hide');
-                            if (data.errors) {
-                                toastr.error('Info - ' + data.errors)
-                            } else if (data.success) {
-                                toastr.success('Info - ' + data.success)
-                            }
-                        },
-                        error: function(response) {
-                          $.unblockUI();
-                          $("#confirmModal").modal('hide');
-                          if(response['responseJSON'])
-                          {
-                            toastr.error('Info - ' + response['responseJSON'].message)
-                          }else{
-                            toastr.error('Info - Something Went Wrong!')
-                          }
-                        }
-                    });
-                })
-              }
-                 else if (action == "all_message") {
+                }else if(action == "select_annouce") {
+                    $("tbody tr input[name=checked]:checked").each(function() {
+                        var check_val = $(this).val();
+                        checkData.push(check_val);
+                    })
+                }
+               else if (action == "all_message") {
+                    $("tbody tr").each(function() {
+                        var check_val = $(this).find('input[name=checked]').val();
+                        checkData.push(check_val);
+                    })
+                }
+                else if (action == "all_annouce") {
                     $("tbody tr").each(function() {
                         var check_val = $(this).find('input[name=checked]').val();
                         checkData.push(check_val);
@@ -535,6 +438,7 @@
                     url: url,
                     data: {
                         check_val: checkData,
+                        type : action,
                         _token: '{{ csrf_token() }}'
                     },
                     dataType: "json",

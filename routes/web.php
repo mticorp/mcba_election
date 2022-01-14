@@ -136,7 +136,7 @@ Route::group(['middleware' => 'setting'], function () {
 
             //Member Annouce route
             Route::get('/announce/member', 'Admin\AnnouceContoller@memberannounceIndex')->name('admin.member.announce.index');
-            Route::post('/announce/member/update', 'Admin\SmsController@memberannounceUpdate')->name('admin.member.announce.update');
+            Route::post('/announce/member/update', 'Admin\AnnouceContoller@memberannounceUpdate')->name('admin.member.announce.update');
             
 
             //Member SMS route

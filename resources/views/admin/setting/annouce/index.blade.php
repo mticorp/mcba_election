@@ -27,14 +27,14 @@
                         </h3>                        
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.reminder.update') }}" method="POST">
+                        <form action="{{ route('admin.member.announce.update') }}" method="POST">
                             @csrf
                             @method('POST')
                             <div class="row justify-content-md-center">
                                 <div class="col-md-10">
                                     <div class="form-group">
                                         <label for="reminder_text">Reminder Description*</label>
-                                        <textarea class="textarea" name="reminder_text" id="reminder_text"
+                                        <textarea class="textarea" name="voter_annouce_text" id="reminder_text"
                                             placeholder="Place some text here"
                                             style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('reminder_text',$setting->reminder_text) }}</textarea>
                                     </div>

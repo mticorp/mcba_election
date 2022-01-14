@@ -23,6 +23,17 @@ class AnnouceContoller extends Controller
         Setting::first()->update(['member_annouce' => $request->voter_annouce_text . " "]);
         return redirect()->back();
     }
+
+    public function voterannounceIndex()
+    {
+        return view('admin.setting.voter_announce.index');
+    }
+
+    public function voterannounceUpdate(Request $request)
+    {
+        Setting::first()->update(['voter_annouce' => $request->voters_annouce_text . " "]);
+        return redirect()->back();
+    }
     /**
      * Show the form for creating a new resource.
      *

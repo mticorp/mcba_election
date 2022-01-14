@@ -13,7 +13,7 @@
             || ($request->segment(2) == 'reminder' ? 'active' : '') || ($request->segment(2) == 'security' ? 'active' : '')
             || ($request->segment(3) == 'list' ? 'active' : '') || ($request->segment(3) == 'generate' ? 'active' : '') 
             || ($request->segment(2) == 'register' ? 'active' : '') || (request()->is('admin/user') ? 'active' : '') 
-            || (request()->is('admin/company') ? 'active' : ''))
+            || (request()->is('admin/company') ? 'active' : '') ||  ($request->segment(2) == 'announce' ? 'active' : '')) 
             @else
             <a href="{{ route('admin.election.index') }}" class="nav-link">Home</a>
             @endif
@@ -30,7 +30,8 @@
         <!-- Notifications Dropdown Menu -->
         @if (Auth::user()->type == 'admin')
         @if (($request->segment(2) == 'election' ? 'active' : '') || ($request->segment(2) == 'logo' ? 'active' : '') ||
-        ($request->segment(2) == 'favicon' ? 'active' : '') || ($request->segment(2) == 'sms' ? 'active' : '') 
+        ($request->segment(2) == 'favicon' ? 'active' : '') || ($request->segment(2) == 'announce' ? 'active' : '')  
+        || ($request->segment(2) == 'sms' ? 'active' : '') 
         || ($request->segment(2) == 'reminder' ? 'active' : '') || ($request->segment(2) == 'security' ? 'active' : '')
         || ($request->segment(3) == 'list' ? 'active' : '') || ($request->segment(3) == 'generate' ? 'active' : '') ||
         ($request->segment(2) == 'register' ? 'active' : '') || (request()->is('admin/user') ? 'active' : '') ||

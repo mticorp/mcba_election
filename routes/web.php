@@ -133,9 +133,16 @@ Route::group(['middleware' => 'setting'], function () {
             Route::get('/favicon/edit/{id}', 'Admin\FaviconController@edit')->name('admin.favicon.edit');
             Route::post('/favicon/update', 'Admin\FaviconController@update')->name('admin.favicon.update');
 
+
+            //Member Annouce route
+            Route::get('/announce/member', 'Admin\AnnouceContoller@memberannounceIndex')->name('admin.member.announce.index');
+            Route::post('/announce/member/update', 'Admin\SmsController@memberannounceUpdate')->name('admin.member.announce.update');
+            
+
             //Member SMS route
             Route::get('/sms/member', 'Admin\SmsController@memberIndex')->name('admin.member.sms.index');
             Route::post('/sms/member/update', 'Admin\SmsController@memberUpdate')->name('admin.member.sms.update');
+            
             //Voter SMS route
             Route::get('/sms/voter', 'Admin\SmsController@index')->name('admin.sms.index');
             Route::post('/sms/voter/update', 'Admin\SmsController@update')->name('admin.sms.update');

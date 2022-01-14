@@ -24,6 +24,18 @@
         outline: none;
         text-overflow: ellipsis;
     }
+
+    @media print {
+    #print_content{
+         position:absolute;
+         width:300px;
+         height:300px;
+         z-index:15;
+         top:20%;
+         left:50%;
+         margin:-150px 0 0 -150px;
+    }
+}
 </style>
 @endsection
 @section('breadcrumb')
@@ -191,20 +203,17 @@
 </div>
 
 <div style="display:none;">
-    <div style="border:2px;" class="my-5" id="print_content">
-
-        <center><img src="{{ $company->company_logo ? url($company->company_logo) : url('images/election_logo.png') }}"
-                alt="Company Logo" class="rounded" style="width: 18%;height: 18%;"></center>
-
-        <p class="my-2" style="color:black;text-align:center;font-size:35px;">{{ $election->name }}</p>
-
-        <p style="text-align:center;font-size:18px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}</p>
+    <div class="row" id="print_content">
+      <div class="col-12">
+        <p style="text-align:center;"><img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}" alt="" width="100px" height="100px"></p>
+        <h3 style="text-align:center;"> <b>MMA Election</b></h3>
+        <p style="text-align:center;font-size:20px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}</p>
         <br>
-        <p style="text-align:center;font-weight: bold; font-size:26px;">Voter ID: <span id="voter_id"
-                style="border:2px solid red;margin-left:15px;padding-left:8px;padding-right:8px; font-family: 'Roboto Mono', monospace;"></span>
-        </p>
+        <p style="text-align:center;font-size:30px;"><strong>Voter ID: <span id="voter_id" style="border:2px solid red;margin-left:15px;padding-left:8px;padding-right:8px; font-family: 'Roboto Mono', monospace;"></span> </strong></p>
         <br>
-        <p style="text-align:center;font-size:18px;"> Thank You</p>
+        <p style="text-align:center; font-size:20px"> Thank You</p>
+        <p>.</p>
+      </div>
     </div>
 </div>
 @endsection
@@ -391,7 +400,7 @@
 
                 if (voter_id != null) {
                     $("#print_content #voter_id").text(voter_id);
-                    $.print("#print_content");                    
+                    $.print("#print_content");
                 } else {
                     toastr.error('Voter ID Does not Exist!')
                 }

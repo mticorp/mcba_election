@@ -13,12 +13,12 @@ class AnnouceContoller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function annouceindex()
+    public function memberannounceIndex()
     {
         return view('admin.setting.annouce.index');
     }
 
-    public function annouceUpdate(Request $request)
+    public function memberannounceUpdate(Request $request)
     {
         Setting::first()->update(['voter_annouce' => $request->voter_annouce_text . " "]);
         return redirect()->back();

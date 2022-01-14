@@ -8,6 +8,7 @@
     || ($request->segment(2) == 'logo' ? 'active' : '')
     ||($request->segment(2) == 'favicon' ? 'active' : '')
     || ($request->segment(2) == 'sms' ? 'active' : '')
+    || ($request->segment(2) == 'announce' ? 'active' : '')
     || ($request->segment(2) == 'reminder' ? 'active' : '')
     || ($request->segment(2) == 'security' ? 'active' : '')
     ||(request()->is('admin/election/*') ? 'active' : '')
@@ -42,6 +43,7 @@
         @if (Auth::user()->type == 'admin')
         @if ((request()->is('admin/election') ? 'active' : '') || ($request->segment(2) == 'logo' ? 'active' : '') ||
         ($request->segment(2) == 'favicon' ? 'active' : '') || ($request->segment(2) == 'sms' ? 'active' : '') || 
+        ($request->segment(2) == 'announce' ? 'active' : '') ||
         ($request->segment(2) == 'reminder' ? 'active' : '') || ($request->segment(2) == 'security' ? 'active' : '')
         || (request()->is('admin/election/*') ? 'active' : '') || ($request->segment(2) == 'vid' ? 'active' : '') ||
         ($request->segment(3) == 'generate' ? 'active' : '') || ($request->segment(2) == 'register' ? 'active' : '') ||
@@ -110,7 +112,7 @@
 
 
                 <li
-                    class="nav-item has-treeview {{ $request->segment(2) == 'logo' ? 'menu-open' : '' }} || {{ $request->segment(2) == 'favicon' ? 'menu-open' : '' }} || {{ $request->segment(2) == 'sms' ? 'menu-open' : '' }} || {{ $request->segment(2) == 'reminder' ? 'menu-open' : '' }} || {{ $request->segment(2) == 'security' ? 'menu-open' : '' }}">
+                    class="nav-item has-treeview {{ $request->segment(2) == 'logo' ? 'menu-open' : '' }} || {{ $request->segment(2) == 'favicon' ? 'menu-open' : '' }} || {{ $request->segment(2) == 'sms' ? 'menu-open' : '' }} || {{ $request->segment(2) == 'announce' ? 'menu-open' : '' }} || {{ $request->segment(2) == 'reminder' ? 'menu-open' : '' }} || {{ $request->segment(2) == 'security' ? 'menu-open' : '' }}">
                     <a href="#"
                         class="nav-link {{ $request->segment(2) == 'logo' ? 'active' : '' }} || {{ $request->segment(2) == 'favicon' ? 'active' : '' }} || {{ $request->segment(2) == 'sms' ? 'active' : '' }} || {{ $request->segment(2) == 'reminder' ? 'active' : '' }} || {{ $request->segment(2) == 'security' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-cog"></i>
@@ -147,6 +149,17 @@
                                 </p>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.member.announce.index') }}"
+                                class="nav-link {{ $request->segment(2) == 'announce' && $request->segment(3) == 'member' ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-sms"></i>
+                                <p>
+                                    Member Announce
+                                </p>
+                            </a>
+                        </li>
+                        
                         <li class="nav-item">
                             <a href="{{ route('admin.sms.index') }}"
                                 class="nav-link {{ $request->segment(2) == 'sms' && $request->segment(3) == 'voter' ? 'active' : '' }}">

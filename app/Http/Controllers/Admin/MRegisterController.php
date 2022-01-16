@@ -293,13 +293,13 @@ class MRegisterController extends Controller
 
     public function sendMessage(Request $request)
     {
-        $errors = [];        
+        $errors = [];
         if ($request->check_val) {
             if($request->type == 'select_message' || $request->type == 'all_message')
             {
                 $type = 'member';
             }else{
-                $type = 'announce';
+                $type = 'member_announce';
             }
             foreach ($request->check_val as $member_id) {
                 $member = DB::table('m_registers')->where('id', $member_id)->first();
@@ -308,8 +308,7 @@ class MRegisterController extends Controller
                 $email = $member->email;
 
                 if ($phone) {
-                    $phones = explode(',', $phone);
-
+                    $phones = explode(',', $phone);                    
                     $result = BulkSMS::sendSMS($phones, $member, $type,  $this->url);
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [
@@ -355,14 +354,13 @@ class MRegisterController extends Controller
 
     public function smsMessageOnly(Request $request)
     {
-        $setting = Setting::first();
         $errors = [];
         if ($request->check_val) {
             if($request->type == 'select_message' || $request->type == 'all_message')
             {
                 $type = 'member';
             }else{
-                $type = 'announce';
+                $type = 'member_announce';
             }
             foreach ($request->check_val as $member_id) {
                 $member = DB::table('m_registers')->where('id', $member_id)->first();
@@ -400,15 +398,14 @@ class MRegisterController extends Controller
     }
 
     public function emailMessageOnly(Request $request)
-    {
-        $setting = Setting::first();
+    {        
         $errors = [];
         if ($request->check_val) {
             if($request->type == 'select_message' || $request->type == 'all_message')
             {
                 $type = 'member';
             }else{
-                $type = 'announce';
+                $type = 'member_announce';
             }
             foreach ($request->check_val as $member_id) {
                 $member = DB::table('m_registers')->where('id', $member_id)->first();

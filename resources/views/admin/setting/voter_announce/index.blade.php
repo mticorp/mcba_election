@@ -23,7 +23,7 @@
                 <div class="card card-red card-outline">
                     <div class="card-header">
                         <h3 class="card-title">
-                            {{ ($setting->reminder_text != Null) ? " Update Voter Announce" : " Add Voter Announce" }}
+                            {{ ($setting->voter_annouce != Null) ? " Update Voter Announce" : " Add Voter Announce" }}
                         </h3>                        
                     </div>
                     <div class="card-body">
@@ -33,8 +33,8 @@
                             <div class="row justify-content-md-center">
                                 <div class="col-md-10">
                                     <div class="form-group">
-                                        <label for="reminder_text">Voter Announce</label>
-                                        <textarea class="textarea" name="voters_annouce_text" id="reminder_text"
+                                        <label for="voter_annouce">Voter Announce</label>
+                                        <textarea class="textarea" name="voter_annouce" id="voter_annouce"
                                             placeholder="Place some text here"
                                             style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('reminder_text',$setting->voter_annouce) }}</textarea>
                                     </div>
@@ -57,8 +57,7 @@
 
                                      <p style="color: red; font-family: arisan; font-weight: bold">
                                                     &nbsp;&nbsp; (Note: &nbsp; "[:VoterName]" refer to specific voter's
-                                                    name and "[:ShareCount]" refer to specific voter's
-                                                    share count)</p>
+                                                    name)</p>
 
                                     <div class="col-sm-12 my-2">
                                         <div class="form-group mt-4">
@@ -85,20 +84,20 @@
 @section('javascript')
 <script>   
     $("#addVoterName").on('click',function(e){
-        let cursorPos = $('#reminder_text').prop('selectionStart');
-        let text = $("#reminder_text").val();
+        let cursorPos = $('#voter_annouce').prop('selectionStart');
+        let text = $("#voter_annouce").val();
         var textBefore = text.substring(0,  cursorPos );
         var textAfter  = text.substring( cursorPos, text.length );
-        $('#reminder_text').val( textBefore+ " [:VoterName] " +textAfter );        
+        $('#voter_annouce').val( textBefore+ " [:VoterName] " +textAfter );        
         e.preventDefault();
     })
 
     $("#addShareCount").on('click',function(e){
-        let cursorPos = $('#reminder_text').prop('selectionStart');
-        let text = $("#reminder_text").val();
+        let cursorPos = $('#voter_annouce').prop('selectionStart');
+        let text = $("#voter_annouce").val();
         var textBefore = text.substring(0,  cursorPos );
         var textAfter  = text.substring( cursorPos, text.length );
-        $('#reminder_text').val( textBefore+ " [:ShareCount] " +textAfter );       
+        $('#voter_annouce').val( textBefore+ " [:ShareCount] " +textAfter );       
         e.preventDefault();
     })
     

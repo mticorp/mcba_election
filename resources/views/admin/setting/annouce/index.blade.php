@@ -23,7 +23,7 @@
                 <div class="card card-red card-outline">
                     <div class="card-header">
                         <h3 class="card-title">
-                            {{ ($setting->reminder_text != Null) ? " Update Member Announce" : " Add Member Announce" }}
+                            {{ ($setting->member_annouce != Null) ? " Update Member Announce" : " Add Member Announce" }}
                         </h3>                        
                     </div>
                     <div class="card-body">
@@ -33,8 +33,8 @@
                             <div class="row justify-content-md-center">
                                 <div class="col-md-10">
                                     <div class="form-group">
-                                        <label for="reminder_text">Member Announce Description*</label>
-                                        <textarea class="textarea" name="voter_annouce_text" id="reminder_text"
+                                        <label for="member_annouce">Member Announce Description*</label>
+                                        <textarea class="textarea" name="member_annouce" id="member_annouce"
                                             placeholder="Place some text here"
                                             style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{ old('reminder_text',$setting->member_annouce) }}</textarea>
                                     </div>
@@ -46,7 +46,7 @@
                                             <div class="row mt-2">
                                                 <a type="button" id="addVoterName"><i class="fas fa-plus"
                                                         aria-hidden="true"></i>
-                                                    Add Voter Name</a>
+                                                    Add Member Name</a>
                                                 {{-- <a type="button" id="addShareCount" style="user-select: none; margin-left:10px;"><i class="fas fa-plus"
                                                         aria-hidden="true"></i> Add Share Count</a>               --}}
 
@@ -56,9 +56,8 @@
                                     </div>
 
                                      <p style="color: red; font-family: arisan; font-weight: bold">
-                                                    &nbsp;&nbsp; (Note: &nbsp; "[:VoterName]" refer to specific voter's
-                                                    name and "[:ShareCount]" refer to specific voter's
-                                                    share count)</p>
+                                                    &nbsp;&nbsp; (Note: &nbsp; "[:MemberName]" refer to specific member's
+                                                    name)</p>
 
                                     <div class="col-sm-12 my-2">
                                         <div class="form-group mt-4">
@@ -85,20 +84,20 @@
 @section('javascript')
 <script>   
     $("#addVoterName").on('click',function(e){
-        let cursorPos = $('#reminder_text').prop('selectionStart');
-        let text = $("#reminder_text").val();
+        let cursorPos = $('#member_annouce').prop('selectionStart');
+        let text = $("#member_annouce").val();
         var textBefore = text.substring(0,  cursorPos );
         var textAfter  = text.substring( cursorPos, text.length );
-        $('#reminder_text').val( textBefore+ " [:VoterName] " +textAfter );        
+        $('#member_annouce').val( textBefore+ " [:MemberName] " +textAfter );        
         e.preventDefault();
     })
 
     $("#addShareCount").on('click',function(e){
-        let cursorPos = $('#reminder_text').prop('selectionStart');
-        let text = $("#reminder_text").val();
+        let cursorPos = $('#member_annouce').prop('selectionStart');
+        let text = $("#member_annouce").val();
         var textBefore = text.substring(0,  cursorPos );
         var textAfter  = text.substring( cursorPos, text.length );
-        $('#reminder_text').val( textBefore+ " [:ShareCount] " +textAfter );       
+        $('#member_annouce').val( textBefore+ " [:ShareCount] " +textAfter );
         e.preventDefault();
     })
     

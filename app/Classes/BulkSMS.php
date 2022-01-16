@@ -16,10 +16,13 @@ class BulkSMS
             if ($type == 'reminder') {
                 $message = ($setting->reminder_text == null) ? Lang::get('message.reminder') . $url :
                     str_replace(['[:VoterName]', '[:ShareCount]'], [$voter->name, "(" . $voter->vote_count . ")"], $setting->reminder_text) . $url;
-            } else if ($type == 'announce') {
+            } else if ($type == 'member_announce') {
+                $message = ($setting->member_annouce == null) ? Lang::get('message.annouce') :
+                    str_replace(['[:MemberName]', '[:ShareCount]'], [$voter->name], $setting->member_annouce);
+            } else if ($type == 'voter_announce') {
                 $message = ($setting->voter_annouce == null) ? Lang::get('message.annouce') :
                     str_replace(['[:VoterName]', '[:ShareCount]'], [$voter->name], $setting->voter_annouce);
-            } else if ($type == 'message') {
+            } else if ($type == 'member') {
                 $message = ($setting->member_sms_text == null) ? Lang::get('message.member') . $url . " \n" . Lang::get('message.contact') :
                     str_replace('[:MemberName]', $voter->name, $setting->member_sms_text) . $url;
             } else if ($type == 'otp') {

@@ -57,8 +57,7 @@
 
                                      <p style="color: red; font-family: arisan; font-weight: bold">
                                                     &nbsp;&nbsp; (Note: &nbsp; "[:VoterName]" refer to specific voter's
-                                                    name and "[:ShareCount]" refer to specific voter's
-                                                    share count)</p>
+                                                    name)</p>
 
                                     <div class="col-sm-12 my-2">
                                         <div class="form-group mt-4">

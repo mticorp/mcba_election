@@ -19,7 +19,13 @@ class BulkEmail{
             {
                 $content = ($setting->reminder_text == null) ? Lang::get('message.reminder') :
                 str_replace(['[:VoterName]', '[:ShareCount]'], [$voter->name, "(" . $voter->vote_count . ")"], $setting->reminder_text);
-            }else if($type == 'member'){
+            } else if ($type == 'member_announce') {
+                $content = ($setting->member_annouce == null) ? Lang::get('message.annouce') :
+                    str_replace(['[:MemberName]', '[:ShareCount]'], [$voter->name], $setting->member_annouce);
+            } else if ($type == 'voter_announce') {
+                $content = ($setting->voter_annouce == null) ? Lang::get('message.annouce') :
+                    str_replace(['[:VoterName]', '[:ShareCount]'], [$voter->name], $setting->voter_annouce);
+            } else if($type == 'member'){
                 $content = ($setting->member_sms_text == null) ? Lang::get('message.member') .$url. Lang::get('message.contact'):
                 str_replace('[:MemberName]', $voter->name, $setting->member_sms_text) . $url;
             }else{

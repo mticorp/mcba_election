@@ -409,348 +409,96 @@
             var err = false;
 
             $("form#sendMethod").on('submit',function(e){
-              e.preventDefault();
-              var method = $(this).find('input[name=method]:checked').val();
-              var action = $('input[name=action]').val();
-             
-              $.blockUI({
-                css: {
-                    backgroundColor:'transparent',
-                    top: '0px',
-                    left: '0px',
-                    width: $(document).width(),
-                    height: $(document).height(),
-                    padding: '20%',
-                },
-                baseZ: 2000,
-                message: '<img src="{{ url("images/loader.gif") }}" width="150" />',
-              });
+                e.preventDefault();
+                var method = $(this).find('input[name=method]:checked').val();
+                var action = $('input[name=action]').val();                
+                var checkData = [];
 
-              if(action == "select_reminder")
-              {
-                $("tbody tr").each(function() {
-                    var check_val = $(this).find('input[name=checked]:checked').val();
-                    // console.log(check_val);
-                    if (check_val) {
-                        if(method == "sms")
+                $.blockUI({
+                    css: {
+                        backgroundColor:'transparent',
+                        top: '0px',
+                        left: '0px',
+                        width: $(document).width(),
+                        height: $(document).height(),
+                        padding: '20%',
+                    },
+                    baseZ: 2000,
+                    message: '<img src="{{ url("images/loader.gif") }}" width="150" />',
+                });
+
+                if(method == "sms")
+                {
+                    //sms only
+                    url = "{{route('vid.message.smsOnly')}}";
+                }else if(method == "email")
+                {
+                    //email only
+                    url = "{{route('vid.message.emailOnly')}}";
+                    }else if(method == "both")
+                {
+                    //both sms & email
+                    url = "{{route('vid.message')}}";
+                }else{
+                    $.unblockUI();
+                    toastr.error('Info - Method Failed!')
+                    $("#confirmModal").modal('hide');
+                    return false;
+                }
+
+                if (action == "select_reminder" || action == "select_annouce" || action == "select_message") {
+                    $("tbody tr input[name=checked]:checked").each(function() {
+                        var check_val = $(this).val();
+                        checkData.push(check_val);
+                    })
+                } else if (action == "all_reminder" || action == "all_annouce" || action == "all_message") {
+                    $("tbody tr").each(function() {
+                        var check_val = $(this).find('input[name=checked]').val();
+                        checkData.push(check_val);
+                    })
+                }                                             
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        type:action,
+                        check_val: checkData,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        $.unblockUI();
+                        $("#confirmModal").modal('hide');
+                        if (data.errors) {
+                            toastr.error('Info - ' + data.errors)
+                        } else if (data.success) {
+                            toastr.success('Info - ' + data.success)
+                        }
+                    },
+                    error: function(response) {
+                        $.unblockUI();
+                        $("#confirmModal").modal('hide');
+                        if(response['responseJSON'])
                         {
-                            //sms only
-                            var url = "{{route('generator.vid.reminder.smsOnly')}}";
-                        }else if(method == "email")
-                        {
-                            //email only
-                            var url = "{{route('generator.vid.reminder.emailOnly')}}";
-                            }else if(method == "both")
-                        {
-                            //both sms & email
-                            var url = "{{route('generator.vid.reminder')}}";
+                            toastr.error('Info - ' + response['responseJSON'].message)
                         }else{
-                            $.unblockUI();
-                            toastr.error('Info - Method Failed!')
-                            $("#confirmModal").modal('hide');
-                            return false;
-                        }
-
-                        $.ajax({
-                            type: "POST",
-                            url: url,
-                            data: {
-                                vid: check_val,
-                                _token: '{{ csrf_token() }}'
-                            },
-                            dataType: "json",
-                            success: function(data) {
-                                $.unblockUI();
-                                $("#confirmModal").modal('hide');
-                                if (data.errors) {
-                                    toastr.error('Info - ' + data.errors)
-                                } else if (data.success) {
-                                    toastr.success('Info - ' + data.success)
-                                }
-                            },
-                            error: function(response) {
-                                $.unblockUI();
-                                $("#confirmModal").modal('hide');
-                                if(response['responseJSON'])
-                                {
-                                    toastr.error('Info - ' + response['responseJSON'].message)
-                                }else{
-                                    toastr.error('Info - Something Went Wrong!')
-                                }
-                            }
-                        });
-                    }
-                })
-              }else if(action == "all_reminder")
-              {
-                $("tbody tr").each(function() {                    
-                    var check_val = $(this).find('input[name=checked]').val();
-                    
-                    if(method == "sms")
-                        {
-                          var url = "{{route('generator.vid.reminder.smsOnly')}}";
-                        }else if(method == "email")
-                        {
-                          var url = "{{route('generator.vid.reminder.emailOnly')}}";
-                        }else if(method == "both")
-                        {
-                          var url = "{{route('generator.vid.reminder')}}";
-                        }else{
-                          $.unblockUI();
-                          toastr.error('Info - Method Failed!')
-                          $("#confirmModal").modal('hide');
-                          return false;
-                        }
-
-                        $.ajax({
-                          type: "POST",
-                          url: url,
-                          data: {
-                              vid: check_val,
-                              _token: '{{ csrf_token() }}'
-                          },
-                          dataType: "json",
-                          success: function(data) {
-                              $.unblockUI();
-                              $("#confirmModal").modal('hide');
-                              if (data.errors) {
-                                  toastr.error('Info - ' + data.errors)
-                              } else if (data.success) {
-                                  toastr.success('Info - ' + data.success)
-                              }
-                          },
-                          error: function(response) {
-                            $.unblockUI();
-                            $("#confirmModal").modal('hide');
-                            if(response['responseJSON'])
-                            {
-                              toastr.error('Info - ' + response['responseJSON'].message)
-                            }else{
-                              toastr.error('Info - Something Went Wrong!')
-                            }
-                          }
-                      });
-                })
-              }
-              else if(action == "select_annouce")
-              {
-                $("tbody tr input[name=checked]:checked").each(function() {
-                    var check_val = $(this).val();
-                    if(method == "sms")
-                    {
-                      //sms only
-                      var url = "{{ route('vid.message.smsOnly') }}";
-                    }else if(method == "email")
-                    {
-                      //email only
-                      var url = "{{ route('vid.message.emailOnly') }}";
-                    }else if(method == "both")
-                    {
-                      //both sms & email
-                      var url = "{{ route('vid.message') }}";
-                    }else{
-                      $.unblockUI();
-                      toastr.error('Info - Method Failed!')
-                      $("#confirmModal").modal('hide');
-                      return false;
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        data: {
-                            type:action,
-                            vid: check_val,
-                            _token: '{{ csrf_token() }}'
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            $.unblockUI();
-                            $("#confirmModal").modal('hide');
-                            if (data.errors) {
-                                toastr.error('Info - ' + data.errors)
-                            } else if (data.success) {
-                                toastr.success('Info - ' + data.success)
-                            }
-                        },
-                        error: function(response) {
-                          $.unblockUI();
-                          $("#confirmModal").modal('hide');
-                          if(response['responseJSON'])
-                          {
-                            toastr.error('Info - ' + response['responseJSON'].message)
-                          }else{
                             toastr.error('Info - Something Went Wrong!')
-                          }
                         }
-                    });
-                })
-              }else if(action == "all_annouce")
-              {
-                $("tbody tr").each(function() {
-                    var check_val = $(this).find('input[name=checked]').val();
-                    if(method == "sms")
-                    {
-                      //sms only
-                      var url = "{{ route('vid.message.smsOnly') }}";
-                    }else if(method == "email")
-                    {
-                      //email only
-                      var url = "{{ route('vid.message.emailOnly') }}";
-                    }else if(method == "both")
-                    {
-                      //both sms & email
-                      var url = "{{ route('vid.message') }}";
-                    }else{
-                      $.unblockUI();
-                      toastr.error('Info - Method Failed!')
-                      $("#confirmModal").modal('hide');
-                      return false;
                     }
-
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        data: {
-                            vid: check_val,
-                            _token: '{{ csrf_token() }}'
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            $.unblockUI();
-                            $("#confirmModal").modal('hide');
-                            if (data.errors) {
-                                toastr.error('Info - ' + data.errors)
-                            } else if (data.success) {
-                                toastr.success('Info - ' + data.success)
-                            }
-                        },
-                        error: function(response) {
-                          $.unblockUI();
-                          $("#confirmModal").modal('hide');
-                          if(response['responseJSON'])
-                          {
-                            toastr.error('Info - ' + response['responseJSON'].message)
-                          }else{
-                            toastr.error('Info - Something Went Wrong!')
-                          }
-                        }
-                    });
-                })
-              }
-              else if(action == "select_message")
-              {
-                $("tbody tr input[name=checked]:checked").each(function() {
-                    var check_val = $(this).val();
-                    if(method == "sms")
-                    {
-                      //sms only
-                      var url = "{{ route('vid.message.smsOnly') }}";
-                    }else if(method == "email")
-                    {
-                      //email only
-                      var url = "{{ route('vid.message.emailOnly') }}";
-                    }else if(method == "both")
-                    {
-                      //both sms & email
-                      var url = "{{ route('vid.message') }}";
-                    }else{
-                      $.unblockUI();
-                      toastr.error('Info - Method Failed!')
-                      $("#confirmModal").modal('hide');
-                      return false;
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        data: {
-                            vid: check_val,
-                            _token: '{{ csrf_token() }}'
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            $.unblockUI();
-                            $("#confirmModal").modal('hide');
-                            if (data.errors) {
-                                toastr.error('Info - ' + data.errors)
-                            } else if (data.success) {
-                                toastr.success('Info - ' + data.success)
-                            }
-                        },
-                        error: function(response) {
-                          $.unblockUI();
-                          $("#confirmModal").modal('hide');
-                          if(response['responseJSON'])
-                          {
-                            toastr.error('Info - ' + response['responseJSON'].message)
-                          }else{
-                            toastr.error('Info - Something Went Wrong!')
-                          }
-                        }
-                    });
-                })
-              }else if(action == "all_message")
-              {
-                $("tbody tr").each(function() {
-                    var check_val = $(this).find('input[name=checked]').val();
-                    if(method == "sms")
-                    {
-                      //sms only
-                      var url = "{{ route('vid.message.smsOnly') }}";
-                    }else if(method == "email")
-                    {
-                      //email only
-                      var url = "{{ route('vid.message.emailOnly') }}";
-                    }else if(method == "both")
-                    {
-                      //both sms & email
-                      var url = "{{ route('vid.message') }}";
-                    }else{
-                      $.unblockUI();
-                      toastr.error('Info - Method Failed!')
-                      $("#confirmModal").modal('hide');
-                      return false;
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        data: {
-                            vid: check_val,
-                            _token: '{{ csrf_token() }}'
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            $.unblockUI();
-                            $("#confirmModal").modal('hide');
-                            if (data.errors) {
-                                toastr.error('Info - ' + data.errors)
-                            } else if (data.success) {
-                                toastr.success('Info - ' + data.success)
-                            }
-                        },
-                        error: function(response) {
-                          $.unblockUI();
-                          $("#confirmModal").modal('hide');
-                          if(response['responseJSON'])
-                          {
-                            toastr.error('Info - ' + response['responseJSON'].message)
-                          }else{
-                            toastr.error('Info - Something Went Wrong!')
-                          }
-                        }
-                    });
-                })
-              }
+                });
             })
 
-            $("input[name=checked_all]").on("change", function() {
+            $("input[name=checked_all]").on("change", function() {                
                 $("tbody tr").each(function() {
                     if ($(this).hasClass('allChecked')) {
                         $(this).find('input[type="checkbox"]').prop('checked', false);
+                        $(this).find('input[type="checkbox"]').closest('tr').removeClass(
+                            'table-active');
                     } else {
                         $(this).find('input[type="checkbox"]').prop('checked', true);
+                        $(this).find('input[type="checkbox"]').closest('tr').addClass(
+                            'table-active');
                     }
                     $(this).toggleClass('allChecked');
                 })
@@ -822,8 +570,7 @@
                 $("#confirmModal").modal('show');
             })
 
-            $("#btn_annouceAll").on("click", function() {
-                console.log("btn_annouceAll");
+            $("#btn_annouceAll").on("click", function() {                
                 // if (election_status == 0) {
                 //     toastr.error("Warning - Election is not Started!")
                 //     return false;
@@ -835,8 +582,7 @@
             
 
             $("#btn_annouceSelected").on('click', function() {
-                var check = $('input[name=checked]:checked').length;
-                console.log(check);
+                var check = $('input[name=checked]:checked').length;                
                 if (check == 0) {
                     toastr.error("Warning - Please Select At Least One Row to send Message!")
                     return false;

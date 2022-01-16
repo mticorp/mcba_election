@@ -20,7 +20,7 @@ class AnnouceContoller extends Controller
 
     public function memberannounceUpdate(Request $request)
     {
-        Setting::first()->update(['member_annouce' => $request->voter_annouce_text . " "]);
+        Setting::first()->update(['member_annouce' => $request->member_annouce . " "]);
         return redirect()->back();
     }
 
@@ -31,7 +31,7 @@ class AnnouceContoller extends Controller
 
     public function voterannounceUpdate(Request $request)
     {
-        Setting::first()->update(['voter_annouce' => $request->voters_annouce_text . " "]);
+        Setting::first()->update(['voter_annouce' => $request->voter_annouce . " "]);
         return redirect()->back();
     }
     /**

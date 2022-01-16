@@ -207,12 +207,7 @@ Route::group(['middleware' => 'setting'], function () {
 
             Route::get('/vid/list/', 'Generator\GenerateController@vidList')->name('generator.vid-list');
             Route::get('/vid/generate', 'Generator\GenerateController@generateVidBlade')->name('generator.generate.vid');
-            Route::get('/vid/excel/export', 'Generator\GenerateController@export')->name('generator.excel.export');
-
-            //reminder
-            Route::post('/vid-reminder', 'Generator\GenerateController@reminder')->name('generator.vid.reminder');
-            Route::post('/vid-reminder(Email)', 'Generator\GenerateController@emailReminderOnly')->name('generator.vid.reminder.emailOnly');
-            Route::post('/vid-reminder(SMS)', 'Generator\GenerateController@smsReminderOnly')->name('generator.vid.reminder.smsOnly');
+            Route::get('/vid/excel/export', 'Generator\GenerateController@export')->name('generator.excel.export');            
 
             Route::post('/generated-vid/store', 'Generator\GenerateController@store')->name('vid.store');
 

@@ -164,210 +164,188 @@ class GenerateController extends Controller
 
     public function sendMessage(Request $request)
     {
-        $vid = $request->vid;        
-        $voter = DB::table('voter')
-            ->select('voter.*', 'election_voters.election_id as election_id')
-            ->where('voter.voter_id', $vid)
-            ->orWhere('voter.id', $vid)
-            ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-            ->first();
-        
-        $email = $voter->email;
-        $phone  = $voter->phone_no;
-
-        if ($phone) {
-            if($request->type == 'select_message' || $request->type == 'all_message')
+        $errors = [];
+        if ($request->check_val) {
+            if($request->type == 'select_reminder' || $request->type == 'all_reminder')
             {
-                $type = 'member';
+                $type = 'reminder';
+            }else if($request->type == 'select_annouce' || $request->type == 'all_annouce'){
+                $type = 'voter_announce';
             }else{
-                $type = 'announce';
+                $type = null;
             }
-            $phones = explode(',', $phone);
+
+            foreach ($request->check_val as $voter_id) {
+                $voter = DB::table('voter')
+                ->select('voter.*', 'election_voters.election_id as election_id')
+                ->where('voter.voter_id', $voter_id)
+                ->orWhere('voter.id', $voter_id)
+                ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+                ->first();
             
-            $result = BulkSMS::sendSMS($phones, $voter);
-            if (isset($result->getData()->success)) {
-                DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
-            } else {
-                DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
-                return response()->json(['errors' => $result->getData()->errors]);
+                $email = $voter->email;
+                $phone  = $voter->phone_no;        
+        
+                if ($phone) {
+                    $phones = explode(',', $phone);                    
+                    $result = BulkSMS::sendSMS($phones, $voter, $type);
+                    if (isset($result->getData()->errors)) {
+                        array_push($errors, [
+                            $voter->name . ' SMS Send Fail'
+                        ]);
+                        DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
+                    }else{
+                        DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+                    }                    
+                }else{
+                    array_push($errors, [
+                        $voter->name . ' Phone is Empty'
+                    ]);
+                }
+        
+                if ($email) {
+                    $emails = explode(',', $email);
+        
+                    $result = BulkEmail::sendEmail($emails,$voter,$type);
+        
+                    if (isset($result->getData()->errors)) {
+                        array_push($errors, [
+                            $voter->name . ' Mail Send Fail'
+                        ]);
+                        DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
+                    }else{
+                        DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
+                    }                    
+                } else {
+                    array_push($errors, [
+                        $voter->name . ' Mail is Empty',
+                    ]);
+                }               
             }
-        }        
 
-        if ($email) {
-            $emails = explode(',', $email);
-
-            $result = BulkEmail::sendEmail($emails,$voter);
-
-            if (isset($result->getData()->success)) {
-                DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
+            if ($errors) {
+                return response()->json(['errors' => $errors]);
             } else {
-                DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
-                return response()->json(['errors' => $result->getData()->errors]);
+                return response()->json(['success' => 'Mail and SMS Send Successfully.']);
             }
+        } else {
+            array_push($errors, [
+                'No Data Avaliable!',
+            ]);
+
+            return response()->json(['errors' => $errors]);
         }
-
-        return response()->json(['success' => 'Message Send Successfully.']);
     }
 
     public function smsMessageOnly(Request $request)
     {        
-        $vid = $request->vid;
-        $voter = DB::table('voter')
-            ->select('voter.*', 'election_voters.election_id as election_id')
-            ->where('voter.voter_id', $vid)
-            ->orWhere('voter.id', $vid)
-            ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-            ->first();
-
-        $phone  = $voter->phone_no;
-        if ($phone) {           
-            if($request->type == 'select_annouce' || $request->type == 'all_annouce')
+        $errors = [];
+        if ($request->check_val) {
+            if($request->type == 'select_reminder' || $request->type == 'all_reminder')
             {
-                $type = 'announce';
+                $type = 'reminder';
+            }else if($request->type == 'select_annouce' || $request->type == 'all_annouce'){
+                $type = 'voter_announce';
+            }else{
+                $type = null;
             }
-            // else if($request->type == 'select_message' || $request->type == 'all_message'){
 
-            //     $type = 'message';
-            // }else if($request->type == 'elect_reminder' || $request->type == 'all_reminder'){
+            foreach ($request->check_val as $voter_id) {
+                $voter = DB::table('voter')
+                ->select('voter.*', 'election_voters.election_id as election_id')
+                ->where('voter.voter_id', $voter_id)
+                ->orWhere('voter.id', $voter_id)
+                ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+                ->first();
+                           
+                $phone  = $voter->phone_no;        
+        
+                if ($phone) {
+                    $phones = explode(',', $phone);                    
+                    $result = BulkSMS::sendSMS($phones, $voter, $type);
+                    if (isset($result->getData()->errors)) {
+                        array_push($errors, [
+                            $voter->name . ' SMS Send Fail'
+                        ]);
+                        DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
+                    }else{
+                        DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+                    }                    
+                }else{
+                    array_push($errors, [
+                        $voter->name . ' Phone is Empty'
+                    ]);
+                }                       
+            }
 
-            //     $type = 'reminder';
-            // } 
-            $phones = explode(',', $phone);
-                            
-            $result = BulkSMS::sendSMS($phones, $voter);
-
-            if (isset($result->getData()->success)) {
-                DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+            if ($errors) {
+                return response()->json(['errors' => $errors]);
+            } else {
                 return response()->json(['success' => 'SMS Send Successfully.']);
-            } else {                
-                DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
-                return response()->json(['errors' => $result->getData()->errors]);
             }
         } else {
-            return response()->json(['errors' => 'Phone Number Does not Exist!']);
+            array_push($errors, [
+                'No Data Avaliable!',
+            ]);
+
+            return response()->json(['errors' => $errors]);
         }
     }
 
     public function emailMessageOnly(Request $request)
     {
-        $vid = $request->vid;        
-        $voter = DB::table('voter')
-            ->select('voter.*', 'election_voters.election_id as election_id')
-            ->where('voter.voter_id', $vid)
-            ->orWhere('voter.id', $vid)
-            ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-            ->first();
-        
-        $email = $voter->email;
-
-        if ($email) {
-            $emails = explode(',', $email);
-
-            $result = BulkEmail::sendEmail($emails,$voter);
-
-            if (isset($result->getData()->success)) {
-                DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
-            } else {
-                DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
-                return response()->json(['errors' => $result->getData()->errors]);
+        $errors = [];
+        if ($request->check_val) {
+            if($request->type == 'select_reminder' || $request->type == 'all_reminder')
+            {
+                $type = 'reminder';
+            }else if($request->type == 'select_annouce' || $request->type == 'all_annouce'){
+                $type = 'voter_announce';
+            }else{
+                $type = null;
             }
-        } else {
-            return response()->json(['errors' => 'Email Does not Exist!.']);
-        }
-    }
 
-    public function reminder(Request $request)
-    {
-        $vid = $request->vid;
-        $non_vote_voter = DB::table('voter')
-            ->select('voter.*', 'election_voters.election_id as election_id')
-            ->where('voter.voter_id', $vid)
-            ->orWhere('voter.id', $vid)
-            ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-            ->first();        
-        
-        if ($non_vote_voter->phone_no) {
-
-            $phones = explode(',', $non_vote_voter->phone_no);            
-
-            $result = BulkSMS::sendSMS($phones, $non_vote_voter,'reminder');
+            foreach ($request->check_val as $voter_id) {
+                $voter = DB::table('voter')
+                ->select('voter.*', 'election_voters.election_id as election_id')
+                ->where('voter.voter_id', $voter_id)
+                ->orWhere('voter.id', $voter_id)
+                ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+                ->first();
             
-            if (isset($result->getData()->success)) {
-                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_sms_flag' => 2]);
-            } else {
-                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_sms_flag' => 1]);
-                return response()->json(['errors' => $result->getData()->errors]);
-            }
-        }
-
-        if ($non_vote_voter->email) {
-
-            $emails = explode(',', $non_vote_voter->email);
-
-            $result = BulkEmail::sendEmail($emails,$non_vote_voter,'reminder');
-
-            if (isset($result->getData()->success)) {
-                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['email_flag' => 2]);
-            } else {
-                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['email_flag' => 1]);
-                return response()->json(['errors' => $result->getData()->errors]);
-            }
-        }
-
-        return response()->json(['success' => 'Message Send Successfully.']);
-    }
-
-    public function emailReminderOnly(Request $request)
-    {
-        $vid = $request->vid;
-        $non_vote_voter = DB::table('voter')
-            ->select('voter.*', 'election_voters.election_id as election_id')
-            ->where('voter.voter_id', $vid)
-            ->orWhere('voter.id', $vid)
-            ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-            ->first();
+                $email = $voter->email;               
         
-        if ($non_vote_voter->email) {
-            $emails = explode(',', $non_vote_voter->email);
-
-            $result = BulkEmail::sendEmail($emails,$non_vote_voter,'reminder');
-
-            if (isset($result->getData()->success)) {
-                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['email_flag' => 2]);
-            } else {
-                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['email_flag' => 1]);
-                return response()->json(['errors' => $result->getData()->errors]);
+                if ($email) {
+                    $emails = explode(',', $email);
+        
+                    $result = BulkEmail::sendEmail($emails,$voter,$type);
+        
+                    if (isset($result->getData()->errors)) {
+                        array_push($errors, [
+                            $voter->name . ' Mail Send Fail'
+                        ]);
+                        DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
+                    }else{
+                        DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
+                    }                    
+                } else {
+                    array_push($errors, [
+                        $voter->name . ' Mail is Empty',
+                    ]);
+                }               
             }
 
-            return response()->json(['success' => 'Email Send Successfully.']);
-        } else {
-            return response()->json(['errors' => 'Email Does not Exist!']);
-        }
-    }
-
-    public function smsReminderOnly(Request $request)
-    {
-        $vid = $request->vid;
-        $non_vote_voter = DB::table('voter')
-            ->select('voter.*', 'election_voters.election_id as election_id')
-            ->where('voter.voter_id', $vid)
-            ->orWhere('voter.id', $vid)
-            ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-            ->first();
-        
-        if ($non_vote_voter->phone_no) {
-            $phones = explode(',', $non_vote_voter->phone_no);            
-
-            $result = BulkSMS::sendSMS($phones, $non_vote_voter);
-            
-            if (isset($result->getData()->success)) {
-                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_sms_flag' => 2]);
+            if ($errors) {
+                return response()->json(['errors' => $errors]);
             } else {
-                DB::table('logs')->where('voter_id', $non_vote_voter->id)->update(['reminder_sms_flag' => 1]);
-                return response()->json(['errors' => $result->getData()->errors]);
+                return response()->json(['success' => 'Mail Send Successfully.']);
             }
         } else {
-            return response()->json(['errors' => 'Phone Number Does not Exist!']);
+            array_push($errors, [
+                'No Data Avaliable!',
+            ]);
+
+            return response()->json(['errors' => $errors]);
         }
-    }
+    }    
 }

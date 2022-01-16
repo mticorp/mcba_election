@@ -409,29 +409,17 @@
                     $("#confirmModal").modal('hide');
                     return false;
                 }
-                if (action == "select_message") {
+                if (action == "select_message" || action == "select_annouce") {
                     $("tbody tr input[name=checked]:checked").each(function() {
                         var check_val = $(this).val();
                         checkData.push(check_val);
                     })
-                }else if(action == "select_annouce") {
-                    $("tbody tr input[name=checked]:checked").each(function() {
-                        var check_val = $(this).val();
-                        checkData.push(check_val);
-                    })
-                }
-               else if (action == "all_message") {
+                } else if (action == "all_message" || action == "all_annouce") {
                     $("tbody tr").each(function() {
                         var check_val = $(this).find('input[name=checked]').val();
                         checkData.push(check_val);
                     })
-                }
-                else if (action == "all_annouce") {
-                    $("tbody tr").each(function() {
-                        var check_val = $(this).find('input[name=checked]').val();
-                        checkData.push(check_val);
-                    })
-                }
+                }                
 
                 $.ajax({
                     type: "POST",

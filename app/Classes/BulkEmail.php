@@ -27,7 +27,7 @@ class BulkEmail{
                     str_replace(['[:VoterName]', '[:ShareCount]'], [$voter->name], $setting->voter_annouce);
             } else if($type == 'member'){
                 $content = ($setting->member_sms_text == null) ? Lang::get('message.member') .$url. Lang::get('message.contact'):
-                str_replace('[:MemberName]', $voter->name, $setting->member_sms_text) . $url;
+                str_replace('[:MemberName]', $voter->name, $setting->member_sms_text);
             }else{
                 $content = ($setting->sms_text == null) ? Lang::get('message.text') :
                 str_replace(['[:VoterName]', '[:ShareCount]'], [$voter->name, "(" . $voter->vote_count . ")"], $setting->sms_text);
@@ -40,11 +40,12 @@ class BulkEmail{
         }else{
             return response()->json(['errors' => $type == "member" ? 'Member' : 'Voter'.' Not Found!']);
         }        
-
+        
         if(count($emails) > 1)
         {
             foreach($emails as $email)
             {
+                $email = str_replace(" ", "", $email);
                 Mail::send(
                     'vid_email',
                     array(
@@ -62,6 +63,7 @@ class BulkEmail{
                 );
             }
         }else{
+            $emails = str_replace(" ", "", $emails[0]);
             Mail::send(
                 'vid_email',
                 array(
@@ -74,7 +76,7 @@ class BulkEmail{
                 function ($message) use ($emails) {
                     $message->from(env('MAIL_FROM_ADDRES'));
                     $message->subject('MCBA E-Voting');
-                    $message->to($emails[0]);
+                    $message->to($emails);
                 }
             );
         }        

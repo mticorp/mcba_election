@@ -364,8 +364,7 @@
                 $("#confirmModal").modal('show');
             })
             $("#btn_annouceSelected").on('click', function() {
-                var check = $('input[name=checked]:checked').length;
-                console.log(check);
+                var check = $('input[name=checked]:checked').length;                
                 if (check == 0) {
                     toastr.error("Warning - Please Select At Least One Row to send Message!")
                     return false;
@@ -420,7 +419,7 @@
                         checkData.push(check_val);
                     })
                 }                
-
+               
                 $.ajax({
                     type: "POST",
                     url: url,

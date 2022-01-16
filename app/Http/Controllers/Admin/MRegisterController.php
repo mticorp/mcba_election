@@ -308,8 +308,13 @@ class MRegisterController extends Controller
                 $email = $member->email;
 
                 if ($phone) {
-                    $phones = explode(',', $phone);                    
-                    $result = BulkSMS::sendSMS($phones, $member, $type,  $this->url);
+                    $phones = explode(',', $phone);                                        
+                    if($type == 'member')
+                    {
+                        $result = BulkSMS::sendSMS($phones, $member,$type, $this->url);
+                    }else{
+                        $result = BulkSMS::sendSMS($phones, $member,$type, ' ');
+                    }
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [
                             $member->name . ' SMS Send Fail'
@@ -324,7 +329,12 @@ class MRegisterController extends Controller
                 if ($email) {
                     $emails = explode(',', $email);
 
-                    $result = BulkEmail::sendEmail($emails, $member, $type, $this->url);
+                    if($type == 'member')
+                    {
+                        $result = BulkEmail::sendEmail($emails, $member,$type, $this->url);
+                    }else{
+                        $result = BulkEmail::sendEmail($emails, $member,$type, ' ');
+                    }    
 
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [
@@ -369,8 +379,13 @@ class MRegisterController extends Controller
 
                 if ($phone) {
                     $phones = explode(',', $phone);
-
-                    $result = BulkSMS::sendSMS($phones, $member,$type, $this->url);
+                    
+                    if($type == 'member')
+                    {
+                        $result = BulkSMS::sendSMS($phones, $member,$type, $this->url);
+                    }else{
+                        $result = BulkSMS::sendSMS($phones, $member,$type, ' ');
+                    }
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [
                             $member->name . ' SMS Send Fail'
@@ -414,7 +429,12 @@ class MRegisterController extends Controller
                 if ($email) {
                     $emails = explode(',', $email);
 
-                    $result = BulkEmail::sendEmail($emails, $member,$type, $this->url);
+                    if($type == 'member')
+                    {
+                        $result = BulkEmail::sendEmail($emails, $member,$type, $this->url);
+                    }else{
+                        $result = BulkEmail::sendEmail($emails, $member,$type, ' ');
+                    }                
 
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [

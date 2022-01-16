@@ -104,7 +104,7 @@ class GenerateController extends Controller
     {
         
         $company =  DB::table('company')->latest('created_at')->first();
-        $election =  DB::table('election')->latest('created_at')->first();
+        $election =  DB::table('election')->latest('created_at')->first();        
         return view('generator.vidgenerate',compact('company','election'));
     }
 

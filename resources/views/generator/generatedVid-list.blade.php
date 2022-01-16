@@ -206,7 +206,7 @@
     <div class="row" id="print_content">
       <div class="col-12">
         <p style="text-align:center;"><img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}" alt="" width="100px" height="100px"></p>
-        <h3 style="text-align:center;"> <b>MMA Election</b></h3>
+        <h3 style="text-align:center;"> <b>{{ $election->name ?? '' }}</b></h3>
         <p style="text-align:center;font-size:20px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}</p>
         <br>
         <p style="text-align:center;font-size:30px;"><strong>Voter ID: <span id="voter_id" style="border:2px solid red;margin-left:15px;padding-left:8px;padding-right:8px; font-family: 'Roboto Mono', monospace;"></span> </strong></p>
@@ -216,6 +216,7 @@
       </div>
     </div>
 </div>
+
 @endsection
 @section('javascript')
 <script>

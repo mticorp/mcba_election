@@ -175,7 +175,8 @@ class GenerateController extends Controller
                 $type = null;
             }
 
-            foreach ($request->check_val as $voter_id) {
+            $collection = collect($request->check_val);
+            foreach ($collection->chunk(100) as $voter_id) {
                 $voter = DB::table('voter')
                 ->select('voter.*', 'election_voters.election_id as election_id')
                 ->where('voter.voter_id', $voter_id)
@@ -250,7 +251,8 @@ class GenerateController extends Controller
                 $type = null;
             }
 
-            foreach ($request->check_val as $voter_id) {
+            $collection = collect($request->check_val);
+            foreach ($collection->chunk(100) as $voter_id) {
                 $voter = DB::table('voter')
                 ->select('voter.*', 'election_voters.election_id as election_id')
                 ->where('voter.voter_id', $voter_id)
@@ -305,7 +307,8 @@ class GenerateController extends Controller
                 $type = null;
             }
 
-            foreach ($request->check_val as $voter_id) {
+            $collection = collect($request->check_val);
+            foreach ($collection->chunk(100) as $voter_id) {
                 $voter = DB::table('voter')
                 ->select('voter.*', 'election_voters.election_id as election_id')
                 ->where('voter.voter_id', $voter_id)

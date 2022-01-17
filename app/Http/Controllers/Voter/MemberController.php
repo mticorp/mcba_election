@@ -40,7 +40,8 @@ class MemberController extends Controller
         $nrc_no = $request->nrc_no;
         $phone_no = $request->phone_no;
 
-        $member = MRegister::where('refer_code', $refer_code)->orWhere('phone_number',$phone_no)->orWhere('nrc',$nrc_no)->first();
+        $member = MRegister::where('refer_code', $refer_code)->where('phone_number',$phone_no)->orWhere('nrc',$nrc_no)->first();
+
                 
         if ($member) {
             if ($member->check_flag == 0) {

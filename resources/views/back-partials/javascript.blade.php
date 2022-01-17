@@ -46,7 +46,7 @@
 <!-- Jquery UI -->
 <script src="{{asset('backend/plugins/jquery-ui/jquery-ui.js')}}"></script>
 
-<script src="{{asset('backend/js/nrc_format_update.js')}}"></script>
+<script src="{{asset('backend/js/nrc_format_data.js')}}"></script>
 <script>
      window._token = '{{ csrf_token() }}';
 

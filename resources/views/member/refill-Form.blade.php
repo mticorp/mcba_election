@@ -232,9 +232,9 @@
         nrc_no = new MMNRC(nrc_no);            
         nrc_no = nrc_no.getFormat();            
         nrc_no = nrc_no.split("/");
-        let state_no = MMNRC.toEngNum(nrc_no[0]);
-        
-        $("#nrc_first option[value="+state_no+"]").attr('selected','selected');            
+        let state_no = MMNRC.toEngNum(nrc_no[0]);        
+               
+        $("#nrc_first option[value="+state_no+"]").prop('selected','selected');
         let data = nrc_data[state_no];
 
         data = data.sort();

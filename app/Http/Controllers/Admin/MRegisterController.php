@@ -301,7 +301,8 @@ class MRegisterController extends Controller
             }else{
                 $type = 'member_announce';
             }
-            foreach ($request->check_val as $member_id) {
+            $collection = collect($request->check_val);
+            foreach ($collection->chunk(100) as $member_id) {
                 $member = DB::table('m_registers')->where('id', $member_id)->first();
 
                 $phone  = $member->phone_number;
@@ -372,7 +373,8 @@ class MRegisterController extends Controller
             }else{
                 $type = 'member_announce';
             }
-            foreach ($request->check_val as $member_id) {
+            $collection = collect($request->check_val);
+            foreach ($collection->chunk(100) as $member_id) {
                 $member = DB::table('m_registers')->where('id', $member_id)->first();
 
                 $phone  = $member->phone_number;
@@ -422,7 +424,8 @@ class MRegisterController extends Controller
             }else{
                 $type = 'member_announce';
             }
-            foreach ($request->check_val as $member_id) {
+            $collection = collect($request->check_val);
+            foreach ($collection->chunk(100) as $member_id) {
                 $member = DB::table('m_registers')->where('id', $member_id)->first();
                 $email = $member->email;
 

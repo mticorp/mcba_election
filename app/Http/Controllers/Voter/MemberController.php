@@ -60,7 +60,12 @@ class MemberController extends Controller
         $decrypted_member_id = Crypt::decryptString($member_id);
         $member = MRegister::where('id', $decrypted_member_id)->first();
 
-        return view('member.refill-Form', compact('member'));
+        if($member && $member->check_flag == 0)
+        {
+            return view('member.refill-Form', compact('member'));
+        }else{
+            abort(403,'သင်သည် member register ပြုလုပ်ပြီးပြီ ဖြစ်ပါသည်။');
+        }        
     }
 
     public function confirm(Request $request)

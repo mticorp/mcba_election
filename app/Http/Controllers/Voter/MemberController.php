@@ -82,79 +82,86 @@ class MemberController extends Controller
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
-        if ($image != '') {
-            $oldpath = public_path() . $request->old_image;
+        $member = MRegister::find($request->hidden_id);
 
-            if ($request->old_image) {
-                if ($request->old_image == '/images/user.png') {
-                } else if (file_exists($oldpath)) {
-                    unlink($oldpath);
+        if($member->check_flag == 1)
+        {
+            return response()->json(['success' => 'You are already registered!']);
+        }else{
+            if ($image != '') {
+                $oldpath = public_path() . $request->old_image;
+    
+                if ($request->old_image) {
+                    if ($request->old_image == '/images/user.png') {
+                    } else if (file_exists($oldpath)) {
+                        unlink($oldpath);
+                    }
+                }
+    
+                $filename = rand() . '.jpg';
+    
+                $image_resize = Image::make($image->getRealPath());
+                $image_resize->resize(400, 200, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image_resize->save(public_path('/upload/member/' . $filename));
+                $image_name = '/upload/member/' . $filename;
+            }
+    
+            $form_data = array(
+                "refer_code" => $request->refer_code,
+                "name"     => $request->name,
+                "email"     => $request->email,
+                "nrc"       => $request->nrc_no,
+                "complete_training_no"   => $request->complete_training_no,
+                "valuation_training_no"   => $request->valuation_training_no,
+                "AHTN_training_no" => $request->AHTN_training_no,
+                "graduation" => $request->graduation,
+                "phone_number"  => $request->phone_number,
+                "address" => $request->address,
+                "profile" => $image_name,
+                "check_flag" => 1,
+                "officeName" => $request->officeName,
+                "office_startDate" => $request->office_startDate,
+                "officeAddress" => $request->officeAddress,
+                "officePhone" => $request->officePhone,
+                "officeFax" => $request->officeFax,
+                "officeEmail" => $request->officeEmail,
+                "yellowCard" => $request->yellowCard,
+                "pinkCard" => $request->pinkCard,
+            );
+    
+            MRegister::whereId($request->hidden_id)->update($form_data);
+            $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            // generate a pin based on 2 * 7 digits + a random character
+            $pin = $characters[rand(0, strlen($characters) - 1)] . mt_rand(10, 99) . $characters[rand(0, strlen($characters) - 1)];
+    
+            // shuffle the result
+            $pin_code = str_shuffle($pin);
+            $voter = new Voter;
+            $voter->voter_id = $pin_code;
+            $voter->vote_count = 1;
+            $voter->name = $request->name;
+            $voter->email = $request->email;
+            $voter->phone_no = $request->phone_number;
+            $voter->save();
+    
+            $voter_data = Voter::where("voter_id", $pin_code)->first();
+            DB::table('logs')->insert([
+                'voter_id' => $voter_data->id,
+            ]);
+            $elections = Election::all();
+            if (count($elections) > 0) {
+                foreach ($elections as $election) {
+                    $election_voter = new ElectionVoter();
+                    $election_voter->election_id = $election->id;
+                    $election_voter->voter_id = $voter_data->id;
+                    $election_voter->save();
                 }
             }
-
-            $filename = rand() . '.jpg';
-
-            $image_resize = Image::make($image->getRealPath());
-            $image_resize->resize(400, 200, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $image_resize->save(public_path('/upload/member/' . $filename));
-            $image_name = '/upload/member/' . $filename;
-        }
-
-        $form_data = array(
-            "refer_code" => $request->refer_code,
-            "name"     => $request->name,
-            "email"     => $request->email,
-            "nrc"       => $request->nrc_no,
-            "complete_training_no"   => $request->complete_training_no,
-            "valuation_training_no"   => $request->valuation_training_no,
-            "AHTN_training_no" => $request->AHTN_training_no,
-            "graduation" => $request->graduation,
-            "phone_number"  => $request->phone_number,
-            "address" => $request->address,
-            "profile" => $image_name,
-            "check_flag" => 1,
-            "officeName" => $request->officeName,
-            "office_startDate" => $request->office_startDate,
-            "officeAddress" => $request->officeAddress,
-            "officePhone" => $request->officePhone,
-            "officeFax" => $request->officeFax,
-            "officeEmail" => $request->officeEmail,
-            "yellowCard" => $request->yellowCard,
-            "pinkCard" => $request->pinkCard,
-        );
-
-        MRegister::whereId($request->hidden_id)->update($form_data);
-        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        // generate a pin based on 2 * 7 digits + a random character
-        $pin = $characters[rand(0, strlen($characters) - 1)] . mt_rand(10, 99) . $characters[rand(0, strlen($characters) - 1)];
-
-        // shuffle the result
-        $pin_code = str_shuffle($pin);
-        $voter = new Voter;
-        $voter->voter_id = $pin_code;
-        $voter->vote_count = 1;
-        $voter->name = $request->name;
-        $voter->email = $request->email;
-        $voter->phone_no = $request->phone_number;
-        $voter->save();
-
-        $voter_data = Voter::where("voter_id", $pin_code)->first();
-        DB::table('logs')->insert([
-            'voter_id' => $voter_data->id,
-        ]);
-        $elections = Election::all();
-        if (count($elections) > 0) {
-            foreach ($elections as $election) {
-                $election_voter = new ElectionVoter();
-                $election_voter->election_id = $election->id;
-                $election_voter->voter_id = $voter_data->id;
-                $election_voter->save();
-            }
-        }
-
-        return response()->json(['success' => 'Data is successfully updated']);
+    
+            return response()->json(['success' => 'Data is successfully updated']);
+        }        
     }
 
     public function completeMessage()

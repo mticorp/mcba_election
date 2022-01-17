@@ -239,7 +239,7 @@
             nrc_no = nrc_no.split("/");
             let state_no = MMNRC.toEngNum(nrc_no[0]);
             
-            $("#nrc_first option[value="+state_no+"]").attr('selected','selected');            
+            $("#nrc_first option[value="+state_no+"]").prop('selected','selected');            
             let data = nrc_data[state_no];
 
             data = data.sort();
@@ -254,7 +254,7 @@
 
             let nrcSecond = nrc_no[1].split("(");
             
-            $("#nrc_second option[value="+nrcSecond[0]+"]").attr('selected','selected');
+            $("#nrc_second option[value="+nrcSecond[0]+"]").prop('selected','selected');
 
 
             $("#nrc_third").val(nrcSecond[1].split(")")[1]);
@@ -351,7 +351,7 @@
                 var reader = new FileReader();
 
                 reader.onload = function(e) {
-                    $('#profile-img-tag').attr('src', e.target.result);
+                    $('#profile-img-tag').prop('src', e.target.result);
                 }
                 reader.readAsDataURL(input.files[0]);
                 }

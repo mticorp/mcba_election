@@ -249,7 +249,7 @@
 
         let nrcSecond = nrc_no[1].split("(");
         
-        $("#nrc_second option[value="+nrcSecond[0]+"]").attr('selected','selected');
+        $("#nrc_second option[value="+nrcSecond[0]+"]").prop('selected','selected');
 
 
         $("#nrc_third").val(nrcSecond[1].split(")")[1]);
@@ -268,7 +268,7 @@
 
         $('form#EditForm').on('submit',function(event){
             event.preventDefault();
-            $("#btn_save").attr('disabled',true);
+            $("#btn_save").prop('disabled',true);
             $('input').blur();
             $.blockUI({
                 css: {
@@ -289,21 +289,21 @@
 
             if (nrc_first == '') {
                 $.unblockUI();
-                $("#btn_save").attr('disabled',false);
+                $("#btn_save").prop('disabled',false);
                 toastr.error('Info - NRC is Required.')
                 return false;
             }
 
             if (nrc_second == '') {
                 $.unblockUI();
-                $("#btn_save").attr('disabled',false);
+                $("#btn_save").prop('disabled',false);
                 toastr.error('Info - NRC is Required.')
                 return false;
             }
 
             if (nrc_third == '') {
                 $.unblockUI();
-                $("#btn_save").attr('disabled',false);
+                $("#btn_save").prop('disabled',false);
                 toastr.error('Info - NRC is Required.')
                 return false;
             }
@@ -332,7 +332,7 @@
                     success: function(data) {
                         if (data.errors) {
                             $.unblockUI();
-                            $("#btn_save").attr('disabled',false);
+                            $("#btn_save").prop('disabled',false);
                             for (var count = 0; count < data.errors.length; count++) {
                                 toastr.error('Info - ' + data.errors[count])
                             }
@@ -345,7 +345,7 @@
                     },
                     errors:function(res){
                         $.unblockUI();
-                        $("#btn_save").attr('disabled',false);
+                        $("#btn_save").prop('disabled',false);
                         toastr.error('Info - Failed Network Connection! Please Reload and Try Again!');
                     }
                 })
@@ -357,7 +357,7 @@
             var reader = new FileReader();
 
             reader.onload = function(e) {
-                $('#profile-img-tag').attr('src', e.target.result);
+                $('#profile-img-tag').prop('src', e.target.result);
             }
             reader.readAsDataURL(input.files[0]);
             }

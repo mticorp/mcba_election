@@ -205,7 +205,10 @@
 <div style="display:none;">
     <div class="row" id="print_content">
       <div class="col-12">
-        <p style="text-align:center;"><img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}" alt="" width="100px" height="100px"></p>
+        <div style="text-align:center;">
+            <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}" alt="" width="100%">
+        </div>
+        
         <h3 style="text-align:center;"> <b>{{ $election->name ?? '' }}</b></h3>
         <p style="text-align:center;font-size:20px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}</p>
         <br>

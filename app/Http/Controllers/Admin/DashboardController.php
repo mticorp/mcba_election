@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Election;
 use App\Candidate;
+use App\Company;
 use App\Setting;
 use Illuminate\Support\Facades\DB;
 
@@ -88,7 +89,9 @@ class DashboardController extends Controller
             $ques_count = DB::table('questions')->where('election_id',$election_id)->count();
 
             $ques = DB::table('questions')->where('election_id',$election_id)->take(2)->get();
-            return view('admin.dashboard',compact('election','voter_voted_count','tot_voted_share_amt','voter_count','tot_share_amt','elections','percent_voting_count','pecrent_voting_reject_count','percent_not_voted_count','candidates','ques','ques_count','percent_answer_count', 'setting'));
+            $company = DB::table('company')->latest('created_at')->first();
+
+            return view('admin.dashboard',compact('election','company','voter_voted_count','tot_voted_share_amt','voter_count','tot_share_amt','elections','percent_voting_count','pecrent_voting_reject_count','percent_not_voted_count','candidates','ques','ques_count','percent_answer_count', 'setting'));
         }
         else{
             return abort(404);

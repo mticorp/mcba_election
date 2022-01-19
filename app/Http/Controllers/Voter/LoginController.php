@@ -119,7 +119,7 @@ class LoginController extends Controller
         $voter = Voter::find($voter_table_id);
 
         if ($voter) {
-            $all_elections = Election::all();
+            $all_elections = Election::where('status','1')->get();
             return view('voter.select-Election', compact('all_elections'));
         } else {
             Session::forget('voter_table_id');
@@ -130,8 +130,7 @@ class LoginController extends Controller
     public function index()
     {
 
-        $all_elections = Election::all();
-
+        $all_elections = Election::where('status','1')->get();
         return view('voter.index', compact('all_elections'));
     }
 

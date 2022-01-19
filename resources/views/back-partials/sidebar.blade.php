@@ -25,9 +25,10 @@
     </p>
     @else
     <p class="brand-link navbar-dark text-center">
-        <img src="{{ url($election->company_logo) }}" alt="Company Logo" class="brand-image img-circle"
-            style="opacity: 1"> <br>
-        <span class="brand-text font-weight-light">{{ $election->company_name }}</span>
+        <img src="{{ $company->company_logo ? url($company->company_logo) : url('images/election_logo.png') }}" alt="Company Logo"
+        class="brand-image img-circle elevation-3" style="opacity: .8"><br>
+        <span class="brand-text font-weight-light">{{ $election->company_name ? $election->company_name : 'mmVote' }}</span>
+
     </p>
     @endif
     @elseif(Auth::user()->type == 'generator')

@@ -62,6 +62,15 @@
                                 <button type="button" class="btn btn-sm btn-outline-primary my-1"
                                     id="btn_annouceSelected"><i class="fa fa-bell" aria-hidden="true"></i>
                                     Annouce (Selected)</button>
+    
+                                    <select name="flagstatus" id="flagstatus" class="btn btn-sm btn-outline-secondary my-1">
+                                        <option value="">---Select---</option>
+                                        <option value="1">Done</option>
+                                        <option value="0">Not Yet</option>
+                                    </select>
+                                    <button class="btn btn-secondary btn-sm ml-3" type="button" id="btn_search"><i class="fa fa-search"></i></button>
+                          
+                                    
                             </div>
                             <div class="col-md-4 text-center text-md-right mt-3 mt-md-0">
                                 <button type="button" class="btn btn-info btn-sm" id="btn_GenerateVoterID"><i
@@ -298,6 +307,12 @@
                 member_id = $(this).attr('id');
                 $('#deleteconfirmModal').modal('show');
             });
+
+            //btn_search//
+            $("#btn_search").on('click',function(){   
+            var checkflage = $("#flagstatus").val();                               
+            table.column(9).search(checkflage).draw();
+        })
 
             $('#ok_button').click(function() {
                 $.ajax({

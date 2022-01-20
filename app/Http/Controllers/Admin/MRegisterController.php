@@ -34,7 +34,7 @@ class MRegisterController extends Controller
     {
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
-            $DT_data = MRegister::latest()->get(['m_registers.*', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
+            $DT_data = MRegister::orderBy('check_flag', 'DESC')->get(['m_registers.*', DB::raw('@rownum  := @rownum  + 1 AS rownum')]);
             return datatables()->of($DT_data)
                 ->addColumn('action', function ($DT_data) {
                     $button = '<button type="button" name="detail" id="' . $DT_data->id . '" class="detail btn btn-dark btn-xs btn-flat"><i class="fa fa-eye"></i> Detail</button>';

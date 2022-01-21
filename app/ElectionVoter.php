@@ -43,4 +43,14 @@ class ElectionVoter extends Model
         ->first();
         return $result;
     }
+
+    public function election()
+    {
+        return $this->belongsTo(App\Election::class,'id','election_id');
+    }
+
+    public function voter()
+    {
+        return $this->belongsTo(App\Voter::class,'id','voter_id');
+    }
 }

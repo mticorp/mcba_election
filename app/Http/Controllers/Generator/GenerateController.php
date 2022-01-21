@@ -40,13 +40,15 @@ class GenerateController extends Controller
     public function vidList()
     {
         if (request()->ajax()) {
+            $electionId= $_GET['election_id'];
+            //dd($electionId);
             $DT_data = Voter::latest()->join('logs', 'logs.voter_id', 'voter.id')->get(['voter.*', 'logs.sms_flag', 'logs.email_flag', 'logs.reminder_sms_flag', 'logs.reminder_email_flag']);
-            // dd($DT_data);
-            $check = ElectionVoter::select('election_voters.done', 'voter.id', 'election.name as election_name', 'election.position as election_position')
+            //dd($DT_data);
+            $check = ElectionVoter::select('election_voters.done', 'voter.id', 'election.name as election_name', 'election.id as election_id', 'election.position as election_position')
                 ->join('voter', 'voter.id', '=', 'election_voters.voter_id')
                 ->join('election', 'election_voters.election_id', '=', 'election.id')
+                ->where('election_voters.election_id', '=', $electionId)                
                 ->get();
-            // dd($check);
             $array = [];
             foreach ($DT_data as $item) {
                 foreach ($check as $v) {
@@ -69,7 +71,8 @@ class GenerateController extends Controller
         }
         $company =  DB::table('company')->latest('created_at')->first();
         $election =  DB::table('election')->latest('created_at')->first();
-        return view('generator.generatedVid-list',compact('company','election'));
+        $electionLidt= Election::all();
+        return view('generator.generatedVid-list',compact('company','election','electionLidt'));
     }
 
     public function store(Request $request)

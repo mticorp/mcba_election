@@ -234,9 +234,12 @@
 <div style="display:none;">
     <div class="row" id="print_content">
         <div class="col-12">
-            <div style="text-align:center;">
-                <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}"
+            <div style="text-align:center;" >
+                {{-- <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}"
                     alt="" width="100%">
+                     --}}
+                     <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}" class="col-8" style="width: 300px; height: 50px; object-fit: cover" alt="" >
+        
             </div>
 
             <h3 style="text-align:center;"> <b>{{ $election->name ?? '' }}</b></h3>

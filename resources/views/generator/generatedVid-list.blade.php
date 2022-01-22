@@ -424,23 +424,20 @@
                             name: 'phone_no',
                         },
                         {
-                            data: 'election_voter',
-                            name: 'election_voter',
+                            data: 'election_voter.done',
+                            name: 'election_voter.done',
                             render: function(data) {
-                                console.log(data);
+                                // console.log(data);
                                 if(data)
-                                {                                
-                                    var html = "";
-                                    $.each(data,function(i,v){
-                                        if(v.done > 0)
-                                        {
-                                            html +=  "<span class='badge badge-success'>Done</span>";
-                                        }else{
-                                            html += "<span class='badge badge-danger'>Not Yet</span>";
-                                        }
-                                    })
-                                    // console.log(html);
-                                    return ""+ html +"</p>";
+                                {                                                                                                        
+                                    if(data > 0)
+                                    {
+                                        return "<span class='badge badge-success'>Done</span>";
+                                    }else{
+                                        return "<span class='badge badge-danger'>Not Yet</span>";
+                                    }
+
+                                    return '';
                                 }else{
                                     return "<p class='text-danger'>Not Yet</p>";
                                 }
@@ -451,8 +448,8 @@
                             name: 'vote_count',
                         },
                         {
-                            data: 'sms_flag',
-                            name: 'sms_flag',
+                            data: 'log.sms_flag',
+                            name: 'log.sms_flag',
                             render:function(data,type,row)
                             {                            
                                 if(typeof data === 'undefined' || data === null)
@@ -498,8 +495,8 @@
                                 }
                             }
                         },{
-                            data: 'reminder_sms_flag',
-                            name: 'reminder_sms_flag',
+                            data: 'log.reminder_sms_flag',
+                            name: 'log.reminder_sms_flag',
                             render:function(data,type,row)
                             {                            
                                 if(typeof data === 'undefined' || data === null)
@@ -564,7 +561,7 @@
 
              $("#btn_refresh").on('click',function(){
 
-                 console.log("OK");
+                //  console.log("OK");
                 var status = $("#flagstatus").val('');
                 var electionid = $("#electionid").val('');
                 $('#vidtable').DataTable().columns().search("").draw();
@@ -573,9 +570,9 @@
             $("#btn_search_for_status").on('click',function(){ 
                 
                 $("#vidtable").DataTable().destroy();
-                console.log("OK Status");  
+                // console.log("OK Status");  
                 var checkflage = $("#flagstatus").val(); 
-                console.log(checkflage);     
+                 console.log(checkflage);     
                 // console.log(table);                         
                 table.column(6).search(checkflage).draw();
             })           

@@ -19,4 +19,14 @@ class Voter extends Model
 
         return $result;
     }
+
+    public function electionVoter()
+    {
+        return $this->belongsTo(ElectionVoter::class,'id','voter_id');
+    }   
+
+    public function log()
+    {
+        return $this->belongsTo(Log::class,'id','voter_id');
+    }
 }

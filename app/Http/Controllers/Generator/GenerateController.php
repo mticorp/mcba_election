@@ -42,23 +42,40 @@ class GenerateController extends Controller
         if (request()->ajax()) {
             $electionId= $_GET['election_id'];
             //dd($electionId);
-            $DT_data = Voter::latest()->join('logs', 'logs.voter_id', 'voter.id')->get(['voter.*', 'logs.sms_flag', 'logs.email_flag', 'logs.reminder_sms_flag', 'logs.reminder_email_flag']);
-            //dd($DT_data);
-            $check = ElectionVoter::select('election_voters.done', 'voter.id', 'election.name as election_name', 'election.id as election_id', 'election.position as election_position')
-                ->join('voter', 'voter.id', '=', 'election_voters.voter_id')
-                ->join('election', 'election_voters.election_id', '=', 'election.id')
-                ->where('election_voters.election_id', '=', $electionId)                
-                ->get();
-            $array = [];
-            foreach ($DT_data as $item) {
-                foreach ($check as $v) {
-                    if ($v->id == $item->id) {
-                        array_push($array, $v);
-                        $item->election_voter = $array;
-                    }
-                }
-                $array = [];
-            }
+            // $DT_data = Voter::latest()->join('logs', 'logs.voter_id', 'voter.id')->get(['voter.*', 'logs.sms_flag', 'logs.email_flag', 'logs.reminder_sms_flag', 'logs.reminder_email_flag']);
+            // //dd($DT_data);
+            // $check = ElectionVoter::select('election_voters.done', 'voter.id', 'election.name as election_name', 'election.id as election_id', 'election.position as election_position')
+            //     ->join('voter', 'voter.id', '=', 'election_voters.voter_id')
+            //     ->join('election', 'election_voters.election_id', '=', 'election.id')
+            //     ->where('election_voters.election_id', '=', $electionId)                
+            //     ->get();
+            // $array = [];
+            // foreach ($DT_data as $item) {
+            //     foreach ($check as $v) {
+            //         if ($v->id == $item->id) {
+            //             array_push($array, $v);
+            //             $item->election_voter = $array;
+            //         }
+            //     }
+            //     $array = [];
+            // }
+            // $parentLineCategories = ProductCategory::with([
+            //     'children' => function ($child) use ($SpecificID) {
+            //         return $child->with([
+            //             'products' => function ($product) use ($SpecificID) {
+            //                 return $product->with([
+            //                     'types' => function ($type) use ($SpecificID) {
+            //                         return $type->where('id', $SpecificID);
+            //                     }
+            //                 ]);
+            //             }
+            //         ]);
+            //     }
+            // ])->get();
+            $DT_data = Voter::with(['electionVoter' => function($q) use ($electionId) {
+                return $q->where('election_id','=',$electionId);
+            },'log'])->get();            
+            
             return datatables()->of($DT_data)
                 ->addColumn('action', function ($DT_data) {
                     $button = '<button type="button" data-id="' . $DT_data->id . '" data-voter_id="' . $DT_data->voter_id . '" class="btn" id="btn_print"><i class="fa fa-print"></i> Print</button>';

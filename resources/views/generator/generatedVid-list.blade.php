@@ -380,12 +380,10 @@
                 $("#vidtable").DataTable().destroy();
                 table = $('#vidtable').DataTable({
                     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-                    processing: true,
-                    stateSave: true,
-                    paging: false,
-                    searching: false,
+                    processing: true,                                                  
                     language: {
-                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '},
+                        processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+                    },
                     serverSide: true,
                     ajax: {
                         type:"GET",
@@ -569,8 +567,7 @@
 
             $("#btn_search_for_status").on('click',function(){                                             
                 var checkflage = $("#flagstatus").val();                                        
-                // table.column(6).search(checkflage).draw();
-                $("#vidtable").DataTable().clear().column(6).search(0).draw();
+                table.column(6).search(checkflage).draw();                
             })           
           
 

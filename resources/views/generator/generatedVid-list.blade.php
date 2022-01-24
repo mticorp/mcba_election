@@ -149,13 +149,13 @@
                                             name="checked_all"></th>
                                     <th>NO</th>
                                     <th>Voter ID</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
+                                    <th>Name</th>                                    
                                     <th>Phone Number</th>
                                     <th>Vote</th>
                                     <th>Vote Count</th>
                                     <th>Logs</th>
                                     <th>Reminder Logs</th>
+                                    <th>Created Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -234,12 +234,8 @@
 <div style="display:none;">
     <div class="row" id="print_content">
         <div class="col-12">
-            <div style="text-align:center;" >
-                {{-- <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}"
-                    alt="" width="100%">
-                     --}}
-                     <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}" class="col-8" style="width: 300px; height: 50px; object-fit: cover" alt="" >
-        
+            <div style="text-align:center;" >                
+                <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}" class="col-8" style="width: 300px; height: 50px; object-fit: cover" alt="" >    
             </div>
 
             <h3 style="text-align:center;"> <b><span id="election_name"></span></b></h3>
@@ -264,10 +260,10 @@
              $(document).on('click', '#btn_print', function() {
                 let id = $(this).data('id');
                 let voter_id = $(this).data('voter_id');
-                let election_name = $(this).data('electionName');
+                let name = $(this).data('name');            
 
                 if (voter_id != null) {
-                    $("#election_name").text(election_name);
+                    $("#election_name").text(name);
                     $("#print_content #voter_id").text(voter_id);
                     $.print("#print_content");
                 } else {
@@ -414,11 +410,7 @@
                         {
                             data: 'name',
                             name: 'name',
-                        },
-                        {
-                            data: 'email',
-                            name: 'email',
-                        },
+                        },                        
                         {
                             data: 'phone_no',
                             name: 'phone_no',
@@ -541,6 +533,10 @@
                                     }                              
                                 }
                             }
+                        },
+                        {
+                            data: 'created_at',
+                            name: 'created_at',
                         },
                         {
                             data: 'action',

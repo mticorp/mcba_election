@@ -113,7 +113,7 @@
                                     <hr>
                                     <div class="row mb-2">
                                         <div class="col-md-12">
-                                            <select name="electionid" id="electionid"
+                                            <select name="electionid" id="electionid" required
                                                 class="btn btn-sm btn-outline-primary my-1">
                                                 <option value="">--- Select Election ---</option>
                                                 @foreach ($electionLidt as $item)
@@ -122,17 +122,15 @@
                                                 </option>
                                                 @endforeach
                                             </select>
-                                            <button class="btn btn-primary btn-sm ml-3" type="button" id="btn_search"><i
-                                                    class="fa fa-search"></i></button>
-
+                                            
                                             <select name="flagstatus" id="flagstatus"
                                                 class="btn btn-sm btn-outline-secondary my-1">
                                                 <option value="">---Select---</option>
                                                 <option value="1">Done</option>
                                                 <option value="0">Not Yet</option>
                                             </select>
-                                            <button class="btn btn-secondary btn-sm ml-3" type="button"
-                                                id="btn_search_for_status"><i class="fa fa-search"></i></button>
+                                            <button class="btn btn-primary btn-sm ml-3" type="button" id="btn_search"><i
+                                                class="fa fa-search"></i></button>
 
                                             <button class="btn btn-danger" type="button" id="btn_refresh"><i
                                                     class="fa fa-recycle"></i> Refresh</button>
@@ -371,7 +369,8 @@
             })
             //Dropdown Election//
             $("#btn_search").on('click',function(){  
-                var election_id = $("#electionid").val(); 
+                let election_id = $("#electionid").val();
+                let status = $("#flagstatus").val();
                 $("#vidtable").removeClass('hidden');
                 $("#vidtable").DataTable().destroy();
                 table = $('#vidtable').DataTable({
@@ -384,6 +383,7 @@
                     ajax: {
                         type:"GET",
                         data:{
+                            done:status,
                             election_id:election_id
                         },
                         url: window.location.href,
@@ -404,22 +404,21 @@
                             searchable:false,
                         },
                         {
-                            data: 'voter_id',
-                            name: 'voter_id'
+                            data: 'voter.voter_id',
+                            name: 'voter.voter_id'
                         },
                         {
-                            data: 'name',
-                            name: 'name',
+                            data: 'voter.name',
+                            name: 'voter.name',
                         },                        
                         {
-                            data: 'phone_no',
-                            name: 'phone_no',
+                            data: 'voter.phone_no',
+                            name: 'voter.phone_no',
                         },
                         {
-                            data: 'election_voter.done',
-                            name: 'election_voter.done',
-                            render: function(data) {
-                                // console.log(data);
+                            data: 'done',
+                            name: 'done',
+                            render: function(data) {                                 
                                 if(data)
                                 {                                                                                                        
                                     if(data > 0)
@@ -436,8 +435,8 @@
                             }
                         },
                         {
-                            data: 'vote_count',
-                            name: 'vote_count',
+                            data: 'voter.vote_count',
+                            name: 'voter.vote_count',
                         },
                         {
                             data: 'log.sms_flag',
@@ -561,10 +560,11 @@
                 $('#vidtable').DataTable().columns().search("").draw();
             })
 
-            $("#btn_search_for_status").on('click',function(){                                             
-                var checkflage = $("#flagstatus").val();                                        
-                table.column(6).search(checkflage).draw();                
-            })           
+            // $("#btn_search_for_status").on('click',function(){                                             
+            //     var checkflage = $("#flagstatus").val();  
+            //     console.log(checkflage);                                      
+            //     table.column(5).search(checkflage).draw();
+            // })           
           
 
           

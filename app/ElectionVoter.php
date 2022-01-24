@@ -46,11 +46,16 @@ class ElectionVoter extends Model
 
     public function election()
     {
-        return $this->belongsTo(App\Election::class,'id','election_id');
+        return $this->belongsTo(Election::class,'voter_id','id');
     }
 
     public function voter()
     {
-        return $this->belongsTo(App\Voter::class,'id','voter_id');
+        return $this->belongsTo(Voter::class,'voter_id','id');
+    }
+
+    public function log()
+    {
+        return $this->belongsTo(Log::class,'voter_id','voter_id');
     }
 }

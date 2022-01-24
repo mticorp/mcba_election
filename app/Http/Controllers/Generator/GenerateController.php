@@ -26,7 +26,7 @@ class GenerateController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth']);        
+        $this->middleware(['auth']);
     }
 
     public function index()
@@ -40,16 +40,22 @@ class GenerateController extends Controller
     public function vidList()
     {
         if (request()->ajax()) {
-            $electionId= $_GET['election_id'];
+            $electionId = $_GET['election_id'];
+            $done = $_GET['done'];
+
             $election = Election::find($electionId);
-            
-            $DT_data = Voter::with(['electionVoter' => function($q) use ($electionId) {
-                return $q->where('election_id','=',$electionId);
-            },'log'])->get();            
-            
+            if (!$electionId) { 
+                
+
+            }
+            if ($done) {
+                $DT_data = ElectionVoter::with(['voter', 'log'])->where('election_id', $electionId)->where('done', $done)->get();
+            } else {
+                $DT_data = ElectionVoter::with(['voter', 'log'])->where('election_id', $electionId)->get();
+            }
             return datatables()->of($DT_data)
                 ->addColumn('action', function ($DT_data) use ($election) {
-                    $button = '<button type="button" data-id="' . $DT_data->id . '" data-voter_id="' . $DT_data->voter_id . '" class="btn" id="btn_print" data-name="'.$election->name.'"><i class="fa fa-print"></i> Print</button>';
+                    $button = '<button type="button" data-id="' . $DT_data->id . '" data-voter_id="' . $DT_data->voter_id . '" class="btn" id="btn_print" data-name="' . $election->name . '"><i class="fa fa-print"></i> Print</button>';
 
                     return $button;
                 })
@@ -58,13 +64,13 @@ class GenerateController extends Controller
                 ->make(true);
         }
         $company =  DB::table('company')->latest('created_at')->first();
-        
-        $electionLidt= Election::all();
-        return view('generator.generatedVid-list',compact('company','electionLidt'));
+
+        $electionLidt = Election::all();
+        return view('generator.generatedVid-list', compact('company', 'electionLidt'));
     }
 
     public function store(Request $request)
-    {        
+    {
         $voter = new Voter;
         $voter->voter_id = $request->vid;
         $voter->vote_count = $request->vote_count;
@@ -88,45 +94,46 @@ class GenerateController extends Controller
             'voter_id' => $voter->id,
         ]);
 
-        return response()->json(['success' => 'Voter ID Generated Successfully.', 'vid' => $request->vid]);        
+        return response()->json(['success' => 'Voter ID Generated Successfully.', 'vid' => $request->vid]);
     }
 
     public function generateVidBlade()
     {
-        
+
         $company =  DB::table('company')->latest('created_at')->first();
-        $election =  DB::table('election')->latest('created_at')->first();        
-        return view('generator.vidgenerate',compact('company','election'));
+        //$election =  DB::table('election')->latest('created_at')->first();        
+        $election =  Election::where('status', '1')->first();
+        return view('generator.vidgenerate', compact('company', 'election'));
     }
 
     public function excelGenerate(Request $request)
     {
         if ($request->ajax()) {
-            
+
 
             if ($request->hasFile('file')) {
                 $validator = Validator::make(
-                    [                   
+                    [
                         'extension' => strtolower($request->file->getClientOriginalExtension()),
                     ],
-                    [                    
+                    [
                         'extension'      => 'required|in:csv,xlsx,xls',
                     ]
                 );
-                
-                if ($validator->fails()) {                
+
+                if ($validator->fails()) {
                     return response()->json(['errors' => $validator->errors()->all()]);
                 }
-                
+
                 try {
                     $import = new VoterImport();
                     $import->import($request->file('file'));
                 } catch (ValidationException $e) {
-                    
-                     $failures = $e->failures();
-                     return response()->json($failures[0]->errors());
+
+                    $failures = $e->failures();
+                    return response()->json($failures[0]->errors());
                 }
-                
+
                 return response()->json(['success' => 'Data Added Successfully']);
             } else {
                 return response()->json(['errors' => 'Excel File is Required!']);
@@ -157,62 +164,61 @@ class GenerateController extends Controller
     {
         $errors = [];
         if ($request->check_val) {
-            if($request->type == 'select_reminder' || $request->type == 'all_reminder')
-            {
+            if ($request->type == 'select_reminder' || $request->type == 'all_reminder') {
                 $type = 'reminder';
-            }else if($request->type == 'select_annouce' || $request->type == 'all_annouce'){
+            } else if ($request->type == 'select_annouce' || $request->type == 'all_annouce') {
                 $type = 'voter_announce';
-            }else{
+            } else {
                 $type = null;
             }
 
             $collection = collect($request->check_val);
             foreach ($collection->chunk(100) as $voter_id) {
                 $voter = DB::table('voter')
-                ->select('voter.*', 'election_voters.election_id as election_id')
-                ->where('voter.voter_id', $voter_id)
-                ->orWhere('voter.id', $voter_id)
-                ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-                ->first();
-            
+                    ->select('voter.*', 'election_voters.election_id as election_id')
+                    ->where('voter.voter_id', $voter_id)
+                    ->orWhere('voter.id', $voter_id)
+                    ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+                    ->first();
+
                 $email = $voter->email;
-                $phone  = $voter->phone_no;        
-        
+                $phone  = $voter->phone_no;
+
                 if ($phone) {
-                    $phones = explode(',', $phone);                    
+                    $phones = explode(',', $phone);
                     $result = BulkSMS::sendSMS($phones, $voter, $type);
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [
                             $voter->name . ' SMS Send Fail'
                         ]);
                         DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
-                    }else{
+                    } else {
                         DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
-                    }                    
-                }else{
+                    }
+                } else {
                     array_push($errors, [
                         $voter->name . ' Phone is Empty'
                     ]);
                 }
-        
+
                 if ($email) {
                     $emails = explode(',', $email);
-        
-                    $result = BulkEmail::sendEmail($emails,$voter,$type);
-        
+
+                    $result = BulkEmail::sendEmail($emails, $voter, $type);
+
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [
                             $voter->name . ' Mail Send Fail'
                         ]);
                         DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
-                    }else{
+                    } else {
                         DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
-                    }                    
+                    }
                 } else {
                     array_push($errors, [
                         $voter->name . ' Mail is Empty',
                     ]);
-                }               
+                }
             }
 
             if ($errors) {
@@ -230,45 +236,44 @@ class GenerateController extends Controller
     }
 
     public function smsMessageOnly(Request $request)
-    {        
+    {
         $errors = [];
         if ($request->check_val) {
-            if($request->type == 'select_reminder' || $request->type == 'all_reminder')
-            {
+            if ($request->type == 'select_reminder' || $request->type == 'all_reminder') {
                 $type = 'reminder';
-            }else if($request->type == 'select_annouce' || $request->type == 'all_annouce'){
+            } else if ($request->type == 'select_annouce' || $request->type == 'all_annouce') {
                 $type = 'voter_announce';
-            }else{
+            } else {
                 $type = null;
             }
 
             $collection = collect($request->check_val);
             foreach ($collection->chunk(100) as $voter_id) {
                 $voter = DB::table('voter')
-                ->select('voter.*', 'election_voters.election_id as election_id')
-                ->where('voter.voter_id', $voter_id)
-                ->orWhere('voter.id', $voter_id)
-                ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-                ->first();
-                           
-                $phone  = $voter->phone_no;        
-        
+                    ->select('voter.*', 'election_voters.election_id as election_id')
+                    ->where('voter.voter_id', $voter_id)
+                    ->orWhere('voter.id', $voter_id)
+                    ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+                    ->first();
+
+                $phone  = $voter->phone_no;
+
                 if ($phone) {
-                    $phones = explode(',', $phone);                    
+                    $phones = explode(',', $phone);
                     $result = BulkSMS::sendSMS($phones, $voter, $type);
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [
                             $voter->name . ' SMS Send Fail'
                         ]);
                         DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
-                    }else{
+                    } else {
                         DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
-                    }                    
-                }else{
+                    }
+                } else {
                     array_push($errors, [
                         $voter->name . ' Phone is Empty'
                     ]);
-                }                       
+                }
             }
 
             if ($errors) {
@@ -289,44 +294,43 @@ class GenerateController extends Controller
     {
         $errors = [];
         if ($request->check_val) {
-            if($request->type == 'select_reminder' || $request->type == 'all_reminder')
-            {
+            if ($request->type == 'select_reminder' || $request->type == 'all_reminder') {
                 $type = 'reminder';
-            }else if($request->type == 'select_annouce' || $request->type == 'all_annouce'){
+            } else if ($request->type == 'select_annouce' || $request->type == 'all_annouce') {
                 $type = 'voter_announce';
-            }else{
+            } else {
                 $type = null;
             }
 
             $collection = collect($request->check_val);
             foreach ($collection->chunk(100) as $voter_id) {
                 $voter = DB::table('voter')
-                ->select('voter.*', 'election_voters.election_id as election_id')
-                ->where('voter.voter_id', $voter_id)
-                ->orWhere('voter.id', $voter_id)
-                ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-                ->first();
-            
-                $email = $voter->email;               
-        
+                    ->select('voter.*', 'election_voters.election_id as election_id')
+                    ->where('voter.voter_id', $voter_id)
+                    ->orWhere('voter.id', $voter_id)
+                    ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+                    ->first();
+
+                $email = $voter->email;
+
                 if ($email) {
                     $emails = explode(',', $email);
-        
-                    $result = BulkEmail::sendEmail($emails,$voter,$type);
-        
+
+                    $result = BulkEmail::sendEmail($emails, $voter, $type);
+
                     if (isset($result->getData()->errors)) {
                         array_push($errors, [
                             $voter->name . ' Mail Send Fail'
                         ]);
                         DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
-                    }else{
+                    } else {
                         DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
-                    }                    
+                    }
                 } else {
                     array_push($errors, [
                         $voter->name . ' Mail is Empty',
                     ]);
-                }               
+                }
             }
 
             if ($errors) {
@@ -341,5 +345,5 @@ class GenerateController extends Controller
 
             return response()->json(['errors' => $errors]);
         }
-    }    
+    }
 }

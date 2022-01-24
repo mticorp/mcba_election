@@ -45,8 +45,6 @@ class GenerateController extends Controller
 
             $election = Election::find($electionId);
             if (!$electionId) { 
-                
-
             }
             if ($done) {
                 $DT_data = ElectionVoter::with(['voter', 'log'])->where('election_id', $electionId)->where('done', $done)->get();
@@ -55,7 +53,7 @@ class GenerateController extends Controller
             }
             return datatables()->of($DT_data)
                 ->addColumn('action', function ($DT_data) use ($election) {
-                    $button = '<button type="button" data-id="' . $DT_data->id . '" data-voter_id="' . $DT_data->voter_id . '" class="btn" id="btn_print" data-name="' . $election->name . '"><i class="fa fa-print"></i> Print</button>';
+                    $button = '<button type="button" data-id="' . $DT_data->id . '" data-voter_id="' . $DT_data->voter->voter_id . '" class="btn" id="btn_print" data-name="' . $election->name . '"><i class="fa fa-print"></i> Print</button>';
 
                     return $button;
                 })

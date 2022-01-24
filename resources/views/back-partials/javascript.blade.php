@@ -22,6 +22,9 @@
 {{-- Bootstrap toggle --}}
 <script src="{{asset('backend/js/bootstrap-toggle.min.js')}}"></script>
 <!-- jQuery Mapael -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xxjapp/xdialog@3/xdialog.min.css"/>
+<script src="https://cdn.jsdelivr.net/gh/xxjapp/xdialog@3/xdialog.min.js"></script>
+
 <script src="{{asset('backend/plugins/jquery-mousewheel/jquery.mousewheel.js')}}"></script>
 <script src="{{asset('backend/plugins/raphael/raphael.min.js')}}"></script>
 <script src="{{asset('backend/plugins/jquery-mapael/jquery.mapael.min.js')}}"></script>

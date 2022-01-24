@@ -1,6 +1,22 @@
 @extends('layouts.back-app')
 @section('style')
 <style>
+    .xd-content .xd-body .xd-body-inner {
+        max-height: unset;
+
+    }
+
+    .xd-content .xd-body p {
+        color: black;
+    }
+
+    .xd-content .xd-button.xd-ok {
+        background: black;
+        color: white;
+
+
+    }
+
     .modal-content {
         -webkit-border-radius: 0px !important;
         -moz-border-radius: 0px !important;
@@ -113,16 +129,16 @@
                                     <hr>
                                     <div class="row mb-2">
                                         <div class="col-md-12">
-                                            <select name="electionid" id="electionid" required
-                                                class="btn btn-sm btn-outline-primary my-1">
-                                                <option value="">--- Select Election ---</option>
+                                            <select name="electionid" id="electionid" required="required"
+                                                required="true" class="btn btn-sm btn-outline-primary my-1 required">
+                                                <option disabled selected value="">--- Select Election ---</option>
                                                 @foreach ($electionLidt as $item)
                                                 <option value="{{ $item->id }}">
                                                     {{ $item->candidate_flag=='1'? $item->position: $item->ques_title }}
                                                 </option>
                                                 @endforeach
                                             </select>
-                                            
+
                                             <select name="flagstatus" id="flagstatus"
                                                 class="btn btn-sm btn-outline-secondary my-1">
                                                 <option value="">---Select---</option>
@@ -130,7 +146,7 @@
                                                 <option value="0">Not Yet</option>
                                             </select>
                                             <button class="btn btn-primary btn-sm ml-3" type="button" id="btn_search"><i
-                                                class="fa fa-search"></i></button>
+                                                    class="fa fa-search"></i></button>
 
                                             <button class="btn btn-danger" type="button" id="btn_refresh"><i
                                                     class="fa fa-recycle"></i> Refresh</button>
@@ -147,7 +163,7 @@
                                             name="checked_all"></th>
                                     <th>NO</th>
                                     <th>Voter ID</th>
-                                    <th>Name</th>                                    
+                                    <th>Name</th>
                                     <th>Phone Number</th>
                                     <th>Vote</th>
                                     <th>Vote Count</th>
@@ -232,8 +248,9 @@
 <div style="display:none;">
     <div class="row" id="print_content">
         <div class="col-12">
-            <div style="text-align:center;" >                
-                <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}" class="col-8" style="width: 300px; height: 50px; object-fit: cover" alt="" >    
+            <div style="text-align:center;">
+                <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}"
+                    class="col-8" style="width: 300px; height: 50px; object-fit: cover" alt="">
             </div>
 
             <h3 style="text-align:center;"> <b><span id="election_name"></span></b></h3>
@@ -368,189 +385,199 @@
                 })
             })
             //Dropdown Election//
-            $("#btn_search").on('click',function(){  
+            $("#btn_search").on('click',function(){ 
+                
+                let status = $("#flagstatus").val(); 
                 let election_id = $("#electionid").val();
-                let status = $("#flagstatus").val();
-                $("#vidtable").removeClass('hidden');
-                $("#vidtable").DataTable().destroy();
-                table = $('#vidtable').DataTable({
-                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-                    processing: true,                                                  
-                    language: {
-                        processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
-                    },
-                    serverSide: true,
-                    ajax: {
-                        type:"GET",
-                        data:{
-                            done:status,
-                            election_id:election_id
+                
+                if(election_id){
+                    $("#vidtable").removeClass('hidden');
+                    $("#vidtable").DataTable().destroy();
+                    table = $('#vidtable').DataTable({
+                        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                        processing: true,                                                  
+                        language: {
+                            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
                         },
-                        url: window.location.href,
-                    },
-                    columns: [{
-                            data: 'id',
-                            name: 'id',
-                            render: function(data) {
-                                // console.log(data);
-                                return '<div class="text-center"><input type="checkbox" name="checked" class="checkbox" value="' +
-                                    data + '"></div>';
+                        serverSide: true,
+                        ajax: {
+                            type:"GET",
+                            data:{
+                                done:status,
+                                election_id:election_id
                             },
+                            url: window.location.href,
                         },
-                        {
-                            data: 'DT_RowIndex',
-                            name: 'DT_RowIndex',
-                            orderable:false,
-                            searchable:false,
-                        },
-                        {
-                            data: 'voter.voter_id',
-                            name: 'voter.voter_id'
-                        },
-                        {
-                            data: 'voter.name',
-                            name: 'voter.name',
-                        },                        
-                        {
-                            data: 'voter.phone_no',
-                            name: 'voter.phone_no',
-                        },
-                        {
-                            data: 'done',
-                            name: 'done',
-                            render: function(data) {                                 
-                                if(data)
-                                {                                                                                                        
-                                    if(data > 0)
-                                    {
-                                        return "<span class='badge badge-success'>Done</span>";
-                                    }else{
-                                        return "<span class='badge badge-danger'>Not Yet</span>";
-                                    }
+                        columns: [{
+                                data: 'id',
+                                name: 'id',
+                                render: function(data) {
+                                    // console.log(data);
+                                    return '<div class="text-center"><input type="checkbox" name="checked" class="checkbox" value="' +
+                                        data + '"></div>';
+                                },
+                            },
+                            {
+                                data: 'DT_RowIndex',
+                                name: 'DT_RowIndex',
+                                orderable:false,
+                                searchable:false,
+                            },
+                            {
+                                data: 'voter.voter_id',
+                                name: 'voter.voter_id'
+                            },
+                            {
+                                data: 'voter.name',
+                                name: 'voter.name',
+                            },                        
+                            {
+                                data: 'voter.phone_no',
+                                name: 'voter.phone_no',
+                            },
+                            {
+                                data: 'done',
+                                name: 'done',
+                                render: function(data) {                                 
+                                    if(data)
+                                    {                                                                                                        
+                                        if(data > 0)
+                                        {
+                                            return "<span class='badge badge-success'>Done</span>";
+                                        }else{
+                                            return "<span class='badge badge-danger'>Not Yet</span>";
+                                        }
 
-                                    return '';
-                                }else{
-                                    return "<p class='text-danger'>Not Yet</p>";
-                                }
-                            }
-                        },
-                        {
-                            data: 'voter.vote_count',
-                            name: 'voter.vote_count',
-                        },
-                        {
-                            data: 'log.sms_flag',
-                            name: 'log.sms_flag',
-                            render:function(data,type,row)
-                            {                            
-                                if(typeof data === 'undefined' || data === null)
-                                {
-                                    return "<p class='text-danger'>Something Went Wrong!</p>";
-                                }else{
-                                    if(row.sms_flag != 0 && row.email_flag != 0)
-                                    {
-                                        //both
-                                        if(row.sms_flag == 1)
-                                        {
-                                            if(row.email_flag == 1)
-                                            {
-                                                return "<p class='text-danger'>SMS - Failed!</p><p class='text-danger'> Email - Failed!</p>";
-                                            }else{
-                                                return "<p class='text-danger'>SMS - Failed!</p><p class='text-success'> Email - Success!</p>";
-                                            }
-                                        }else{
-                                            if(row.email_flag == 1)
-                                            {
-                                                return "<p class='text-success'>SMS - Success!</p><p class='text-danger'> Email - Failed!</p>";
-                                            }else{
-                                                return "<p class='text-success'>SMS - Success!</p><p class='text-success'> Email - Success!</p>";
-                                            }                                        
-                                        }
-                                    }else if(row.sms_flag != 0){
-                                        if(row.sms_flag == 1)
-                                        {
-                                            return "<p class='text-danger'>SMS - Failed!</p>";
-                                        }else{
-                                            return "<p class='text-success'>SMS - Success!</p>";
-                                        }
-                                    }else if(row.email_flag != 0){
-                                        if(row.email_flag == 1)
-                                        {
-                                            return "<p class='text-danger'>Email - Failed!</p>";
-                                        }else{
-                                            return "<p class='text-success'>Email - Success!</p>";
-                                        }
+                                        return '';
                                     }else{
-                                        return "<p>Not Yet!</p>";
-                                    }                              
+                                        return "<p class='text-danger'>Not Yet</p>";
+                                    }
                                 }
-                            }
-                        },{
-                            data: 'log.reminder_sms_flag',
-                            name: 'log.reminder_sms_flag',
-                            render:function(data,type,row)
-                            {                            
-                                if(typeof data === 'undefined' || data === null)
-                                {
-                                    return "<p class='text-danger'>Something Went Wrong!</p>";
-                                }else{
-                                    if(row.reminder_sms_flag != 0 && row.reminder_email_flag != 0)
-                                    {
-                                        //both
-                                        if(row.reminder_sms_flag == 1)
-                                        {
-                                            if(row.reminder_email_flag == 1)
-                                            {
-                                                return "<p class='text-danger'>SMS - Failed!</p><p class='text-danger'> Email - Failed!</p>";
-                                            }else{
-                                                return "<p class='text-danger'>SMS - Failed!</p><p class='text-success'> Email - Success!</p>";
-                                            }
-                                        }else{
-                                            if(row.reminder_email_flag == 1)
-                                            {
-                                                return "<p class='text-success'>SMS - Success!</p><p class='text-danger'> Email - Failed!</p>";
-                                            }else{
-                                                return "<p class='text-success'>SMS - Success!</p><p class='text-success'> Email - Success!</p>";
-                                            }                                        
-                                        }
-                                    }else if(row.reminder_sms_flag != 0){
-                                        if(row.reminder_sms_flag == 1)
-                                        {
-                                            return "<p class='text-danger'>SMS - Failed!</p>";
-                                        }else{
-                                            return "<p class='text-success'>SMS - Success!</p>";
-                                        }
-                                    }else if(row.reminder_email_flag != 0){
-                                        if(row.reminder_email_flag == 1)
-                                        {
-                                            return "<p class='text-danger'>Email - Failed!</p>";
-                                        }else{
-                                            return "<p class='text-success'>Email - Success!</p>";
-                                        }
-                                    }else{
-                                        return "<p>Not Yet!</p>";
-                                    }                              
-                                }
-                            }
-                        },
-                        {
-                            data: 'created_at',
-                            name: 'created_at',
-                        },
-                        {
-                            data: 'action',
-                            name: 'action',
-                            render: function(data, type, full, meta) {
-                                return data;
                             },
-                        }
-                    ],
-                    columnDefs: [{
-                        targets: 0,
-                        orderable: false,
-                    }],
-                    "aaSorting": [],                        
-                });
+                            {
+                                data: 'voter.vote_count',
+                                name: 'voter.vote_count',
+                            },
+                            {
+                                data: 'log.sms_flag',
+                                name: 'log.sms_flag',
+                                render:function(data,type,row)
+                                {                            
+                                    if(typeof data === 'undefined' || data === null)
+                                    {
+                                        return "<p class='text-danger'>Something Went Wrong!</p>";
+                                    }else{
+                                        if(row.sms_flag != 0 && row.email_flag != 0)
+                                        {
+                                            //both
+                                            if(row.sms_flag == 1)
+                                            {
+                                                if(row.email_flag == 1)
+                                                {
+                                                    return "<p class='text-danger'>SMS - Failed!</p><p class='text-danger'> Email - Failed!</p>";
+                                                }else{
+                                                    return "<p class='text-danger'>SMS - Failed!</p><p class='text-success'> Email - Success!</p>";
+                                                }
+                                            }else{
+                                                if(row.email_flag == 1)
+                                                {
+                                                    return "<p class='text-success'>SMS - Success!</p><p class='text-danger'> Email - Failed!</p>";
+                                                }else{
+                                                    return "<p class='text-success'>SMS - Success!</p><p class='text-success'> Email - Success!</p>";
+                                                }                                        
+                                            }
+                                        }else if(row.sms_flag != 0){
+                                            if(row.sms_flag == 1)
+                                            {
+                                                return "<p class='text-danger'>SMS - Failed!</p>";
+                                            }else{
+                                                return "<p class='text-success'>SMS - Success!</p>";
+                                            }
+                                        }else if(row.email_flag != 0){
+                                            if(row.email_flag == 1)
+                                            {
+                                                return "<p class='text-danger'>Email - Failed!</p>";
+                                            }else{
+                                                return "<p class='text-success'>Email - Success!</p>";
+                                            }
+                                        }else{
+                                            return "<p>Not Yet!</p>";
+                                        }                              
+                                    }
+                                }
+                            },{
+                                data: 'log.reminder_sms_flag',
+                                name: 'log.reminder_sms_flag',
+                                render:function(data,type,row)
+                                {                            
+                                    if(typeof data === 'undefined' || data === null)
+                                    {
+                                        return "<p class='text-danger'>Something Went Wrong!</p>";
+                                    }else{
+                                        if(row.reminder_sms_flag != 0 && row.reminder_email_flag != 0)
+                                        {
+                                            //both
+                                            if(row.reminder_sms_flag == 1)
+                                            {
+                                                if(row.reminder_email_flag == 1)
+                                                {
+                                                    return "<p class='text-danger'>SMS - Failed!</p><p class='text-danger'> Email - Failed!</p>";
+                                                }else{
+                                                    return "<p class='text-danger'>SMS - Failed!</p><p class='text-success'> Email - Success!</p>";
+                                                }
+                                            }else{
+                                                if(row.reminder_email_flag == 1)
+                                                {
+                                                    return "<p class='text-success'>SMS - Success!</p><p class='text-danger'> Email - Failed!</p>";
+                                                }else{
+                                                    return "<p class='text-success'>SMS - Success!</p><p class='text-success'> Email - Success!</p>";
+                                                }                                        
+                                            }
+                                        }else if(row.reminder_sms_flag != 0){
+                                            if(row.reminder_sms_flag == 1)
+                                            {
+                                                return "<p class='text-danger'>SMS - Failed!</p>";
+                                            }else{
+                                                return "<p class='text-success'>SMS - Success!</p>";
+                                            }
+                                        }else if(row.reminder_email_flag != 0){
+                                            if(row.reminder_email_flag == 1)
+                                            {
+                                                return "<p class='text-danger'>Email - Failed!</p>";
+                                            }else{
+                                                return "<p class='text-success'>Email - Success!</p>";
+                                            }
+                                        }else{
+                                            return "<p>Not Yet!</p>";
+                                        }                              
+                                    }
+                                }
+                            },
+                            {
+                                data: 'created_at',
+                                name: 'created_at',
+                            },
+                            {
+                                data: 'action',
+                                name: 'action',
+                                render: function(data, type, full, meta) {
+                                    return data;
+                                },
+                            }
+                        ],
+                        columnDefs: [{
+                            targets: 0,
+                            orderable: false,
+                        }],
+                        "aaSorting": [],                        
+                    });
+                }else{
+                    xdialog.alert("Please Select Election First!");
+                    //alert("Please Select Election First!")
+                    
+                }
+                
+                
             })
 
 

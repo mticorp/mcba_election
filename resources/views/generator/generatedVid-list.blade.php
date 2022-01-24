@@ -242,7 +242,7 @@
         
             </div>
 
-            <h3 style="text-align:center;"> <b>{{ $election->name ?? '' }}</b></h3>
+            <h3 style="text-align:center;"> <b><span id="election_name"></span></b></h3>
             <p style="text-align:center;font-size:20px;">Print Date: {{Carbon\Carbon::now()->format('d/M/Y h:i:s A')}}
             </p>
             <br>
@@ -264,8 +264,10 @@
              $(document).on('click', '#btn_print', function() {
                 let id = $(this).data('id');
                 let voter_id = $(this).data('voter_id');
+                let election_name = $(this).data('electionName');
 
                 if (voter_id != null) {
+                    $("#election_name").text(election_name);
                     $("#print_content #voter_id").text(voter_id);
                     $.print("#print_content");
                 } else {
@@ -559,22 +561,16 @@
             })
 
 
-             $("#btn_refresh").on('click',function(){
-
-                //  console.log("OK");
+             $("#btn_refresh").on('click',function(){                
                 var status = $("#flagstatus").val('');
                 var electionid = $("#electionid").val('');
                 $('#vidtable').DataTable().columns().search("").draw();
             })
 
-            $("#btn_search_for_status").on('click',function(){ 
-                
-                $("#vidtable").DataTable().destroy();
-                // console.log("OK Status");  
-                var checkflage = $("#flagstatus").val(); 
-                 console.log(checkflage);     
-                // console.log(table);                         
-                table.column(6).search(checkflage).draw();
+            $("#btn_search_for_status").on('click',function(){                                             
+                var checkflage = $("#flagstatus").val();                                        
+                // table.column(6).search(checkflage).draw();
+                $("#vidtable").DataTable().clear().column(6).search(0).draw();
             })           
           
 

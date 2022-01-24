@@ -41,6 +41,7 @@ class GenerateController extends Controller
     {
         if (request()->ajax()) {
             $electionId= $_GET['election_id'];
+            $election = Election::find($electionId);
             //dd($electionId);
             // $DT_data = Voter::latest()->join('logs', 'logs.voter_id', 'voter.id')->get(['voter.*', 'logs.sms_flag', 'logs.email_flag', 'logs.reminder_sms_flag', 'logs.reminder_email_flag']);
             // //dd($DT_data);
@@ -77,8 +78,8 @@ class GenerateController extends Controller
             },'log'])->get();            
             
             return datatables()->of($DT_data)
-                ->addColumn('action', function ($DT_data) {
-                    $button = '<button type="button" data-id="' . $DT_data->id . '" data-voter_id="' . $DT_data->voter_id . '" class="btn" id="btn_print"><i class="fa fa-print"></i> Print</button>';
+                ->addColumn('action', function ($DT_data) use ($election) {
+                    $button = '<button type="button" data-id="' . $DT_data->id . '" data-voter_id="' . $DT_data->voter_id . '" class="btn" id="btn_print" data-electionName="'.$election->name.'"><i class="fa fa-print"></i> Print</button>';
 
                     return $button;
                 })
@@ -87,9 +88,9 @@ class GenerateController extends Controller
                 ->make(true);
         }
         $company =  DB::table('company')->latest('created_at')->first();
-        $election =  DB::table('election')->latest('created_at')->first();
+        
         $electionLidt= Election::all();
-        return view('generator.generatedVid-list',compact('company','election','electionLidt'));
+        return view('generator.generatedVid-list',compact('company','electionLidt'));
     }
 
     public function store(Request $request)

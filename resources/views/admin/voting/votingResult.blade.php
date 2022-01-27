@@ -132,7 +132,7 @@
         <div style="display:none;">
             <div id="candidate_print_content" style="margin-bottom:0px;">
                 <h3 style="text-align: center; font-weight:bold; line-height:50px;">{{ $election->name }}</h3>
-                <h4 style="text-align: center;">ကိုယ်စားလှယ်လောင်းတစ်ဦးချင်းစီ၏ မဲရလဒ် အရေအတွက်</h4>
+                <h4 style="text-align: center; line-height:50px;">မြန်မာနိုင်ငံအကောက်ခွန်ဝန်ဆောင်မှုလုပ်ငန်းရှင်များအသင်း၏ (၂၀၂၂-၂၀၂၄)ခုနှစ် အလုပ်အမှုဆောင်သက်တမ်းအတွက် အလုပ်အမှုဆောင်ရွေးချယ်ခံရသူများစာရင်း</h4>
                 <br><br>
                 <p>Date : {{ Carbon\Carbon::now()->format('d-m-Y g:i A') }}</p>
                 <br>

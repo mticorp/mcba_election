@@ -168,54 +168,56 @@ class GenerateController extends Controller
                 $type = 'voter_announce';
             } else {
                 $type = null;
-            }
-            // dd($request->check_val);
-            $collection = collect($request->check_val);
-            foreach ($collection->chunk(100) as $voter_id) {
-                $voter = DB::table('voter')
+            }            
+            $collection = collect($request->check_val);                       
+            foreach ($collection->chunk(100) as $data) {
+                foreach($data as $voter_id)
+                {
+                    $voter = DB::table('voter')
                     ->select('voter.*', 'election_voters.election_id as election_id')
                     ->where('voter.voter_id', $voter_id)
                     ->orWhere('voter.id', $voter_id)
                     ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
                     ->first();
+                    
+                    $email = $voter->email;
+                    $phone  = $voter->phone_no;
 
-                $email = $voter->email;
-                $phone  = $voter->phone_no;
-
-                if ($phone) {
-                    $phones = explode(',', $phone);
-                    $result = BulkSMS::sendSMS($phones, $voter, $type);
-                    if (isset($result->getData()->success)) {
-                        DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+                    if ($phone) {
+                        $phones = explode(',', $phone);
+                        $result = BulkSMS::sendSMS($phones, $voter, $type);
+                        if (isset($result->getData()->success)) {
+                            DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+                        } else {
+                            array_push($errors, [
+                                $voter->name . ' SMS Send Fail'
+                            ]);
+                            DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);                       
+                        }
                     } else {
                         array_push($errors, [
-                            $voter->name . ' SMS Send Fail'
+                            $voter->name . ' Phone is Empty'
                         ]);
-                        DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);                       
                     }
-                } else {
-                    array_push($errors, [
-                        $voter->name . ' Phone is Empty'
-                    ]);
-                }
 
-                if ($email) {
-                    $emails = explode(',', $email);
+                    if ($email) {
+                        $emails = explode(',', $email);
 
-                    $result = BulkEmail::sendEmail($emails, $voter, $type);
+                        $result = BulkEmail::sendEmail($emails, $voter, $type);
 
-                    if (isset($result->getData()->success)) {
-                        DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
+                        if (isset($result->getData()->success)) {
+                            DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
+                        } else {
+                            array_push($errors, [
+                                $voter->name . ' Mail Send Fail'
+                            ]);
+                            DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);                        
+                        }
                     } else {
                         array_push($errors, [
-                            $voter->name . ' Mail Send Fail'
+                            $voter->name . ' Mail is Empty',
                         ]);
-                        DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);                        
                     }
-                } else {
-                    array_push($errors, [
-                        $voter->name . ' Mail is Empty',
-                    ]);
                 }
             }
 
@@ -246,31 +248,34 @@ class GenerateController extends Controller
             }
 
             $collection = collect($request->check_val);
-            foreach ($collection->chunk(100) as $voter_id) {
-                $voter = DB::table('voter')
+            foreach ($collection->chunk(100) as $data) {
+                foreach($data as $voter_id)
+                {
+                    $voter = DB::table('voter')
                     ->select('voter.*', 'election_voters.election_id as election_id')
                     ->where('voter.voter_id', $voter_id)
                     ->orWhere('voter.id', $voter_id)
                     ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
                     ->first();
 
-                $phone  = $voter->phone_no;
+                    $phone  = $voter->phone_no;
 
-                if ($phone) {
-                    $phones = explode(',', $phone);
-                    $result = BulkSMS::sendSMS($phones, $voter, $type);
-                    if (isset($result->getData()->errors)) {
-                        array_push($errors, [
-                            $voter->name . ' SMS Send Fail'
-                        ]);
-                        DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
+                    if ($phone) {
+                        $phones = explode(',', $phone);
+                        $result = BulkSMS::sendSMS($phones, $voter, $type);
+                        if (isset($result->getData()->errors)) {
+                            array_push($errors, [
+                                $voter->name . ' SMS Send Fail'
+                            ]);
+                            DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
+                        } else {
+                            DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+                        }
                     } else {
-                        DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+                        array_push($errors, [
+                            $voter->name . ' Phone is Empty'
+                        ]);
                     }
-                } else {
-                    array_push($errors, [
-                        $voter->name . ' Phone is Empty'
-                    ]);
                 }
             }
 
@@ -301,33 +306,36 @@ class GenerateController extends Controller
             }
 
             $collection = collect($request->check_val);
-            foreach ($collection->chunk(100) as $voter_id) {
-                $voter = DB::table('voter')
+            foreach ($collection->chunk(100) as $data) {
+                foreach($data as $voter_id)
+                {
+                    $voter = DB::table('voter')
                     ->select('voter.*', 'election_voters.election_id as election_id')
                     ->where('voter.voter_id', $voter_id)
                     ->orWhere('voter.id', $voter_id)
                     ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
                     ->first();
 
-                $email = $voter->email;
+                    $email = $voter->email;
 
-                if ($email) {
-                    $emails = explode(',', $email);
+                    if ($email) {
+                        $emails = explode(',', $email);
 
-                    $result = BulkEmail::sendEmail($emails, $voter, $type);
+                        $result = BulkEmail::sendEmail($emails, $voter, $type);
 
-                    if (isset($result->getData()->errors)) {
-                        array_push($errors, [
-                            $voter->name . ' Mail Send Fail'
-                        ]);
-                        DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
+                        if (isset($result->getData()->errors)) {
+                            array_push($errors, [
+                                $voter->name . ' Mail Send Fail'
+                            ]);
+                            DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
+                        } else {
+                            DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
+                        }
                     } else {
-                        DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
+                        array_push($errors, [
+                            $voter->name . ' Mail is Empty',
+                        ]);
                     }
-                } else {
-                    array_push($errors, [
-                        $voter->name . ' Mail is Empty',
-                    ]);
                 }
             }
 

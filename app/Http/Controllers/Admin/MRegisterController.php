@@ -302,50 +302,53 @@ class MRegisterController extends Controller
                 $type = 'member_announce';
             }
             $collection = collect($request->check_val);
-            foreach ($collection->chunk(100) as $member_id) {
-                $member = DB::table('m_registers')->where('id', $member_id)->first();
+            foreach ($collection->chunk(100) as $data) {
+                foreach($data as $member_id)
+                {
+                    $member = DB::table('m_registers')->where('id', $member_id)->first();
 
-                $phone  = $member->phone_number;
-                $email = $member->email;
+                    $phone  = $member->phone_number;
+                    $email = $member->email;
 
-                if ($phone) {
-                    $phones = explode(',', $phone);                                        
-                    if($type == 'member')
-                    {
-                        $result = BulkSMS::sendSMS($phones, $member,$type, $this->url);
-                    }else{
-                        $result = BulkSMS::sendSMS($phones, $member,$type, ' ');
-                    }
-                    if (isset($result->getData()->errors)) {
+                    if ($phone) {
+                        $phones = explode(',', $phone);                                        
+                        if($type == 'member')
+                        {
+                            $result = BulkSMS::sendSMS($phones, $member,$type, $this->url);
+                        }else{
+                            $result = BulkSMS::sendSMS($phones, $member,$type, ' ');
+                        }
+                        if (isset($result->getData()->errors)) {
+                            array_push($errors, [
+                                $member->name . ' SMS Send Fail'
+                            ]);
+                        }
+                    } else {
                         array_push($errors, [
-                            $member->name . ' SMS Send Fail'
+                            $member->name . ' Phone is Empty'
                         ]);
                     }
-                } else {
-                    array_push($errors, [
-                        $member->name . ' Phone is Empty'
-                    ]);
-                }
 
-                if ($email) {
-                    $emails = explode(',', $email);
+                    if ($email) {
+                        $emails = explode(',', $email);
 
-                    if($type == 'member')
-                    {
-                        $result = BulkEmail::sendEmail($emails, $member,$type, $this->url);
-                    }else{
-                        $result = BulkEmail::sendEmail($emails, $member,$type, ' ');
-                    }    
+                        if($type == 'member')
+                        {
+                            $result = BulkEmail::sendEmail($emails, $member,$type, $this->url);
+                        }else{
+                            $result = BulkEmail::sendEmail($emails, $member,$type, ' ');
+                        }    
 
-                    if (isset($result->getData()->errors)) {
+                        if (isset($result->getData()->errors)) {
+                            array_push($errors, [
+                                $member->name . ' Mail Send Fail'
+                            ]);
+                        }
+                    } else {
                         array_push($errors, [
-                            $member->name . ' Mail Send Fail'
+                            $member->name . ' Mail is Empty',
                         ]);
                     }
-                } else {
-                    array_push($errors, [
-                        $member->name . ' Mail is Empty',
-                    ]);
                 }
             }
 
@@ -374,29 +377,32 @@ class MRegisterController extends Controller
                 $type = 'member_announce';
             }
             $collection = collect($request->check_val);
-            foreach ($collection->chunk(100) as $member_id) {
-                $member = DB::table('m_registers')->where('id', $member_id)->first();
+            foreach ($collection->chunk(100) as $data) {
+                foreach($data as $member_id)
+                {
+                    $member = DB::table('m_registers')->where('id', $member_id)->first();
 
-                $phone  = $member->phone_number;
+                    $phone  = $member->phone_number;
 
-                if ($phone) {
-                    $phones = explode(',', $phone);
-                    
-                    if($type == 'member')
-                    {
-                        $result = BulkSMS::sendSMS($phones, $member,$type, $this->url);
-                    }else{
-                        $result = BulkSMS::sendSMS($phones, $member,$type, ' ');
-                    }
-                    if (isset($result->getData()->errors)) {
+                    if ($phone) {
+                        $phones = explode(',', $phone);
+                        
+                        if($type == 'member')
+                        {
+                            $result = BulkSMS::sendSMS($phones, $member,$type, $this->url);
+                        }else{
+                            $result = BulkSMS::sendSMS($phones, $member,$type, ' ');
+                        }
+                        if (isset($result->getData()->errors)) {
+                            array_push($errors, [
+                                $member->name . ' SMS Send Fail'
+                            ]);
+                        }
+                    } else {
                         array_push($errors, [
-                            $member->name . ' SMS Send Fail'
+                            $member->name . ' Phone is Empty'
                         ]);
                     }
-                } else {
-                    array_push($errors, [
-                        $member->name . ' Phone is Empty'
-                    ]);
                 }
             }
 
@@ -425,29 +431,32 @@ class MRegisterController extends Controller
                 $type = 'member_announce';
             }
             $collection = collect($request->check_val);
-            foreach ($collection->chunk(100) as $member_id) {
-                $member = DB::table('m_registers')->where('id', $member_id)->first();
-                $email = $member->email;
+            foreach ($collection->chunk(100) as $data) {
+                foreach($data as $member_id)
+                {
+                    $member = DB::table('m_registers')->where('id', $member_id)->first();
+                    $email = $member->email;
 
-                if ($email) {
-                    $emails = explode(',', $email);
+                    if ($email) {
+                        $emails = explode(',', $email);
 
-                    if($type == 'member')
-                    {
-                        $result = BulkEmail::sendEmail($emails, $member,$type, $this->url);
-                    }else{
-                        $result = BulkEmail::sendEmail($emails, $member,$type, ' ');
-                    }                
+                        if($type == 'member')
+                        {
+                            $result = BulkEmail::sendEmail($emails, $member,$type, $this->url);
+                        }else{
+                            $result = BulkEmail::sendEmail($emails, $member,$type, ' ');
+                        }                
 
-                    if (isset($result->getData()->errors)) {
+                        if (isset($result->getData()->errors)) {
+                            array_push($errors, [
+                                $member->name . ' Mail Send Fail'
+                            ]);
+                        }
+                    } else {
                         array_push($errors, [
-                            $member->name . ' Mail Send Fail'
+                            $member->name . ' Mail is Empty',
                         ]);
                     }
-                } else {
-                    array_push($errors, [
-                        $member->name . ' Mail is Empty',
-                    ]);
                 }
             }
 

@@ -462,15 +462,16 @@
                                 data: 'log.sms_flag',
                                 name: 'log.sms_flag',
                                 render:function(data,type,row)
-                                {                            
+                                {                       
+                                        
                                     if(typeof data === 'undefined' || data === null)
                                     {
                                         return "<p class='text-danger'>Something Went Wrong!</p>";
-                                    }else{
-                                        if(row.sms_flag != 0 && row.email_flag != 0)
-                                        {
+                                    }else{                                        
+                                        if(row.log.sms_flag != 0 && row.log.email_flag != 0)
+                                        {                                           
                                             //both
-                                            if(row.sms_flag == 1)
+                                            if(row.log.sms_flag == 1)
                                             {
                                                 if(row.email_flag == 1)
                                                 {
@@ -479,28 +480,28 @@
                                                     return "<p class='text-danger'>SMS - Failed!</p><p class='text-success'> Email - Success!</p>";
                                                 }
                                             }else{
-                                                if(row.email_flag == 1)
+                                                if(row.log.email_flag == 1)
                                                 {
                                                     return "<p class='text-success'>SMS - Success!</p><p class='text-danger'> Email - Failed!</p>";
                                                 }else{
                                                     return "<p class='text-success'>SMS - Success!</p><p class='text-success'> Email - Success!</p>";
                                                 }                                        
                                             }
-                                        }else if(row.sms_flag != 0){
+                                        }else if(row.log.sms_flag != 0){                                            
                                             if(row.sms_flag == 1)
                                             {
                                                 return "<p class='text-danger'>SMS - Failed!</p>";
                                             }else{
                                                 return "<p class='text-success'>SMS - Success!</p>";
                                             }
-                                        }else if(row.email_flag != 0){
+                                        }else if(row.log.email_flag != 0){                                           
                                             if(row.email_flag == 1)
                                             {
                                                 return "<p class='text-danger'>Email - Failed!</p>";
                                             }else{
                                                 return "<p class='text-success'>Email - Success!</p>";
                                             }
-                                        }else{
+                                        }else{                                     
                                             return "<p>Not Yet!</p>";
                                         }                              
                                     }
@@ -514,34 +515,34 @@
                                     {
                                         return "<p class='text-danger'>Something Went Wrong!</p>";
                                     }else{
-                                        if(row.reminder_sms_flag != 0 && row.reminder_email_flag != 0)
+                                        if(row.log.reminder_sms_flag != 0 && row.log.reminder_email_flag != 0)
                                         {
                                             //both
-                                            if(row.reminder_sms_flag == 1)
+                                            if(row.log.reminder_sms_flag == 1)
                                             {
-                                                if(row.reminder_email_flag == 1)
+                                                if(row.log.reminder_email_flag == 1)
                                                 {
                                                     return "<p class='text-danger'>SMS - Failed!</p><p class='text-danger'> Email - Failed!</p>";
                                                 }else{
                                                     return "<p class='text-danger'>SMS - Failed!</p><p class='text-success'> Email - Success!</p>";
                                                 }
                                             }else{
-                                                if(row.reminder_email_flag == 1)
+                                                if(row.log.reminder_email_flag == 1)
                                                 {
                                                     return "<p class='text-success'>SMS - Success!</p><p class='text-danger'> Email - Failed!</p>";
                                                 }else{
                                                     return "<p class='text-success'>SMS - Success!</p><p class='text-success'> Email - Success!</p>";
                                                 }                                        
                                             }
-                                        }else if(row.reminder_sms_flag != 0){
-                                            if(row.reminder_sms_flag == 1)
+                                        }else if(row.log.reminder_sms_flag != 0){
+                                            if(row.log.reminder_sms_flag == 1)
                                             {
                                                 return "<p class='text-danger'>SMS - Failed!</p>";
                                             }else{
                                                 return "<p class='text-success'>SMS - Success!</p>";
                                             }
-                                        }else if(row.reminder_email_flag != 0){
-                                            if(row.reminder_email_flag == 1)
+                                        }else if(row.log.reminder_email_flag != 0){
+                                            if(row.log.reminder_email_flag == 1)
                                             {
                                                 return "<p class='text-danger'>Email - Failed!</p>";
                                             }else{

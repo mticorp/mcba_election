@@ -169,7 +169,7 @@ class GenerateController extends Controller
             } else {
                 $type = null;
             }
-
+            // dd($request->check_val);
             $collection = collect($request->check_val);
             foreach ($collection->chunk(100) as $voter_id) {
                 $voter = DB::table('voter')
@@ -185,13 +185,13 @@ class GenerateController extends Controller
                 if ($phone) {
                     $phones = explode(',', $phone);
                     $result = BulkSMS::sendSMS($phones, $voter, $type);
-                    if (isset($result->getData()->errors)) {
+                    if (isset($result->getData()->success)) {
+                        DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+                    } else {
                         array_push($errors, [
                             $voter->name . ' SMS Send Fail'
                         ]);
-                        DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
-                    } else {
-                        DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+                        DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);                       
                     }
                 } else {
                     array_push($errors, [
@@ -204,13 +204,13 @@ class GenerateController extends Controller
 
                     $result = BulkEmail::sendEmail($emails, $voter, $type);
 
-                    if (isset($result->getData()->errors)) {
+                    if (isset($result->getData()->success)) {
+                        DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
+                    } else {
                         array_push($errors, [
                             $voter->name . ' Mail Send Fail'
                         ]);
-                        DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
-                    } else {
-                        DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
+                        DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);                        
                     }
                 } else {
                     array_push($errors, [

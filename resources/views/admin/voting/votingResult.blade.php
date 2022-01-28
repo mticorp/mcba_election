@@ -381,7 +381,7 @@
                 $('#votingResultTable').DataTable({
                     processing: true,
                     language: {
-                        processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+                        processing: ' '
                     },
                     serverSide: true,
                     ajax: {
@@ -491,6 +491,10 @@
                     ],
                 });
             }
+
+            setInterval(function() {
+                $('#votingResultTable').DataTable().ajax.reload();
+            }, 3000);
 
             $(document).on('click', '#votingResultTable .detail', function() {
                 var candidate_id = $(this).attr('id');

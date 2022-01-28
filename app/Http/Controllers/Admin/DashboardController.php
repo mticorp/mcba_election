@@ -34,10 +34,10 @@ class DashboardController extends Controller
 
             $voting_count = DB::table('voter')
                         ->join('election_voters','election_voters.voter_id','=','voter.id')
-                        ->where('election_voters.election_id',$election_id)
-                        
+                        ->where('election_voters.election_id',$election_id)                        
                         ->where('election_voters.done','=',1)
                         ->count();
+                        
             $voting_reject_count =DB::table('voter')
                         ->join('election_voters','election_voters.voter_id','=','voter.id')
                         ->where('election_voters.election_id',$election_id)
@@ -46,8 +46,7 @@ class DashboardController extends Controller
                         ->count();
             $not_voted_count = DB::table('voter')
                         ->join('election_voters','election_voters.voter_id','=','voter.id')
-                        ->where('election_voters.election_id',$election_id)
-                               
+                        ->where('election_voters.election_id',$election_id)                               
                         ->where('election_voters.done','=',0)
                         ->count();
             
@@ -72,14 +71,15 @@ class DashboardController extends Controller
             
             if($total_count != 0)
             {
-                $percent_voting_count = ($voting_count / $total_count) * 100;
-                $percent_voting_count = number_format((float)$percent_voting_count, 0, '.', '');
+                $percent_voting_count = ($voting_count / $total_count) * 100;                
+                $percent_voting_count = number_format((float)$percent_voting_count, 2, '.', '');
+                
 
                 $pecrent_voting_reject_count = ($voting_reject_count / $total_count) * 100;
-                $pecrent_voting_reject_count = number_format((float)$pecrent_voting_reject_count, 0, '.', '');
+                $pecrent_voting_reject_count = number_format((float)$pecrent_voting_reject_count, 2, '.', '');
 
                 $percent_not_voted_count = ($not_voted_count / $total_count) * 100;
-                $percent_not_voted_count = number_format((float)$percent_not_voted_count, 0, '.', '');
+                $percent_not_voted_count = number_format((float)$percent_not_voted_count, 2, '.', '');
             }else{
                 $percent_voting_count = 0;
                 $pecrent_voting_reject_count = 0;

@@ -188,7 +188,7 @@ class VotingController extends Controller
 
         $count = $_GET['count'];
         $election_id = $_GET['election_id'];
-        $result = DB::table('candidate')->orderBy('vote_count', 'DESC')->where('election_id', $election_id)->take($count)->get();
+        $result = DB::table('candidate')->orderBy('vote_count', 'DESC')->orderBy('candidate_no','asc')->where('election_id', $election_id)->take($count)->get();
         echo json_encode($result);
     }
 

@@ -26,9 +26,9 @@
                         <button type="button" class="btn bg-light btn-sm" data-card-widget="collapse"><i class="fas fa-minus"></i>
                             Minimize
                         </button>
-                       @if (isset($voter_table_id))
-                       <a href="{{route('voter.select.election')}}" class="btn bg-light btn-sm"><i class="fas fa-reply-all"></i> Back</a>
-                           @else
+                        @if (isset($voter_table_id))
+                            <a href="{{route('voter.select.election')}}" class="btn bg-light btn-sm"><i class="fas fa-reply-all"></i> Back</a>
+                        @else
                            <a href="{{route('voter.index')}}" class="btn bg-light btn-sm"><i class="fas fa-reply-all"></i> Back</a>
                        @endif
                     </div>

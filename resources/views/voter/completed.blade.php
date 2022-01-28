@@ -115,13 +115,17 @@
             
             <p id="lucky_code"></p>
             @if($voter->isVerified == 1)
-                <a href="{{route('voter.select.election')}}" class="btn btn-light text-info" id="close">Close</a>
-            @else
                 @if ($setting->result_enable == 1)
                     <a href="{{route('vote.result-page',$election->id)}}" class="btn btn-light text-info" id="close">Close</a>
                 @else
                     <a href="{{route('voter.select.election')}}" class="btn btn-light text-info" id="close">Close</a>
-                @endif            
+                @endif                
+            @else
+                @if ($setting->result_enable == 1)
+                    <a href="{{route('vote.result-page',$election->id)}}" class="btn btn-light text-info" id="close">Close</a>
+                @else
+                    <a href="{{route('voter.index')}}" class="btn btn-light text-info" id="close">Close</a>
+                @endif
             @endif
         </div>
     </div>

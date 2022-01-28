@@ -394,7 +394,10 @@
                     $("#vidtable").removeClass('hidden');
                     $("#vidtable").DataTable().destroy();
                     table = $('#vidtable').DataTable({
-                        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                        "lengthMenu": [
+                            [10, 25, 50,100,200, -1],
+                            [10, 25, 50,100,200, "All"]
+                        ],
                         processing: true,                                                  
                         language: {
                             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '

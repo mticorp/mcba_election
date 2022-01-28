@@ -195,8 +195,8 @@
     $(document).ready(function() {
             var table = $('#membertable').DataTable({
                 "lengthMenu": [
-                    [10, 25, 50, -1],
-                    [10, 25, 50, "All"]
+                    [10, 25, 50,100,200, -1],
+                    [10, 25, 50,100,200, "All"]
                 ],
                 processing: true,
                 language: {

@@ -235,7 +235,7 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.election.voting-record', $election->id) }}"
                                 class="nav-link {{ $request->segment(3) == 'votingrecord' ? 'active' : '' }}">
-                                <i class="fas fa-users nav-icon"></i>
+                                <i class="fas fa-check nav-icon"></i>
                                 <p>Voting Record</p>
                             </a>
                         </li>
@@ -243,14 +243,14 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.election.rejectvoting-record', $election->id) }}"
                                 class="nav-link {{ $request->segment(3) == 'rejectvotingrecord' ? 'active' : '' }}">
-                                <i class="fas fa-plus nav-icon"></i>
+                                <i class="fas fa-ban nav-icon"></i>
                                 <p>Reject Voting Record</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('admin.election.notvoted-record', $election->id) }}"
                                 class="nav-link {{ $request->segment(3) == 'notvotedrecord' ? 'active' : '' }}">
-                                <i class="fas fa-file-excel nav-icon"></i>
+                                <i class="fas fa-times nav-icon"></i>
                                 <p>Not Voted Record</p>
                             </a>
                         </li>

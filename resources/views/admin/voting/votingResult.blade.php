@@ -556,17 +556,16 @@
                         _token: '{{ csrf_token() }}'
                     },
                     dataType: "json",
-                    success: function(data) {
-                        // console.log(data);
-                        // return false;                                             
+                    success: function(data) {                                                         
                         $('#ExcelModal').modal('hide');
-
+                        $("#excel_th").html('');
+                        $("#excel_rs").html('');
                         if (type == 'candidate') {
                             $("#excel_th").html(`<tr>
-                                <th>စဥ်</th>
-                                <th>ကိုယ်စားလှယ်လောင်း အမှတ်</th>                        
-                                <th>နာမည်</th>                                                        
-                                <th>မဲအရေအတွက်</th>
+                                <th>No</th>
+                                <th>Candidate No</th>                        
+                                <th>Name</th>                                                        
+                                <th>Vote Count</th>
                             </tr>`);
 
                             $.each(data, function(i, v) {
@@ -580,9 +579,9 @@
                             });
                         } else {
                             $("#excel_th").html(`<tr>
-                                <th>စဥ်</th>
-                                <th>မေးခွန်း</th>
-                                <th>မဲအရေအတွက်</th>
+                                <th>No</th>
+                                <th>Question</th>
+                                <th>Vote Count</th>
                             </tr>`);
 
                             $.each(data, function(i, v) {

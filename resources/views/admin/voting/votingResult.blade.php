@@ -206,7 +206,7 @@
     @endif
 
     <div style="display: none;">
-        <table id="result_excel">
+        <table id="result_excel" style="border: 1px solid black;">
             <thead id="excel_th">
 
             </thead>
@@ -559,14 +559,10 @@
 
                         if (type == 'candidate') {
                             $("#excel_th").html(`<tr>
-                                <th>No</th>
-                                <th>Candidate No</th>                        
-                                <th>Name</th>                        
-                                <th>Company</th>                        
-                                <th>Email</th>
-                                <th>Phone No</th>
-                                <th>Address</th>
-                                <th>Vote Count</th>
+                                <th>စဥ်</th>
+                                <th>ကိုယ်စားလှယ်လောင်း အမှတ်</th>                        
+                                <th>နာမည်</th>                                                        
+                                <th>မဲအရေအတွက်</th>
                             </tr>`);
 
                             $.each(data, function(i, v) {
@@ -574,19 +570,15 @@
                                 $("#excel_rs").append('<tr>' +
                                     '<td>' + i + '</td>' +
                                     '<td>' + v.candidate_no + '</td>' +
-                                    '<td>' + v.mname + '</td>' +
-                                    '<td>' + v.company + '</td>' +
-                                    '<td>' + v.email + '</td>' +
-                                    '<td>' + v.phone_no + '</td>' +
-                                    '<td>' + v.address + '</td>' +
+                                    '<td>' + v.mname + '</td>' +                                    
                                     '<td>' + v.vote_count + '</td>' +
                                     '</tr>');
                             });
                         } else {
                             $("#excel_th").html(`<tr>
-                                <th>No</th>
-                                <th>Question</th>
-                                <th>Vote Count</th>
+                                <th>စဥ်</th>
+                                <th>မေးခွန်း</th>
+                                <th>မဲအရေအတွက်</th>
                             </tr>`);
 
                             $.each(data, function(i, v) {

@@ -79,14 +79,14 @@ class VoteController extends Controller
                     } else {
                         $voter_vote_count = $voter->vote_count;
                         $position = $election->no_of_position_en;
-                        $candidates = Candidate::where('election_id', '=', $election->id)->get();
+                        $candidates = Candidate::where('election_id', '=', $election->id)->orderBy('candidate_no','asc')->get();
 
                         return view('voter.candidatelist', compact('candidates', 'voter_table_id', 'position', 'voter_vote_count', 'election'));
                     }
                 } elseif ($election->candidate_flag == 1 && $election->ques_flag == 0) {
                     $voter_vote_count = $voter->vote_count;
                     $position = $election->no_of_position_en;
-                    $candidates = Candidate::where('election_id', '=', $election->id)->get();
+                    $candidates = Candidate::where('election_id', '=', $election->id)->orderBy('candidate_no','asc')->get();
 
                     return view('voter.candidatelist', compact('candidates', 'voter_table_id', 'position', 'voter_vote_count', 'election'));
                 }

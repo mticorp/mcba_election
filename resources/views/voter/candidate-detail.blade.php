@@ -28,7 +28,7 @@
                                     @endif
                                 </div>
 
-                                <div class="table-responsive mx-lg-5">
+                                <div class="table-responsive">
                                     <table class="table" style="width: 100%!important;">
                                         <tr>
                                             <td style="width:50%;">

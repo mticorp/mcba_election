@@ -141,7 +141,7 @@
 
                                             <select name="flagstatus" id="flagstatus"
                                                 class="btn btn-sm btn-outline-secondary my-1">
-                                                <option value="">---Select---</option>
+                                                <option value>---Select---</option>
                                                 <option value="1">Done</option>
                                                 <option value="0">Not Yet</option>
                                             </select>
@@ -387,7 +387,7 @@
             //Dropdown Election//
             $("#btn_search").on('click',function(){ 
                 
-                let status = $("#flagstatus").val(); 
+                let status = $("#flagstatus").val();
                 let election_id = $("#electionid").val();
                 
                 if(election_id){
@@ -409,7 +409,7 @@
                                 done:status,
                                 election_id:election_id
                             },
-                            url: window.location.href,
+                            url: window.location.href,                          
                         },
                         columns: [{
                                 data: 'id',
@@ -585,10 +585,11 @@
             })
 
 
-             $("#btn_refresh").on('click',function(){                
+            $("#btn_refresh").on('click',function(){                
                 var status = $("#flagstatus").val('');
                 var electionid = $("#electionid").val('');
-                $('#vidtable').DataTable().columns().search("").draw();
+                $("#vidtable").addClass('hidden');
+                $("#vidtable").DataTable().destroy();
             })
 
             // $("#btn_search_for_status").on('click',function(){                                             

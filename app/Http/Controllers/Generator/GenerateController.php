@@ -44,9 +44,10 @@ class GenerateController extends Controller
             $done = $_GET['done'];
 
             $election = Election::find($electionId);
-            if (!$electionId) { 
+            if (!$election) {
+                // return response()->json(['error' => 'Election Not Found'],404);
             }
-            if ($done) {
+            if (($done == 0 || $done == 1) && $done != '') {
                 $DT_data = ElectionVoter::with(['voter', 'log'])->where('election_id', $electionId)->where('done', $done)->get();
             } else {
                 $DT_data = ElectionVoter::with(['voter', 'log'])->where('election_id', $electionId)->get();

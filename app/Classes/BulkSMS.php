@@ -37,7 +37,7 @@ class BulkSMS
 
         $isError = 0;
         $errorMessage = true;
-        $token = "lKwrR0do7Ncd8ebzire137tt";
+        $token = "KpgyfcKjibHEHccbCUX9uhrD";
         if (count($mobileNumber) > 1) {
             $response = "";
             foreach ($mobileNumber as $phone) {

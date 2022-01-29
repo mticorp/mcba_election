@@ -100,7 +100,7 @@
                  <div class="inner">
                     <h3>{{$total_register_count}} </h3>
  
-                    <p>Total Number of Registers</p>
+                    <p>Total Number of Registered</p>
                  </div>
                  <div class="icon">
                    <i class="ion ion-android-checkbox-outline"></i>

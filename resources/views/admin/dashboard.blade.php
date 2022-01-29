@@ -78,7 +78,64 @@
             <a href="{{route('admin.election.voting-result',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div> 
-          </div>
+          </div>          
+          <div class="row">
+            <div class="col-lg-3 col-6">
+               <div class="small-box bg-success">
+                 <div class="inner">
+                   <h3>{{$voting_count}} </h3>
+ 
+                   <p>Voting Record</p>
+                 </div>
+                 <div class="icon">
+                   <i class="ion ion-android-checkbox-outline"></i>
+                 </div>
+             <a href="{{route('admin.election.voting-record',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
+               </div>
+             </div>
+             <!-- ./col -->
+              <div class="col-lg-3 col-6">
+               <div class="small-box bg-danger">
+                 <div class="inner">
+                   <h3>{{$voting_reject_count}} </h3>
+ 
+                   <p>Reject Voting Record</p>
+                 </div>
+                 <div class="icon">
+                   <i class="ion ion-alert-circled"></i>
+                 </div>
+             <a href="{{route('admin.election.rejectvoting-record',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
+               </div>
+             </div> 
+             <!-- ./col -->
+              <div class="col-lg-3 col-6">
+               <div class="small-box bg-warning">
+                 <div class="inner">
+                   <h3>{{$not_voted_count}} </h3>
+ 
+                   <p>Not Voted Record</p>
+                 </div>
+                 <div class="icon">
+                   <i class="ion ion-ios-minus"></i>
+                 </div>
+             <a href="{{route('admin.election.notvoted-record',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
+               </div>
+             </div>
+             <!-- ./col -->
+              <div class="col-lg-3 col-6">
+               <div class="small-box bg-info">
+                 <div class="inner">
+                   <h3>{{$voting_count}} </h3>
+ 
+                   <p>Voting Result</p>
+                 </div>
+                 <div class="icon">
+                   <i class="ion ion-ios-list-outline"></i>
+                 </div>
+             <a href="{{route('admin.election.voting-result',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
+               </div>
+             </div> 
+           </div>
           {{-- <div class="row">
             <div class="col-lg-4 col-6">
               <!-- small box -->

@@ -91,7 +91,10 @@ class DashboardController extends Controller
             $ques = DB::table('questions')->where('election_id',$election_id)->take(2)->get();
             $company = DB::table('company')->latest('created_at')->first();
 
-            return view('admin.dashboard',compact('election','company','voter_voted_count','tot_voted_share_amt','voter_count','tot_share_amt','elections','percent_voting_count','pecrent_voting_reject_count','percent_not_voted_count','candidates','ques','ques_count','percent_answer_count', 'setting'));
+            return view('admin.dashboard',compact('election','company','voter_voted_count',
+            'tot_voted_share_amt','voter_count','tot_share_amt','elections','percent_voting_count',
+            'pecrent_voting_reject_count','percent_not_voted_count','candidates','ques','ques_count',
+            'percent_answer_count', 'setting','voting_count','voting_reject_count','not_voted_count'));
         }
         else{
             return abort(404);

@@ -476,7 +476,7 @@
                                             //both
                                             if(row.log.sms_flag == 1)
                                             {
-                                                if(row.email_flag == 1)
+                                                if(row.log.email_flag == 1)
                                                 {
                                                     return "<p class='text-danger'>SMS - Failed!</p><p class='text-danger'> Email - Failed!</p>";
                                                 }else{
@@ -491,14 +491,14 @@
                                                 }                                        
                                             }
                                         }else if(row.log.sms_flag != 0){                                            
-                                            if(row.sms_flag == 1)
+                                            if(row.log.sms_flag == 1)
                                             {
                                                 return "<p class='text-danger'>SMS - Failed!</p>";
                                             }else{
                                                 return "<p class='text-success'>SMS - Success!</p>";
                                             }
                                         }else if(row.log.email_flag != 0){                                           
-                                            if(row.email_flag == 1)
+                                            if(row.log.email_flag == 1)
                                             {
                                                 return "<p class='text-danger'>Email - Failed!</p>";
                                             }else{

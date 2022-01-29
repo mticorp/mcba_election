@@ -188,12 +188,22 @@ class GenerateController extends Controller
                         $phones = explode(',', $phone);
                         $result = BulkSMS::sendSMS($phones, $voter, $type);
                         if (isset($result->getData()->success)) {
-                            DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+                            if($type == 'reminder')
+                            {
+                                DB::table('logs')->where('voter_id', $voter->id)->update(['reminder_sms_flag' => 2]);
+                            }else{
+                                DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+                            }
                         } else {
                             array_push($errors, [
                                 $voter->name . ' SMS Send Fail'
                             ]);
-                            DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);                       
+                            if($type == 'reminder')
+                            {
+                                DB::table('logs')->where('voter_id', $voter->id)->update(['reminder_sms_flag' => 1]);
+                            }else{
+                                DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
+                            }
                         }
                     } else {
                         array_push($errors, [
@@ -267,10 +277,20 @@ class GenerateController extends Controller
                         if (isset($result->getData()->errors)) {
                             array_push($errors, [
                                 $voter->name . ' SMS Send Fail'
-                            ]);
-                            DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
+                            ]);                            
+                            if($type == 'reminder')
+                            {
+                                DB::table('logs')->where('voter_id', $voter->id)->update(['reminder_sms_flag' => 1]);
+                            }else{
+                                DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
+                            }
                         } else {
-                            DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+                            if($type == 'reminder')
+                            {
+                                DB::table('logs')->where('voter_id', $voter->id)->update(['reminder_sms_flag' => 2]);
+                            }else{
+                                DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
+                            }                            
                         }
                     } else {
                         array_push($errors, [

@@ -128,7 +128,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                         {!! Form::label('phone_number', 'ဖုန်းနံပါတ်၊ ဖက်စ်နံပါတ်၊ မိုလ်ဘိုင်းဖုန်း'   , ['class' => "form-label"]) !!}
-                                        {!! Form::text("phone_number",old('phone_number',$member->phone_number), ['class' => "form-control w-100", 'readonly' => 'readonly']) !!}
+                                        {!! Form::text("phone_number",old('phone_number',$member->phone_number), ['class' => "form-control w-100"]) !!}
                                         </div>
                                     </div>
                                 </div>

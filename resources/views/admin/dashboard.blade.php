@@ -91,7 +91,7 @@
                  <div class="icon">
                    <i class="ion ion-android-checkbox-outline"></i>
                  </div>
-             <a href="{{route('admin.election.voting-record',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
+             <a href="{{route('admin.register.index')}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
                </div>
              </div>
              <!-- ./col -->
@@ -105,7 +105,7 @@
                  <div class="icon">
                    <i class="ion ion-android-checkbox-outline"></i>
                  </div>
-             <a href="{{route('admin.election.rejectvoting-record',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
+             <a href="{{route('admin.register.index')}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
                </div>
              </div> 
              <!-- ./col -->
@@ -119,7 +119,7 @@
                  <div class="icon">
                    <i class="ion ion-android-checkbox-outline"></i>
                  </div>
-             <a href="{{route('admin.election.notvoted-record',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
+             <a href="{{route('generator.vid-list')}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
                </div>
              </div>
              <!-- ./col -->
@@ -133,7 +133,7 @@
                  <div class="icon">
                    <i class="ion ion-ios-list-outline"></i>
                  </div>
-             <a href="{{route('admin.election.voting-result',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
+             <a href="{{route('generator.vid-list')}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
                </div>
              </div> 
            </div>

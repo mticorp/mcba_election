@@ -94,7 +94,7 @@ class DashboardController extends Controller
             return view('admin.dashboard',compact('election','company','voter_voted_count',
             'tot_voted_share_amt','voter_count','tot_share_amt','elections','percent_voting_count',
             'pecrent_voting_reject_count','percent_not_voted_count','candidates','ques','ques_count',
-            'percent_answer_count', 'setting','voting_count','voting_reject_count','not_voted_count'));
+            'percent_answer_count', 'setting','voting_count','voting_reject_count','not_voted_count','total_count'));
         }
         else{
             return abort(404);

@@ -85,7 +85,7 @@
                  <div class="inner">
                    <h3>{{$voting_count}} </h3>
  
-                   <p>Voting Record</p>
+                   <p>Total Number of Voted Person</p>
                  </div>
                  <div class="icon">
                    <i class="ion ion-android-checkbox-outline"></i>
@@ -99,7 +99,7 @@
                  <div class="inner">
                    <h3>{{$voting_reject_count}} </h3>
  
-                   <p>Reject Voting Record</p>
+                   <p>Total Number of Rejected Person</p>
                  </div>
                  <div class="icon">
                    <i class="ion ion-alert-circled"></i>
@@ -113,7 +113,7 @@
                  <div class="inner">
                    <h3>{{$not_voted_count}} </h3>
  
-                   <p>Not Voted Record</p>
+                   <p>Total Number of Not Voted Person</p>
                  </div>
                  <div class="icon">
                    <i class="ion ion-ios-minus"></i>
@@ -125,9 +125,9 @@
               <div class="col-lg-3 col-6">
                <div class="small-box bg-info">
                  <div class="inner">
-                   <h3>{{$voting_count}} </h3>
+                   <h3>{{$total_count}} </h3>
  
-                   <p>Voting Result</p>
+                   <p>Total Number of Person</p>
                  </div>
                  <div class="icon">
                    <i class="ion ion-ios-list-outline"></i>

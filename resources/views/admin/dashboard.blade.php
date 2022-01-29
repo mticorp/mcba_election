@@ -81,11 +81,12 @@
           </div>          
           <div class="row">
             <div class="col-lg-3 col-6">
-               <div class="small-box bg-success">
+               <div class="small-box bg-info">
                  <div class="inner">
-                   <h3>{{$voting_count}} </h3>
+                    <h3>{{$total_member_count}} </h3>
  
-                   <p>Total Number of Voted Person</p>
+                    <p>Total Number of Members</p>
+                   
                  </div>
                  <div class="icon">
                    <i class="ion ion-android-checkbox-outline"></i>
@@ -95,28 +96,28 @@
              </div>
              <!-- ./col -->
               <div class="col-lg-3 col-6">
-               <div class="small-box bg-danger">
+               <div class="small-box bg-info">
                  <div class="inner">
-                   <h3>{{$voting_reject_count}} </h3>
+                    <h3>{{$total_register_count}} </h3>
  
-                   <p>Total Number of Rejected Person</p>
+                    <p>Total Number of Registers</p>
                  </div>
                  <div class="icon">
-                   <i class="ion ion-alert-circled"></i>
+                   <i class="ion ion-android-checkbox-outline"></i>
                  </div>
              <a href="{{route('admin.election.rejectvoting-record',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
                </div>
              </div> 
              <!-- ./col -->
               <div class="col-lg-3 col-6">
-               <div class="small-box bg-warning">
+               <div class="small-box bg-info">
                  <div class="inner">
-                   <h3>{{$not_voted_count}} </h3>
+                    <h3>{{$voting_count}} </h3>
  
-                   <p>Total Number of Not Voted Person</p>
+                    <p>Total Number of Voted Person</p>                   
                  </div>
                  <div class="icon">
-                   <i class="ion ion-ios-minus"></i>
+                   <i class="ion ion-android-checkbox-outline"></i>
                  </div>
              <a href="{{route('admin.election.notvoted-record',$election->id)}}" class="small-box-footer">View <i class="fas fa-arrow-circle-right"></i></a>
                </div>
@@ -125,9 +126,9 @@
               <div class="col-lg-3 col-6">
                <div class="small-box bg-info">
                  <div class="inner">
-                   <h3>{{$total_count}} </h3>
+                   <h3>{{$not_voted_count}} </h3>
  
-                   <p>Total Number of Person</p>
+                   <p>Total Number of Not Voted Person</p>
                  </div>
                  <div class="icon">
                    <i class="ion ion-ios-list-outline"></i>

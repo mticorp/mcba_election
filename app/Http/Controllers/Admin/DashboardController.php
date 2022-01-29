@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Election;
 use App\Candidate;
 use App\Company;
+use App\MRegister;
 use App\Setting;
 use Illuminate\Support\Facades\DB;
 
@@ -31,6 +32,9 @@ class DashboardController extends Controller
             $candidates = Candidate::where('election_id', '=', $election_id)->orderby('id', 'asc')->take(8)->get();
             $total_count = DB::table('voter')->count();
             $total_answer_count = DB::table('answers')->count();
+
+            $total_member_count = MRegister::count();
+            $total_register_count = MRegister::where('check_flag',1)->count();
 
             $voting_count = DB::table('voter')
                         ->join('election_voters','election_voters.voter_id','=','voter.id')
@@ -94,7 +98,7 @@ class DashboardController extends Controller
             return view('admin.dashboard',compact('election','company','voter_voted_count',
             'tot_voted_share_amt','voter_count','tot_share_amt','elections','percent_voting_count',
             'pecrent_voting_reject_count','percent_not_voted_count','candidates','ques','ques_count',
-            'percent_answer_count', 'setting','voting_count','voting_reject_count','not_voted_count','total_count'));
+            'percent_answer_count', 'setting','voting_count','voting_reject_count','not_voted_count','total_count','total_member_count','total_register_count'));
         }
         else{
             return abort(404);

@@ -117,18 +117,18 @@ Route::group(['middleware' => 'setting'], function () {
             Route::post('/logo/update', 'Admin\LogoController@update')->name('admin.logo.update');
 
             // SMSSetting route
-            Route::get('/sms-setting', 'Admin\SmsSettingController@index')->name('admin.smssetting.index');
-            Route::post('/sms-setting/create', 'Admin\SmsSettingController@store')->name('admin.smssetting.store');
-            Route::get('/sms-setting/destroy/{id}', 'Admin\SmsSettingController@destroy')->name('admin.smssetting.delete');
-            Route::get('/sms-setting/edit/{id}', 'Admin\SmsSettingController@edit')->name('admin.smssetting.edit');
-            Route::post('/sms-setting/update', 'Admin\SmsSettingController@update')->name('admin.smssetting.update');
+            Route::get('/sms-setting', 'Admin\SmsSettingController@index')->name('admin.sms-setting.index');
+            Route::post('/sms-setting/create', 'Admin\SmsSettingController@store')->name('admin.sms-setting.store');
+            Route::get('/sms-setting/destroy/{id}', 'Admin\SmsSettingController@destroy')->name('admin.sms-setting.delete');
+            Route::get('/sms-setting/edit/{id}', 'Admin\SmsSettingController@edit')->name('admin.sms-setting.edit');
+            Route::post('/sms-setting/update', 'Admin\SmsSettingController@update')->name('admin.sms-setting.update');
 
             //EmailSetting route
-            Route::get('/email-setting', 'Admin\EmailSettingController@index')->name('admin.emailsetting.index');
-            Route::post('/email-setting/create', 'Admin\EmailSettingController@store')->name('admin.emailsetting.store');
-            Route::get('/email-setting/destroy/{id}', 'Admin\EmailSettingController@destroy')->name('admin.emailsetting.delete');
-            Route::get('/email-setting/edit/{id}', 'Admin\EmailSettingController@edit')->name('admin.emailsetting.edit');
-            Route::post('/email-setting/update', 'Admin\EmailSettingController@update')->name('admin.emailsetting.update');
+            Route::get('/email-setting', 'Admin\EmailSettingController@index')->name('admin.email-setting.index');
+            Route::post('/email-setting/create', 'Admin\EmailSettingController@store')->name('admin.email-setting.store');
+            Route::get('/email-setting/destroy/{id}', 'Admin\EmailSettingController@destroy')->name('admin.email-setting.delete');
+            Route::get('/email-setting/edit/{id}', 'Admin\EmailSettingController@edit')->name('admin.email-setting.edit');
+            Route::post('/email-setting/update', 'Admin\EmailSettingController@update')->name('admin.email-setting.update');
 
             //Favicon route
             Route::get('/favicon', 'Admin\FaviconController@index')->name('admin.favicon.index');

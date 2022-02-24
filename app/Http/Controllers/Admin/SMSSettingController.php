@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Setting;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SMSSettingController extends Controller
 {
@@ -14,28 +16,30 @@ class SMSSettingController extends Controller
      */
     public function index()
     {
-        //
-    }
+        return view('admin.setting.sms_api_setting.sms_api_setting');
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $rules = array(
+            'sms_token' => 'required|string|max:255',
+            'sms_sender' => 'required|string|max:255',
+        );
+
+        $error = Validator::make($request->all(), $rules);
+
+        if ($error->fails()) {
+            return response()->json(['errors' => $error->errors()->all()]);
+        }
+
+        $form_data = array(
+            'sms_token' => $request->sms_token,
+            'sms_sender' => $request->sms_sender,
+        );
+
+        Setting::first()->update($form_data);
+
+        return response()->json(['success' => 'Data Added successfully.']);
     }
 
     /**
@@ -44,10 +48,6 @@ class SMSSettingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -57,7 +57,11 @@ class SMSSettingController extends Controller
      */
     public function edit($id)
     {
-        //
+        if (request()->ajax()) {
+            $data = Setting::findOrFail($id);
+            return response()->json(['data' => $data]);
+        }
+
     }
 
     /**
@@ -67,9 +71,26 @@ class SMSSettingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $rules = array(
+            'sms_token' => 'required|string|max:255',
+            'sms_sender' => 'required|string|max:255',
+        );
+
+        $error = Validator::make($request->all(), $rules);
+
+        if ($error->fails()) {
+            return response()->json(['errors' => $error->errors()->all()]);
+        }
+
+        $form_data = array(
+            'sms_token' => $request->sms_token,
+            'sms_sender' => $request->sms_sender,
+        );
+        Setting::whereId($request->hidden_id)->update($form_data);
+
+        return response()->json(['success' => 'Data is successfully updated']);
     }
 
     /**
@@ -80,6 +101,7 @@ class SMSSettingController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = Setting::findOrFail($id);
+        $data->update(['sms_token' => null, 'sms_sender' => null]);
     }
 }

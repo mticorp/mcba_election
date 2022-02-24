@@ -9,7 +9,7 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item active"><a href="{{route('admin.election.index')}}">Home</a></li>
-                    <li class="breadcrumb-item active">Logo</li>
+                    <li class="breadcrumb-item active">SMS API Setting</li>
                 </ol>
             </div>
         </div>
@@ -23,9 +23,9 @@
             <div class="col-md-6 offset-md-3">
                 <div class="card card-red card-outline">
                     <div class="card-header">
-                        <div class="card-title">Logo</div>
+                        <div class="card-title">SMS API Setting</div>
                         <div class="card-tools">
-                            @if($setting->logo_image || $setting->logo_name)
+                            @if($setting->sms_token || $setting->sms_sender)
                             <button type="button" name="edit" id="{{$setting->id}}"
                                 class="edit btn btn-info btn-xs btn-flat"><i class="fas fa-edit"></i> Edit</button>
                             <button type="button" name="delete" id="{{$setting->id}}"
@@ -40,9 +40,9 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 offset-md-3 text-center">
-                                @if($setting->logo_image || $setting->logo_name)
-                                <p>Logo Name - {{$setting->logo_name}}</p>
-                                <img src="{{url($setting->logo_image)}}" alt="" width="300px">
+                                @if($setting->sms_token || $setting->sms_sender)
+                                <p>SMS Token - {{$setting->sms_token}}</p>
+                                <p>SMS Sender Name - {{$setting->sms_sender}}</p>
                                 @else
                                 No Data Available
                                 @endif
@@ -59,7 +59,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Add New Logo</h4>
+                <h4 class="modal-title">Add New SMS Service</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -71,17 +71,19 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="logo_name">Logo Name : </label>
-                                <input type="text" name="logo_name" id="logo_name" class="form-control mb-3">
+                                <label for="fav_name">SMS Token</label>
+                                <input type="text" name="sms_token" required class="form-control" id="sms_token"
+                                    placeholder="Enter SMS Token.." value="{{ old('sms_token') }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="image">Select Logo Image : </label>
-                                <input type="file" name="image" id="image" class="mb-3" />
-                                <span id="store_image"></span>
+                                <label for="fav_name">SMS Sender Name</label>
+                                <input type="text" name="sms_sender" required class="form-control" id="sms_sender"
+                                    placeholder="Enter SMS Sender Name..." value="{{ old('sms_sender') }}">
                             </div>
                         </div>
+
                     </div>
 
                     <input type="hidden" name="action" id="action" />
@@ -109,7 +111,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <h6 align="center" style="margin:0;">Are you sure you want to remove this data?</h6>
+                <h6 class="justify-content-center" style="margin:0;">Are you sure you want to remove this data?</h6>
             </div>
             <div class="modal-footer justify-content-end">
                 <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
@@ -125,8 +127,9 @@
 @section('javascript')
 <script>
 $(document).ready(function() {
+
     $('#create_record').click(function() {
-        $('#formModal .modal-title').text("Add New Logo");
+        $('#formModal .modal-title').text("Add New SMS Service");
         $('#action_button').val("Add");
         $('#action').val("Add");
         $('#formModal').modal('show');
@@ -137,7 +140,7 @@ $(document).ready(function() {
         event.preventDefault();
         if ($('#action').val() == 'Add') {
             $.ajax({
-                url: "{{ route('admin.logo.store') }}",
+                url: "{{ route('admin.sms-setting.store') }}",
                 method: "POST",
                 data: new FormData(this),
                 contentType: false,
@@ -159,7 +162,7 @@ $(document).ready(function() {
 
         if ($('#action').val() == "Edit") {
             $.ajax({
-                url: "{{ route('admin.logo.update') }}",
+                url: "{{ route('admin.sms-setting.update') }}",
                 method: "POST",
                 data: new FormData(this),
                 contentType: false,
@@ -182,19 +185,17 @@ $(document).ready(function() {
 
     $(document).on('click', '.edit', function() {
         var id = $(this).attr('id');
+        //   console.log(id);
+        //   return false;
         $('#form_result').html('');
         $.ajax({
-            url: "{{ url('/admin/logo/edit/') }}/" + id,
+            url: "{{ url('/admin/sms-setting/edit/') }}/" + id,
             dataType: "json",
             success: function(html) {
-                $('#logo_name').val(html.data.logo_name);
-                $('#store_image').html("<img src={{ URL::to('/') }}" + html.data
-                    .logo_image + " width='70' class='img-thumbnail' />");
-                $('#store_image').append(
-                    "<input type='hidden' name='hidden_image' value='" + html.data
-                    .logo_image + "' />");
+                $('#favicon_name').val(html.data.sms_token);
+                $('#store_image').val(html.data.sms_sender);
                 $('#hidden_id').val(html.data.id);
-                $('#formModal .modal-title').text("Edit Logo");
+                $('#formModal .modal-title').text("Edit SMS API Setting");
                 $('#action_button').val("Edit");
                 $('#action').val("Edit");
                 $('#formModal').modal('show');
@@ -211,7 +212,7 @@ $(document).ready(function() {
 
     $('#ok_button').click(function() {
         $.ajax({
-            url: "{{ url('/admin/logo/destroy/') }}/" + id,
+            url: "{{ url('/admin/sms-setting/destroy/') }}/" + id,
             beforeSend: function() {
                 $('#ok_button').text('Deleting...');
             },

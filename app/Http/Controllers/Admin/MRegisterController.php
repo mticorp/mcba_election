@@ -8,19 +8,15 @@ use App\Election;
 use App\ElectionVoter;
 use App\Exports\ExportMemberList;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\ImportMember;
 use App\MRegister;
 use App\Setting;
 use App\Voter;
-use Intervention\Image\Facades\Image;
-use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 // use Stichoza\GoogleTranslate\GoogleTranslate;
-use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MRegisterController extends Controller
 {
@@ -58,7 +54,7 @@ class MRegisterController extends Controller
 
     public function store(Request $request)
     {
-        $error =  Validator::make($request->all(), [
+        $error = Validator::make($request->all(), [
             'refer_code' => 'required|max:255',
             'name' => 'required|string|max:255',
             'phone_number' => 'required',
@@ -90,14 +86,14 @@ class MRegisterController extends Controller
 
         $form_data = array(
             "refer_code" => $request->refer_code,
-            "name"     => $request->name,
-            "email"     => $request->email,
-            "nrc"       => $request->nrc,
-            "complete_training_no"   => $request->complete_training_no,
-            "valuation_training_no"   => $request->valuation_training_no,
+            "name" => $request->name,
+            "email" => $request->email,
+            "nrc" => $request->nrc,
+            "complete_training_no" => $request->complete_training_no,
+            "valuation_training_no" => $request->valuation_training_no,
             "AHTN_training_no" => $request->AHTN_training_no,
             "graduation" => $request->graduation,
-            "phone_number"  => $request->phone_number,
+            "phone_number" => $request->phone_number,
             "address" => $request->address,
             "election_id" => $request->election_id,
             "profile" => $new_name,
@@ -141,7 +137,7 @@ class MRegisterController extends Controller
         $image_name = $request->old_image;
         $image = $request->file('image');
 
-        $error =  Validator::make($request->all(), [
+        $error = Validator::make($request->all(), [
             'refer_code' => 'required|max:255',
             'name' => 'required|string|max:255',
             'phone_number' => 'required',
@@ -180,14 +176,14 @@ class MRegisterController extends Controller
 
         $form_data = array(
             "refer_code" => $request->refer_code,
-            "name"     => $request->name,
-            "email"     => $request->email,
-            "nrc"       => $request->nrc,
-            "complete_training_no"   => $request->complete_training_no,
-            "valuation_training_no"   => $request->valuation_training_no,
+            "name" => $request->name,
+            "email" => $request->email,
+            "nrc" => $request->nrc,
+            "complete_training_no" => $request->complete_training_no,
+            "valuation_training_no" => $request->valuation_training_no,
             "AHTN_training_no" => $request->AHTN_training_no,
             "graduation" => $request->graduation,
-            "phone_number"  => $request->phone_number,
+            "phone_number" => $request->phone_number,
             "address" => $request->address,
             "profile" => $image_name,
             "officeName" => $request->officeName,
@@ -242,7 +238,7 @@ class MRegisterController extends Controller
         if ($request->ajax()) {
 
             $validator = Validator::make($request->all(), [
-                'data'          => 'required',
+                'data' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -293,55 +289,52 @@ class MRegisterController extends Controller
 
     public function sendMessage(Request $request)
     {
+        $setting = Setting::first();
         $errors = [];
         if ($request->check_val) {
-            if($request->type == 'select_message' || $request->type == 'all_message')
-            {
+            if ($request->type == 'select_message' || $request->type == 'all_message') {
                 $type = 'member';
-            }else{
+            } else {
                 $type = 'member_announce';
             }
             $collection = collect($request->check_val);
             foreach ($collection->chunk(100) as $data) {
-                foreach($data as $member_id)
-                {
+                foreach ($data as $member_id) {
                     $member = DB::table('m_registers')->where('id', $member_id)->first();
 
-                    $phone  = $member->phone_number;
+                    $phone = $member->phone_number;
                     $email = $member->email;
 
                     if ($phone) {
-                        $phones = explode(',', $phone);                                        
-                        if($type == 'member')
-                        {
-                            $result = BulkSMS::sendSMS($phones, $member,$type, $this->url);
-                        }else{
-                            $result = BulkSMS::sendSMS($phones, $member,$type, ' ');
+                        $phones = explode(',', $phone);
+                        if ($type == 'member') {
+                            $result = BulkSMS::sendSMS($phones, $member, $type, $this->url, $setting);
+                        } else {
+                            $result = BulkSMS::sendSMS($phones, $member, $type, ' ', $setting);
                         }
                         if (isset($result->getData()->errors)) {
                             array_push($errors, [
-                                $member->name . ' SMS Send Fail'
+                                $member->name . ' SMS Send Fail',
                             ]);
                         }
                     } else {
                         array_push($errors, [
-                            $member->name . ' Phone is Empty'
+                            $member->name . ' Phone is Empty',
                         ]);
                     }
 
                     if ($email) {
                         $emails = explode(',', $email);
 
-                        if($type == 'member')
-                        {
-                            $result = BulkEmail::sendEmail($emails, $member,$type, $this->url);
-                        }else{
-                            $result = BulkEmail::sendEmail($emails, $member,$type, ' ');
-                        }    
+                        if ($type == 'member') {
+                            $result = BulkEmail::sendEmail($emails, $member, $type, $this->url);
+                        } else {
+                            $result = BulkEmail::sendEmail($emails, $member, $type, ' ');
+                        }
 
                         if (isset($result->getData()->errors)) {
                             array_push($errors, [
-                                $member->name . ' Mail Send Fail'
+                                $member->name . ' Mail Send Fail',
                             ]);
                         }
                     } else {
@@ -368,39 +361,39 @@ class MRegisterController extends Controller
 
     public function smsMessageOnly(Request $request)
     {
+
+        $setting = Setting::first();
+
         $errors = [];
         if ($request->check_val) {
-            if($request->type == 'select_message' || $request->type == 'all_message')
-            {
+            if ($request->type == 'select_message' || $request->type == 'all_message') {
                 $type = 'member';
-            }else{
+            } else {
                 $type = 'member_announce';
             }
             $collection = collect($request->check_val);
             foreach ($collection->chunk(100) as $data) {
-                foreach($data as $member_id)
-                {
+                foreach ($data as $member_id) {
                     $member = DB::table('m_registers')->where('id', $member_id)->first();
 
-                    $phone  = $member->phone_number;
+                    $phone = $member->phone_number;
 
                     if ($phone) {
                         $phones = explode(',', $phone);
-                        
-                        if($type == 'member')
-                        {
-                            $result = BulkSMS::sendSMS($phones, $member,$type, $this->url);
-                        }else{
-                            $result = BulkSMS::sendSMS($phones, $member,$type, ' ');
+
+                        if ($type == 'member') {
+                            $result = BulkSMS::sendSMS($phones, $member, $type, $this->url, $setting);
+                        } else {
+                            $result = BulkSMS::sendSMS($phones, $member, $type, ' ', $setting);
                         }
                         if (isset($result->getData()->errors)) {
                             array_push($errors, [
-                                $member->name . ' SMS Send Fail'
+                                $member->name . ' SMS Send Fail',
                             ]);
                         }
                     } else {
                         array_push($errors, [
-                            $member->name . ' Phone is Empty'
+                            $member->name . ' Phone is Empty',
                         ]);
                     }
                 }
@@ -421,35 +414,32 @@ class MRegisterController extends Controller
     }
 
     public function emailMessageOnly(Request $request)
-    {        
+    {
         $errors = [];
         if ($request->check_val) {
-            if($request->type == 'select_message' || $request->type == 'all_message')
-            {
+            if ($request->type == 'select_message' || $request->type == 'all_message') {
                 $type = 'member';
-            }else{
+            } else {
                 $type = 'member_announce';
             }
             $collection = collect($request->check_val);
             foreach ($collection->chunk(100) as $data) {
-                foreach($data as $member_id)
-                {
+                foreach ($data as $member_id) {
                     $member = DB::table('m_registers')->where('id', $member_id)->first();
                     $email = $member->email;
 
                     if ($email) {
                         $emails = explode(',', $email);
 
-                        if($type == 'member')
-                        {
-                            $result = BulkEmail::sendEmail($emails, $member,$type, $this->url);
-                        }else{
-                            $result = BulkEmail::sendEmail($emails, $member,$type, ' ');
-                        }                
+                        if ($type == 'member') {
+                            $result = BulkEmail::sendEmail($emails, $member, $type, $this->url);
+                        } else {
+                            $result = BulkEmail::sendEmail($emails, $member, $type, ' ');
+                        }
 
                         if (isset($result->getData()->errors)) {
                             array_push($errors, [
-                                $member->name . ' Mail Send Fail'
+                                $member->name . ' Mail Send Fail',
                             ]);
                         }
                     } else {
@@ -533,12 +523,9 @@ class MRegisterController extends Controller
     public function DownloadTemplateExcel()
     {
         $file_path = public_path() . '/upload/Member_List_Download_Template.xlsx';
-        if (file_exists($file_path))
-        {
+        if (file_exists($file_path)) {
             return response()->download($file_path);
-        }
-        else
-        {
+        } else {
             // Error
             exit('Requested file does not exist on our server!');
         }

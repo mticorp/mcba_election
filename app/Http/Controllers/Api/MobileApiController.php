@@ -1,44 +1,39 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use Illuminate\Support\Facades\Auth;
+
 use App\Answer;
 use App\Candidate;
 use App\Classes\BulkSMS;
 use App\Election;
 use App\ElectionVoter;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\MRegister;
 use App\Question;
 use App\Result;
+use App\Setting;
 use App\Voter;
 use App\Voting;
 use DB;
-use HasApiTokens;
-use App\Models\Customer;
-use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MobileApiController extends Controller
 {
-     public function userlogin(Request $request)
+    public function userlogin(Request $request)
     {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
-            $user = Auth::user(); 
-            $success['token'] =  $user->createToken('MyApp')-> accessToken; 
-            $token= $user->createToken('MyApp')-> accessToken; 
-            $success['name'] =  $user->name;
-   
-            return response()->json(['success' => 'Successfully Login','token'=>$token]);
-        } 
-        else{ 
-            
-            return response()->json(['Unauthorised' => 'Unauthorised'],404);
-        } 
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = Auth::user();
+            $success['token'] = $user->createToken('MyApp')->accessToken;
+            $token = $user->createToken('MyApp')->accessToken;
+            $success['name'] = $user->name;
+
+            return response()->json(['success' => 'Successfully Login', 'token' => $token]);
+        } else {
+
+            return response()->json(['Unauthorised' => 'Unauthorised'], 404);
+        }
 
     }
     public function userlogout(Request $request)
@@ -48,7 +43,6 @@ class MobileApiController extends Controller
         return response($response, 200);
     }
 
-    
     public function Login(Request $request)
     {
         $voter_id = $request->voter_id;
@@ -56,35 +50,37 @@ class MobileApiController extends Controller
         if ($voter) {
             return response()->json(['success' => 'Successfully Login', 'data' => $voter]);
         } else {
-            return response()->json(["error"   => "Invalid VoterID"], 404);
+            return response()->json(["error" => "Invalid VoterID"], 404);
         }
     }
 
-
     public function sendOTP(Request $request)
     {
+
+        $setting = Setting::first();
+
         $voter_id = $request->voter_id;
         $voter = Voter::where('voter_id', $voter_id)->first();
         if ($voter) {
             if ($voter->phone_no == null && $voter->phone_no == "") {
                 return response()->json(['error' => 'Invalid Mobile Number!'], 400);
-            }else {
+            } else {
                 $otp = rand(100000, 999999);
                 $message = "$otp is your OTP, Welcome to MTI's eVoting System ";
                 $bulksms = new BulkSMS();
-                $msgResponse = $bulksms->sendSMS($voter->phone_no, $message);
+                $msgResponse = $bulksms->sendSMS($voter->phone_no, $message, '', '', $setting);
 
                 if ($msgResponse->getData()->success) {
                     return response()->json(['success' => 'Successfully Send!', 'data' => ['otp' => $otp, 'voter' => $voter]], 200);
                 } else {
-                    return response()->json(['error' => 'Process Failed',], 401);
+                    return response()->json(['error' => 'Process Failed'], 401);
                 }
             }
         } else {
-            return response()->json(['error' => 'Invalid Voter ID',], 400);
+            return response()->json(['error' => 'Invalid Voter ID'], 400);
         }
     }
-    
+
     public function verify(Request $request)
     {
         $voter = Voter::where('voter_id', $request->voter_id)->first();
@@ -94,39 +90,38 @@ class MobileApiController extends Controller
             if ($voter->save()) {
                 return response()->json(['success' => 'Successfully Verified!'], 200);
             } else {
-                return response()->json(['error' => "Process Failed!",], 400);
+                return response()->json(['error' => "Process Failed!"], 400);
             }
         } else {
-            return response()->json(['error' => "Voter Not Found!",], 400);
+            return response()->json(['error' => "Voter Not Found!"], 400);
         }
     }
-
 
     public function electionlist($voter_id)
     {
         $voter = DB::table('voter')->where('voter_id', $voter_id)->first();
-    
+
         if ($voter) {
             $elections = DB::table('election')
-                         ->select('election.*', 'company.company_logo', 'company.company_name')
-                         ->leftJoin('company', 'company.id', '=', 'election.company_id')
-                        ->get();
+                ->select('election.*', 'company.company_logo', 'company.company_name')
+                ->leftJoin('company', 'company.id', '=', 'election.company_id')
+                ->get();
             if (count($elections) > 0) {
                 foreach ($elections as $election) {
                     $election->voter_count = $voter->vote_count;
                     $ques_count = Question::where('election_id', $election->id)->count();
                     $election_voter = ElectionVoter::where('election_id', $election->id)->where('voter_id', $voter->id)->first();
-                    
+
                     if ($election_voter) {
                         if ($election_voter->done == 0 && $election->candidate_flag == 1 && $election->ques_flag == 1) {
                             $voter_voting_record = Voting::where('election_id', $election->id)->where('voter_id', $voter->id)->count();
-                        
+
                             if ($ques_count > 0) {
                                 $election->ques_flag = 1;
                             } else {
                                 $election->ques_flag = 0;
                             }
-                            
+
                             if ($voter_voting_record == 0) {
                                 //not voted for candidate & ques
                                 $election->isVotedCandidate = false;
@@ -147,7 +142,7 @@ class MobileApiController extends Controller
                             } else {
                                 $election->ques_flag = 0;
                             }
-    
+
                             $election->isVotedQues = false;
                             $election->isVoted = 0;
                         } else {
@@ -156,15 +151,15 @@ class MobileApiController extends Controller
                             $election->isVotedQues = true;
                         }
                     } else {
-                        return response()->json(['error' => "Voter Not Found!",], 403);
+                        return response()->json(['error' => "Voter Not Found!"], 403);
                     }
                 }
-                return response()->json(['success' => 'Get Data Successfully!','data' => $elections], 200);
+                return response()->json(['success' => 'Get Data Successfully!', 'data' => $elections], 200);
             } else {
-                return response()->json(['message' => "Election Not Found!",'data' => []], 200);
+                return response()->json(['message' => "Election Not Found!", 'data' => []], 200);
             }
         } else {
-            return response()->json(['error' => "Voter Not Found!",], 403);
+            return response()->json(['error' => "Voter Not Found!"], 403);
         }
     }
 
@@ -177,16 +172,16 @@ class MobileApiController extends Controller
                 if ($election->candidate_flag == 1) {
                     $candidatelist = Candidate::where('election_id', $election_id)->get();
                     if ($candidatelist) {
-                        return response()->json(['message' => 'Get Candidate Data Successfully!', 'data' =>  $candidatelist], 200);
+                        return response()->json(['message' => 'Get Candidate Data Successfully!', 'data' => $candidatelist], 200);
                     }
                 } else {
                     return response()->json(['message' => "Candidate Feature isn't Include in this Election!", 'candidate_flag' => 0], 403);
                 }
             } else {
-                return response()->json(['error' => "Election isn't Start Yet!",], 403);
+                return response()->json(['error' => "Election isn't Start Yet!"], 403);
             }
         } else {
-            return response()->json(['error' => "Request Election Not Found on Server!",], 403);
+            return response()->json(['error' => "Request Election Not Found on Server!"], 403);
         }
     }
 
@@ -194,7 +189,7 @@ class MobileApiController extends Controller
     {
         // dd($request->all());
         $candidates = $request->candidates;
-        $voter_id =  $request->voter_id;
+        $voter_id = $request->voter_id;
         $voter_vote_count = $request->voter_vote_count;
         $election_id = $request->election_id;
         $election_modal = new Election();
@@ -216,7 +211,7 @@ class MobileApiController extends Controller
                             Candidate::where('id', '=', $candidate)->increment('vote_count', $voter_vote_count);
                             Result::where([
                                 ['candidate_id', '=', $candidate],
-                                ['election_id', '=', $election_id]
+                                ['election_id', '=', $election_id],
                             ])->increment('vote_count', $voter_vote_count);
                             $voting = new Voting;
                             $voting->candidate_id = $candidate;
@@ -224,7 +219,7 @@ class MobileApiController extends Controller
                             $voting->election_id = $election_id;
                             $voting->vote_count = $voter_vote_count;
                             $voting->save();
-                        }                    
+                        }
                     } else {
                         return response()->json(['message' => 'Already Voted'], 403);
                     }
@@ -259,12 +254,12 @@ class MobileApiController extends Controller
             if ($election->ques_flag == 1) {
                 $already_ans = DB::table('answers')->where('voter_id', $voter_id)->where('election_id', $election_id)->join('questions', 'questions.id', '=', 'answers.ques_id')->count() != 0 ? true : false;
                 if ($already_ans) {
-                    return response()->json(["error"   => "You are Already Answered!"], 403);
+                    return response()->json(["error" => "You are Already Answered!"], 403);
                 } else {
                     $ques = Question::where('election_id', $election_id)->get();
                     return response()->json([
                         "data" => $ques,
-                        "message"   => "success"
+                        "message" => "success",
                     ], 200);
                 }
             } else {
@@ -277,10 +272,9 @@ class MobileApiController extends Controller
 
     public function storeanswerandquestion(Request $request)
     {
-        $election_ID= $request->election_id;
-        $electionWithId=Election::where('id', $election_ID)->first();
+        $election_ID = $request->election_id;
+        $electionWithId = Election::where('id', $election_ID)->first();
         $voter = Voter::where('voter_id', $request->voter_id)->first();
-
 
         $election_voter = ElectionVoter::where('election_id', $election_ID)->where('voter_id', $voter->id)->first();
 
@@ -292,15 +286,14 @@ class MobileApiController extends Controller
                 $ans->ans_flag = $answer["ans"];
                 $ans->save();
             }
-        }    
+        }
         $election_voter->done = 1;
         $election_voter->save();
         return response()->json([
-                    'success' => 'Successfully Answered!',
-                    'voter' => $voter,
-                ], 200);
+            'success' => 'Successfully Answered!',
+            'voter' => $voter,
+        ], 200);
     }
-
 
     public function VoterCandidateList($election_id, $voter_id)
     {
@@ -338,13 +331,13 @@ class MobileApiController extends Controller
         $election = $election_modal->electionWithId($election_id);
 
         if ($election) {
-            if ($election->lucky_flag ==1) {
-                $voterintid =Voter::where('voter_id', $voter_id)->first()->id;
+            if ($election->lucky_flag == 1) {
+                $voterintid = Voter::where('voter_id', $voter_id)->first()->id;
                 $voter = ElectionVoter::select('voter.*', 'election_voters.done as done')
-                ->join('voter', 'voter.id', 'election_voters.voter_id')
-                ->where('voter.id', $voterintid)
-                ->where('election_voters.election_id', $election_id)
-                ->first();
+                    ->join('voter', 'voter.id', 'election_voters.voter_id')
+                    ->where('voter.id', $voterintid)
+                    ->where('election_voters.election_id', $election_id)
+                    ->first();
 
                 if ($voter) {
                     $code = mt_rand(100000, 999999);
@@ -357,12 +350,12 @@ class MobileApiController extends Controller
                         if ($voter->done == 1 && $voter->lucky_flag == 0) {
                             ElectionVoter::where('voter_id', $$voterintid)->where('election_id', $election_id)->update(['lucky_flag' => 1]);
                             DB::table('lucky')->insert([
-                            'code' => $new_code,
-                            'name' => $voter->name,
-                            'phone' => $voter->phone_no,
-                            'election_id' => $election_id,
-                            'voter_id' => $voter->id,
-                        ]);
+                                'code' => $new_code,
+                                'name' => $voter->name,
+                                'phone' => $voter->phone_no,
+                                'election_id' => $election_id,
+                                'voter_id' => $voter->id,
+                            ]);
 
                             return response()->json(['success' => 'Successfully Generated!', 'data' => $new_code], 200);
                         } elseif ($voter->done == 1 && $voter->lucky_flag == 1) {
@@ -379,16 +372,16 @@ class MobileApiController extends Controller
                         if ($voter->done == 1 && $voter->lucky_flag == 0) {
                             ElectionVoter::where('voter_id', $voterintid)->where('election_id', $election_id)->update(['lucky_flag' => 1]);
                             DB::table('lucky')->insert([
-                            'code' => $code,
-                            'name' => $voter->name,
-                            'phone' => $voter->phone_no,
-                            'election_id' => $election_id,
-                            'voter_id' => $voterintid,
-                        ]);
+                                'code' => $code,
+                                'name' => $voter->name,
+                                'phone' => $voter->phone_no,
+                                'election_id' => $election_id,
+                                'voter_id' => $voterintid,
+                            ]);
                             return response()->json([
-                            'success' => 'success',
-                            'data' => $code
-                        ], 200);
+                                'success' => 'success',
+                                'data' => $code,
+                            ], 200);
                         } elseif ($voter->done == 1 && $voter->lucky_flag == 1) {
                             $exist_code = DB::table('lucky')->where('election_id', $election_id)->where('voter_id', $voter_id)->first()->code;
 
@@ -416,17 +409,16 @@ class MobileApiController extends Controller
         $election = $election_modal->electionWithId($election_id);
         if ($election) {
             $ans_modal = new Answer;
-                 
+
             $ans = $ans_modal->AnswerSummaryWithQuestionName($election_id);
-            
-            $data = Result::orderBy('result.vote_count', 'desc')->orderBy('candidate.candidate_no','asc')
-            ->where('candidate.election_id', $election_id)
-            ->leftJoin('candidate', 'candidate.id', '=', 'result.candidate_id')
-            ->get(['candidate.mname as candidate_name','candidate.photo_url as candidate_photo_url','result.vote_count','candidate.candidate_no as candidate_no']);
-        
-            return response()->json(['message' => 'success', 'data'
-                                               => ["votingResult" =>$data,
-                                                  "questionResult"=>$ans]], 200);
+
+            $data = Result::orderBy('result.vote_count', 'desc')->orderBy('candidate.candidate_no', 'asc')
+                ->where('candidate.election_id', $election_id)
+                ->leftJoin('candidate', 'candidate.id', '=', 'result.candidate_id')
+                ->get(['candidate.mname as candidate_name', 'candidate.photo_url as candidate_photo_url', 'result.vote_count', 'candidate.candidate_no as candidate_no']);
+
+            return response()->json(['message' => 'success', 'data' => ["votingResult" => $data,
+                "questionResult" => $ans]], 200);
         } else {
             return response()->json(['error' => 'Election Not Found!'], 400);
         }
@@ -447,31 +439,31 @@ class MobileApiController extends Controller
                         if ($member->check_flag == 0) {
                             return response()->json([
                                 'success' => 'success',
-                                'data' => $member
+                                'data' => $member,
                             ], 200);
                         } else {
                             return response()->json([
-                                "error" => "Your are already Registered."
+                                "error" => "Your are already Registered.",
                             ], 403);
                         }
                     } else {
                         return response()->json([
-                            "error" => "Invalid Phone Number"
+                            "error" => "Invalid Phone Number",
                         ], 400);
                     }
                 } else {
                     return response()->json([
-                        "error" => "Invalid NRC"
+                        "error" => "Invalid NRC",
                     ], 400);
                 }
             } else {
                 return response()->json([
-                    "error" => "Invalid Name"
+                    "error" => "Invalid Name",
                 ], 400);
             }
         } else {
             return response()->json([
-                "error" => "Invalid Reference Code"
+                "error" => "Invalid Reference Code",
             ], 400);
         }
     }
@@ -482,14 +474,14 @@ class MobileApiController extends Controller
         $image = $request->file('image');
         $form_data = array(
             "refer_code" => $request->refer_code,
-            "name"     => $request->name,
-            "email"     => $request->email,
-            "nrc"       => $request->nrc_no,
-            "complete_training_no"   => $request->complete_training_no,
-            "valuation_training_no"   => $request->valuation_training_no,
+            "name" => $request->name,
+            "email" => $request->email,
+            "nrc" => $request->nrc_no,
+            "complete_training_no" => $request->complete_training_no,
+            "valuation_training_no" => $request->valuation_training_no,
             "AHTN_training_no" => $request->AHTN_training_no,
             "graduation" => $request->graduation,
-            "phone_number"  => $request->phone_number,
+            "phone_number" => $request->phone_number,
             "address" => $request->address,
             "profile" => $image_name,
             "check_flag" => 1,
@@ -525,11 +517,11 @@ class MobileApiController extends Controller
             }
         } else {
             return response()->json([
-                'error' => 'Data Not Found'
+                'error' => 'Data Not Found',
             ], 404);
         }
         return response()->json([
-            'success' => 'success'
+            'success' => 'success',
         ], 200);
     }
 }

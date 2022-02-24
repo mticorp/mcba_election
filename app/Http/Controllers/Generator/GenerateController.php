@@ -3,24 +3,20 @@
 namespace App\Http\Controllers\Generator;
 
 use App\Classes\BulkEmail;
-use App\Election;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Company;
-use App\Voter;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Carbon\Carbon;
 use App\Classes\BulkSMS;
+use App\Company;
+use App\Election;
 use App\ElectionVoter;
 use App\Exports\ExportVoterList;
+use App\Http\Controllers\Controller;
 use App\Imports\VoterImport;
 use App\Setting;
+use App\Voter;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Validators\ValidationException;
-
-use function PHPSTORM_META\map;
 
 class GenerateController extends Controller
 {
@@ -62,7 +58,7 @@ class GenerateController extends Controller
                 ->addIndexColumn()
                 ->make(true);
         }
-        $company =  DB::table('company')->latest('created_at')->first();
+        $company = DB::table('company')->latest('created_at')->first();
 
         $electionLidt = Election::all();
         return view('generator.generatedVid-list', compact('company', 'electionLidt'));
@@ -99,9 +95,9 @@ class GenerateController extends Controller
     public function generateVidBlade()
     {
 
-        $company =  DB::table('company')->latest('created_at')->first();
-        //$election =  DB::table('election')->latest('created_at')->first();        
-        $election =  Election::where('status', '1')->first();
+        $company = DB::table('company')->latest('created_at')->first();
+        //$election =  DB::table('election')->latest('created_at')->first();
+        $election = Election::where('status', '1')->first();
         return view('generator.vidgenerate', compact('company', 'election'));
     }
 
@@ -109,14 +105,13 @@ class GenerateController extends Controller
     {
         if ($request->ajax()) {
 
-
             if ($request->hasFile('file')) {
                 $validator = Validator::make(
                     [
                         'extension' => strtolower($request->file->getClientOriginalExtension()),
                     ],
                     [
-                        'extension'      => 'required|in:csv,xlsx,xls',
+                        'extension' => 'required|in:csv,xlsx,xls',
                     ]
                 );
 
@@ -161,6 +156,9 @@ class GenerateController extends Controller
 
     public function sendMessage(Request $request)
     {
+
+        $setting = Setting::first();
+
         $errors = [];
         if ($request->check_val) {
             if ($request->type == 'select_reminder' || $request->type == 'all_reminder') {
@@ -169,45 +167,42 @@ class GenerateController extends Controller
                 $type = 'voter_announce';
             } else {
                 $type = null;
-            }            
-            $collection = collect($request->check_val);                       
+            }
+            $collection = collect($request->check_val);
             foreach ($collection->chunk(100) as $data) {
-                foreach($data as $voter_id)
-                {
+                foreach ($data as $voter_id) {
                     $voter = DB::table('voter')
-                    ->select('voter.*', 'election_voters.election_id as election_id')
-                    ->where('voter.voter_id', $voter_id)
-                    ->orWhere('voter.id', $voter_id)
-                    ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-                    ->first();
-                    
+                        ->select('voter.*', 'election_voters.election_id as election_id')
+                        ->where('voter.voter_id', $voter_id)
+                        ->orWhere('voter.id', $voter_id)
+                        ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+                        ->first();
+
                     $email = $voter->email;
-                    $phone  = $voter->phone_no;
+                    $phone = $voter->phone_no;
 
                     if ($phone) {
                         $phones = explode(',', $phone);
-                        $result = BulkSMS::sendSMS($phones, $voter, $type);
+                        $result = BulkSMS::sendSMS($phones, $voter, $type, '', $setting);
                         if (isset($result->getData()->success)) {
-                            if($type == 'reminder')
-                            {
+                            if ($type == 'reminder') {
                                 DB::table('logs')->where('voter_id', $voter->id)->update(['reminder_sms_flag' => 2]);
-                            }else{
+                            } else {
                                 DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
                             }
                         } else {
                             array_push($errors, [
-                                $voter->name . ' SMS Send Fail'
+                                $voter->name . ' SMS Send Fail',
                             ]);
-                            if($type == 'reminder')
-                            {
+                            if ($type == 'reminder') {
                                 DB::table('logs')->where('voter_id', $voter->id)->update(['reminder_sms_flag' => 1]);
-                            }else{
+                            } else {
                                 DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
                             }
                         }
                     } else {
                         array_push($errors, [
-                            $voter->name . ' Phone is Empty'
+                            $voter->name . ' Phone is Empty',
                         ]);
                     }
 
@@ -220,9 +215,9 @@ class GenerateController extends Controller
                             DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 2]);
                         } else {
                             array_push($errors, [
-                                $voter->name . ' Mail Send Fail'
+                                $voter->name . ' Mail Send Fail',
                             ]);
-                            DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);                        
+                            DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
                         }
                     } else {
                         array_push($errors, [
@@ -248,6 +243,9 @@ class GenerateController extends Controller
 
     public function smsMessageOnly(Request $request)
     {
+
+        $setting = Setting::first();
+
         $errors = [];
         if ($request->check_val) {
             if ($request->type == 'select_reminder' || $request->type == 'all_reminder') {
@@ -260,41 +258,38 @@ class GenerateController extends Controller
 
             $collection = collect($request->check_val);
             foreach ($collection->chunk(100) as $data) {
-                foreach($data as $voter_id)
-                {
+                foreach ($data as $voter_id) {
                     $voter = DB::table('voter')
-                    ->select('voter.*', 'election_voters.election_id as election_id')
-                    ->where('voter.voter_id', $voter_id)
-                    ->orWhere('voter.id', $voter_id)
-                    ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-                    ->first();
+                        ->select('voter.*', 'election_voters.election_id as election_id')
+                        ->where('voter.voter_id', $voter_id)
+                        ->orWhere('voter.id', $voter_id)
+                        ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+                        ->first();
 
-                    $phone  = $voter->phone_no;
+                    $phone = $voter->phone_no;
 
                     if ($phone) {
                         $phones = explode(',', $phone);
-                        $result = BulkSMS::sendSMS($phones, $voter, $type);
+                        $result = BulkSMS::sendSMS($phones, $voter, $type, '', $setting);
                         if (isset($result->getData()->errors)) {
                             array_push($errors, [
-                                $voter->name . ' SMS Send Fail'
-                            ]);                            
-                            if($type == 'reminder')
-                            {
+                                $voter->name . ' SMS Send Fail',
+                            ]);
+                            if ($type == 'reminder') {
                                 DB::table('logs')->where('voter_id', $voter->id)->update(['reminder_sms_flag' => 1]);
-                            }else{
+                            } else {
                                 DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 1]);
                             }
                         } else {
-                            if($type == 'reminder')
-                            {
+                            if ($type == 'reminder') {
                                 DB::table('logs')->where('voter_id', $voter->id)->update(['reminder_sms_flag' => 2]);
-                            }else{
+                            } else {
                                 DB::table('logs')->where('voter_id', $voter->id)->update(['sms_flag' => 2]);
-                            }                            
+                            }
                         }
                     } else {
                         array_push($errors, [
-                            $voter->name . ' Phone is Empty'
+                            $voter->name . ' Phone is Empty',
                         ]);
                     }
                 }
@@ -328,14 +323,13 @@ class GenerateController extends Controller
 
             $collection = collect($request->check_val);
             foreach ($collection->chunk(100) as $data) {
-                foreach($data as $voter_id)
-                {
+                foreach ($data as $voter_id) {
                     $voter = DB::table('voter')
-                    ->select('voter.*', 'election_voters.election_id as election_id')
-                    ->where('voter.voter_id', $voter_id)
-                    ->orWhere('voter.id', $voter_id)
-                    ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
-                    ->first();
+                        ->select('voter.*', 'election_voters.election_id as election_id')
+                        ->where('voter.voter_id', $voter_id)
+                        ->orWhere('voter.id', $voter_id)
+                        ->join('election_voters', 'election_voters.voter_id', '=', 'voter.id')
+                        ->first();
 
                     $email = $voter->email;
 
@@ -346,7 +340,7 @@ class GenerateController extends Controller
 
                         if (isset($result->getData()->errors)) {
                             array_push($errors, [
-                                $voter->name . ' Mail Send Fail'
+                                $voter->name . ' Mail Send Fail',
                             ]);
                             DB::table('logs')->where('voter_id', $voter->id)->update(['email_flag' => 1]);
                         } else {

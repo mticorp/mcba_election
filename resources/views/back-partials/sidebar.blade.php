@@ -5,6 +5,8 @@
     @if (Auth::user()->type == 'admin')
     @if (
     (request()->is('admin/election') ? 'active' : '')
+    ||($request->segment(2) == 'sms-setting' ? 'active' : '')
+    || ($request->segment(2) == 'email-setting' ? 'active' :'')
     || ($request->segment(2) == 'logo' ? 'active' : '')
     ||($request->segment(2) == 'favicon' ? 'active' : '')
     || ($request->segment(2) == 'sms' ? 'active' : '')
@@ -19,15 +21,16 @@
     || (request()->is('admin/company') ? 'active' : '')
     )
     <p class="brand-link navbar-dark">
-        <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}" alt="Company Logo"
-            class="brand-image img-circle elevation-3" style="opacity: .8">
+        <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}"
+            alt="Company Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">{{ $setting->logo_name ? $setting->logo_name : 'mmVote' }}</span>
     </p>
     @else
     <p class="brand-link navbar-dark text-center">
-        <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}" alt="Company Logo"
-        class="brand-image img-circle elevation-3" style="opacity: .8"><br>
-        <span class="brand-text font-weight-light">{{ $election->company_name ? $election->company_name : 'mmVote' }}</span>
+        <img src="{{ $setting->logo_image ? url($setting->logo_image) : url('images/election_logo.png') }}"
+            alt="Company Logo" class="brand-image img-circle elevation-3" style="opacity: .8"><br>
+        <span class="brand-text font-weight-light">{{ $election->company_name ? $election->company_name : 'mmVote'
+            }}</span>
 
     </p>
     @endif
@@ -42,13 +45,15 @@
     <!-- Sidebar -->
     <div class="sidebar mt-0">
         @if (Auth::user()->type == 'admin')
-        @if ((request()->is('admin/election') ? 'active' : '') || ($request->segment(2) == 'logo' ? 'active' : '') ||
-        ($request->segment(2) == 'favicon' ? 'active' : '') || ($request->segment(2) == 'sms' ? 'active' : '') || 
-        ($request->segment(2) == 'announce' ? 'active' : '') ||
-        ($request->segment(2) == 'reminder' ? 'active' : '') || ($request->segment(2) == 'security' ? 'active' : '')
-        || (request()->is('admin/election/*') ? 'active' : '') || ($request->segment(2) == 'vid' ? 'active' : '') ||
-        ($request->segment(3) == 'generate' ? 'active' : '') || ($request->segment(2) == 'register' ? 'active' : '') ||
-        (request()->is('admin/user') ? 'active' : '') || (request()->is('admin/company') ? 'active' : ''))
+        @if ((request()->is('admin/election') ? 'active' : '') || ($request->segment(2) == 'logo' ? 'active' : '')
+        ||($request->segment(2) == 'sms-setting' ? 'active' : '')
+        || ($request->segment(2) == 'email-setting' ? 'active' :'')
+        ||($request->segment(2) == 'favicon' ? 'active' : '') || ($request->segment(2) == 'sms' ? 'active' : '')
+        ||($request->segment(2) == 'announce' ? 'active' : '') || ($request->segment(2) == 'reminder' ? 'active' : '')
+        ||($request->segment(2) == 'security' ? 'active' : '')|| (request()->is('admin/election/*') ? 'active' : '')
+        || ($request->segment(2) == 'vid' ? 'active' : '') ||($request->segment(3) == 'generate' ? 'active' : '')
+        || ($request->segment(2) == 'register' ? 'active' : '') ||(request()->is('admin/user') ? 'active' : '')
+        || (request()->is('admin/company') ? 'active' : ''))
         <!-- Sidebar Menu -->
         <nav>
             <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent nav-compact" data-widget="treeview"
@@ -72,8 +77,8 @@
                             Company
                         </p>
                     </a>
-                </li>         
-                
+                </li>
+
                 <li class="nav-item">
                     <a href="{{ route('admin.register.index') }}"
                         class="nav-link {{ $request->segment(2) == 'register' ? 'active' : '' }}">
@@ -160,7 +165,7 @@
                                 </p>
                             </a>
                         </li>
-                        
+
                         <li class="nav-item">
                             <a href="{{ route('admin.voter.announce.index') }}"
                                 class="nav-link {{ $request->segment(2) == 'announce' && $request->segment(3) == 'voter' ? 'active' : '' }}">
@@ -170,7 +175,7 @@
                                 </p>
                             </a>
                         </li>
-                        
+
 
                         <li class="nav-item">
                             <a href="{{ route('admin.sms.index') }}"
@@ -189,7 +194,28 @@
                                     Reminder
                                 </p>
                             </a>
-                        </li>                        
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.sms-setting.index') }}"
+                                class="nav-link {{ $request->segment(2) == 'sms-setting' ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-sms"></i>
+                                <p>
+                                    SMS API Setting
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.email-setting.index') }}"
+                                class="nav-link {{ $request->segment(2) == 'email-setting' ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-envelope"></i>
+                                <p>
+                                    Email Setting
+                                </p>
+                            </a>
+                        </li>
+
+
+
                         <li class="nav-item">
                             <a href="{{ route('admin.security.index') }}"
                                 class="nav-link {{ $request->segment(2) == 'security' ? 'active' : '' }}">
@@ -198,7 +224,7 @@
                                     Security
                                 </p>
                             </a>
-                        </li>     
+                        </li>
                     </ul>
                 </li>
 

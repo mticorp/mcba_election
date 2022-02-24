@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class EmailSettingController extends Controller
 {
@@ -14,7 +14,8 @@ class EmailSettingController extends Controller
      */
     public function index()
     {
-        //
+        return view('admin.setting.email_setting.email_setting');
+
     }
 
     /**

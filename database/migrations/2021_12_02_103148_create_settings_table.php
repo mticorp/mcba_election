@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateSettingsTable extends Migration
 {
@@ -20,6 +20,10 @@ class CreateSettingsTable extends Migration
             $table->string('logo_name')->nullable();
             $table->string('logo_image')->nullable();
             $table->longText('sms_text')->nullable();
+            $table->string('sms_token')->nullable();
+            $table->string('sms_sender')->nullable();
+            $table->string('email_address')->nullable();
+            $table->string('email_password')->nullable();
             $table->longText('reminder_text')->nullable();
             $table->longText('member_sms_text')->nullable();
             $table->longText('voter_annouce')->nullable();

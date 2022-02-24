@@ -4,17 +4,9 @@
 //     return response()->download("upload/apple-app-site-association");
 // });
 
-use App\Answer;
-use App\ElectionVoter;
-use App\Exports\QuestionVotingResultExport;
 use App\Http\Controllers\Admin\VotingController;
-use App\Question;
-use App\Voter;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Maatwebsite\Excel\Facades\Excel;
-
 
 Route::group(['middleware' => 'setting'], function () {
     Route::get('/', function () {
@@ -117,7 +109,6 @@ Route::group(['middleware' => 'setting'], function () {
             Route::get('/company/edit/{id}', 'Admin\CompanyController@edit')->name('admin.company.edit');
             Route::post('/company/update', 'Admin\CompanyController@update')->name('admin.company.update');
 
-
             //Logo route
             Route::get('/logo', 'Admin\LogoController@index')->name('admin.logo.index');
             Route::post('/logo/create', 'Admin\LogoController@store')->name('admin.logo.store');
@@ -125,6 +116,19 @@ Route::group(['middleware' => 'setting'], function () {
             Route::get('/logo/edit/{id}', 'Admin\LogoController@edit')->name('admin.logo.edit');
             Route::post('/logo/update', 'Admin\LogoController@update')->name('admin.logo.update');
 
+            // SMSSetting route
+            Route::get('/sms-setting', 'Admin\SmsSettingController@index')->name('admin.smssetting.index');
+            Route::post('/sms-setting/create', 'Admin\SmsSettingController@store')->name('admin.smssetting.store');
+            Route::get('/sms-setting/destroy/{id}', 'Admin\SmsSettingController@destroy')->name('admin.smssetting.delete');
+            Route::get('/sms-setting/edit/{id}', 'Admin\SmsSettingController@edit')->name('admin.smssetting.edit');
+            Route::post('/sms-setting/update', 'Admin\SmsSettingController@update')->name('admin.smssetting.update');
+
+            //EmailSetting route
+            Route::get('/email-setting', 'Admin\EmailSettingController@index')->name('admin.emailsetting.index');
+            Route::post('/email-setting/create', 'Admin\EmailSettingController@store')->name('admin.emailsetting.store');
+            Route::get('/email-setting/destroy/{id}', 'Admin\EmailSettingController@destroy')->name('admin.emailsetting.delete');
+            Route::get('/email-setting/edit/{id}', 'Admin\EmailSettingController@edit')->name('admin.emailsetting.edit');
+            Route::post('/email-setting/update', 'Admin\EmailSettingController@update')->name('admin.emailsetting.update');
 
             //Favicon route
             Route::get('/favicon', 'Admin\FaviconController@index')->name('admin.favicon.index');
@@ -133,20 +137,18 @@ Route::group(['middleware' => 'setting'], function () {
             Route::get('/favicon/edit/{id}', 'Admin\FaviconController@edit')->name('admin.favicon.edit');
             Route::post('/favicon/update', 'Admin\FaviconController@update')->name('admin.favicon.update');
 
-
             //Member Annouce route
             Route::get('/announce/member', 'Admin\AnnouceContoller@memberannounceIndex')->name('admin.member.announce.index');
             Route::post('/announce/member/update', 'Admin\AnnouceContoller@memberannounceUpdate')->name('admin.member.announce.update');
-            
 
             //Member Annouce route
             Route::get('/announce/voter', 'Admin\AnnouceContoller@voterannounceIndex')->name('admin.voter.announce.index');
             Route::post('/announce/voter/update', 'Admin\AnnouceContoller@voterannounceUpdate')->name('admin.voter.announce.update');
-            
+
             //Member SMS route
             Route::get('/sms/member', 'Admin\SmsController@memberIndex')->name('admin.member.sms.index');
             Route::post('/sms/member/update', 'Admin\SmsController@memberUpdate')->name('admin.member.sms.update');
-            
+
             //Voter SMS route
             Route::get('/sms/voter', 'Admin\SmsController@index')->name('admin.sms.index');
             Route::post('/sms/voter/update', 'Admin\SmsController@update')->name('admin.sms.update');
@@ -156,7 +158,6 @@ Route::group(['middleware' => 'setting'], function () {
 
             Route::get('/security', 'Admin\SecurityController@index')->name('admin.security.index');
             Route::post('/security/update', 'Admin\SecurityController@update')->name('admin.security.update');
-
 
             //dashboard route
             Route::get('/dashboard/{election_id}', 'Admin\DashboardController@index')->name('admin.dashboard');
@@ -173,7 +174,6 @@ Route::group(['middleware' => 'setting'], function () {
             Route::post('/candidate/import/', 'Admin\CandidateController@Import')->name('admin.candidate.excel-import');
             Route::get('/candidate-excel-download', 'Admin\CandidateController@export')->name('candidate-excel-export');
             Route::get('candidate/excel/template', 'Admin\CandidateController@DownloadCandidateTemplateExcel')->name('candidate.excel-template.download');
-            
 
             //voting information route
             Route::get('/voting/votingrecord/{election_id}', 'Admin\VotingController@votingRecord')->name('admin.election.voting-record');
@@ -202,12 +202,12 @@ Route::group(['middleware' => 'setting'], function () {
             Route::post('/register/import/', 'Admin\MRegisterController@Import')->name('admin.register.excel-import');
             Route::get('/member-excel-download', 'Admin\MRegisterController@export')->name('member-excel-download');
             Route::get('member/excel/template', 'Admin\MRegisterController@DownloadTemplateExcel')->name('member.excel-template.download');
-            
+
             Route::get('/index', 'Generator\GenerateController@index')->name('generator.index');
 
             Route::get('/vid/list/', 'Generator\GenerateController@vidList')->name('generator.vid-list');
             Route::get('/vid/generate', 'Generator\GenerateController@generateVidBlade')->name('generator.generate.vid');
-            Route::get('/vid/excel/export', 'Generator\GenerateController@export')->name('generator.excel.export');            
+            Route::get('/vid/excel/export', 'Generator\GenerateController@export')->name('generator.excel.export');
 
             Route::post('/generated-vid/store', 'Generator\GenerateController@store')->name('vid.store');
 
@@ -228,7 +228,6 @@ Route::group(['middleware' => 'setting'], function () {
 
         Route::post('logout', 'Auth\LoginController@logout')->name('logout');
     });
-
 
     //clear route
     Route::get('/clear-cache', function () {

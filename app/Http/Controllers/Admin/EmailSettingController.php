@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class EmailSettingController extends Controller
 {
@@ -14,29 +16,33 @@ class EmailSettingController extends Controller
      */
     public function index()
     {
+
         return view('admin.setting.email_setting.email_setting');
 
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $rules = array(
+            'email_address' => 'required|email|string|max:255',
+            'email_password' => 'required|string|max:255',
+        );
+
+        $error = Validator::make($request->all(), $rules);
+
+        if ($error->fails()) {
+            return response()->json(['errors' => $error->errors()->all()]);
+        }
+
+        $form_data = array(
+            'email_address' => $request->email_address,
+            'email_password' => $request->email_password,
+        );
+
+        Setting::first()->update($form_data);
+        // Config::get('mail.from.name');
+        // Config::get('mail.from.password');
+
+        return response()->json(['success' => 'Data Added successfully.']);
     }
 
     /**
@@ -45,10 +51,6 @@ class EmailSettingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -58,7 +60,11 @@ class EmailSettingController extends Controller
      */
     public function edit($id)
     {
-        //
+        if (request()->ajax()) {
+            $data = Setting::findOrFail($id);
+            return response()->json(['data' => $data]);
+        }
+
     }
 
     /**
@@ -68,9 +74,26 @@ class EmailSettingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $rules = array(
+            'email_address' => 'required|email|string|max:255',
+            'email_password' => 'required|string|max:255',
+        );
+
+        $error = Validator::make($request->all(), $rules);
+
+        if ($error->fails()) {
+            return response()->json(['errors' => $error->errors()->all()]);
+        }
+
+        $form_data = array(
+            'email_address' => $request->email_address,
+            'email_password' => $request->email_password,
+        );
+        Setting::whereId($request->hidden_id)->update($form_data);
+
+        return response()->json(['success' => 'Data is successfully updated']);
     }
 
     /**
@@ -81,6 +104,7 @@ class EmailSettingController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = Setting::findOrFail($id);
+        $data->update(['email_address' => null, 'email_password' => null]);
     }
 }
